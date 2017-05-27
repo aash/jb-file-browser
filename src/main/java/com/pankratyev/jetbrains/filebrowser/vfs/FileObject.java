@@ -8,8 +8,8 @@ import java.util.Collection;
 
 /**
  * Represents an abstract file (or directory).
- * Some methods ({@link #getChildren()}, {@link #getInputStream()}) work only for files or directories, not for both.
- * This makes UI implementation easier; contracts of such methods designed the way it shouldn't bring any problems.
+ * Some methods ({@link #getChildren()}, {@link #getInputStream()}) work only for specific files (zip archives) or
+ * directories. This makes UI implementation easier; these methods designed the way it shouldn't bring any problems.
  */
 public interface FileObject {
     /**
@@ -36,7 +36,7 @@ public interface FileObject {
     FileObject getParent();
 
     /**
-     * @return child files/directories if this {@link FileObject} is a directory; null otherwise.
+     * @return child files/directories if this {@link FileObject} is a directory or a zip archive; null otherwise.
      * @throws IOException on any I/O errors.
      */
     @Nullable
