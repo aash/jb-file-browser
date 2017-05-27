@@ -22,7 +22,8 @@ public final class App {
     private static final int WINDOW_HEIGHT = 600;
 
     private static final String MENU_FILE = "File";
-    private static final String MENU_ITEM_FTP = "Connect to FTP server";
+    private static final String MENU_ITEM_FTP_CONNECT = "Connect to FTP server";
+    private static final String MENU_ITEM_FTP_DISCONNECT = "Disconnect from FTP server";
 
 
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException,
@@ -48,14 +49,23 @@ public final class App {
     private static JMenuBar createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu(MENU_FILE);
-        JMenuItem ftpItem = new JMenuItem(MENU_ITEM_FTP);
-        ftpItem.addActionListener(new ActionListener() {
+        JMenuItem ftpConnectItem = new JMenuItem(MENU_ITEM_FTP_CONNECT);
+        ftpConnectItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO implement
             }
         });
-        fileMenu.add(ftpItem);
+        fileMenu.add(ftpConnectItem);
+        JMenuItem ftpDisconnectItem = new JMenuItem(MENU_ITEM_FTP_DISCONNECT);
+        ftpDisconnectItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //TODO implement
+            }
+        });
+        ftpDisconnectItem.setEnabled(false); // on application start there's no FTP connection
+        fileMenu.add(ftpDisconnectItem);
         menuBar.add(fileMenu);
         return menuBar;
     }
