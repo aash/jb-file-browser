@@ -29,7 +29,7 @@ public final class App {
 
     private static JFrame createFrame() {
         JFrame frame = new JFrame(WINDOW_TITLE);
-        frame.setContentPane(new Browser().getMainContainer());
+        frame.setContentPane(new Browser().getMainPanel());
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         return frame;
