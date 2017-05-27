@@ -1,6 +1,7 @@
 package com.pankratyev.jetbrains.filebrowser;
 
 import com.pankratyev.jetbrains.filebrowser.ui.Browser;
+import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.ExtensionBasedFileTypeProvider;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -39,7 +40,7 @@ public final class App {
 
     private static JFrame createFrame() {
         JFrame frame = new JFrame(WINDOW_TITLE);
-        frame.setContentPane(new Browser().getMainPanel());
+        frame.setContentPane(new Browser(new ExtensionBasedFileTypeProvider()).getMainPanel());
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         frame.setJMenuBar(createMenuBar());
