@@ -18,7 +18,7 @@ import java.awt.event.ActionListener;
  */
 public final class App {
     private static final String WINDOW_TITLE = "File browser with preview";
-    private static final int WINDOW_WIDTH = 800;
+    private static final int WINDOW_WIDTH = 600;
     private static final int WINDOW_HEIGHT = 600;
 
     private static final String MENU_FILE = "File";
