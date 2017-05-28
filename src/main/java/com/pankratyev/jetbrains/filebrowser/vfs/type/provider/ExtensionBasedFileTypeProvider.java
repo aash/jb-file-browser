@@ -9,6 +9,7 @@ import com.pankratyev.jetbrains.filebrowser.vfs.type.JpegImageFileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.PngImageFileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.TextFileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.UnknownFileType;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -50,14 +51,10 @@ public final class ExtensionBasedFileTypeProvider implements FileTypeProvider {
         if (file.isDirectory()) {
             return new DirectoryFileType();
         }
-
-        String fileName = file.getName();
-        int dotPos = fileName.lastIndexOf(EXTENSION_PREFIX);
-        if (dotPos < 0 || dotPos == fileName.length() - 1) {
+        String extension = FilenameUtils.getExtension(file.getName());
+        if (extension.isEmpty()) {
             return new UnknownFileType();
         }
-
-        String extension = fileName.substring(dotPos + 1);
         FileType type = FILE_TYPES.get(extension);
         return type != null ? type : new UnknownFileType();
     }
