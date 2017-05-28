@@ -51,7 +51,7 @@ public final class ExtensionBasedFileTypeProvider implements FileTypeProvider {
         if (file.isDirectory()) {
             return new DirectoryFileType();
         }
-        String extension = FilenameUtils.getExtension(file.getName());
+        String extension = FilenameUtils.getExtension(file.getName()).toLowerCase();
         if (extension.isEmpty()) {
             return new UnknownFileType();
         }
