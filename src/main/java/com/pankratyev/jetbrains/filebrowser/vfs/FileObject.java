@@ -13,13 +13,13 @@ import java.util.Collection;
  */
 public interface FileObject {
     /**
-     * @return name of this file or directory, i.e. the last segment in the full path.
+     * @return name of this file or directory, i.e. the last segment in the full path (including extension).
      */
     @Nonnull
     String getName();
 
     /**
-     * @return full name of this file or directory.
+     * @return full name (absolute path) of this file or directory.
      */
     @Nonnull
     String getFullName();

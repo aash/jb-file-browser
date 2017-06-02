@@ -8,8 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
+/**
+ * Represents a file (or directory) located on FTP server.
+ */
 public final class FtpFileObject extends AbstractFileObject {
-    protected FtpFileObject(String absolutePath, FileObject parent, boolean isDirectory) {
+    public FtpFileObject(String absolutePath, FileObject parent, boolean isDirectory) {
         super(absolutePath, parent, isDirectory);
     }
 
@@ -22,6 +25,16 @@ public final class FtpFileObject extends AbstractFileObject {
     @Nullable
     @Override
     public InputStream getInputStream() throws IOException {
+        throw new UnsupportedOperationException(); //TODO implement
+    }
+
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException(); //TODO implement
+    }
+
+    @Override
+    public boolean equals(Object obj) {
         throw new UnsupportedOperationException(); //TODO implement
     }
 }

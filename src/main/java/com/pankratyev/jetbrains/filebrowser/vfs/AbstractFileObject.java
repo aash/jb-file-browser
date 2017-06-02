@@ -16,7 +16,7 @@ public abstract class AbstractFileObject implements FileObject {
 
     protected AbstractFileObject(String absolutePath, FileObject parent, boolean isDirectory) {
         this.absolutePath = Objects.requireNonNull(absolutePath);
-        this.parent = Objects.requireNonNull(parent);
+        this.parent = parent;
         this.isDirectory = isDirectory;
     }
 
@@ -42,4 +42,10 @@ public abstract class AbstractFileObject implements FileObject {
     public String getName() {
         return FilenameUtils.getName(absolutePath);
     }
+
+    @Override
+    public abstract int hashCode();
+
+    @Override
+    public abstract boolean equals(Object obj);
 }
