@@ -21,11 +21,12 @@ import java.util.zip.ZipInputStream;
 
 /**
  * Represents a file (or directory) located on local file system.
+ * Use {@link LocalFileObjectFactory} to obtain an instance of this class.
  */
 public final class LocalFileObject extends AbstractFileObject {
     private final Path path;
 
-    public LocalFileObject(@Nullable LocalFileObject parent, @Nonnull Path path) {
+    LocalFileObject(@Nullable LocalFileObject parent, @Nonnull Path path) {
         super(path.toAbsolutePath().toString(), parent, Files.isDirectory(path));
         this.path = path;
     }
@@ -84,24 +85,5 @@ public final class LocalFileObject extends AbstractFileObject {
 
             return fileObjectsByPaths.values();
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        LocalFileObject object = (LocalFileObject) o;
-
-        return path.equals(object.path);
-    }
-
-    @Override
-    public int hashCode() {
-        return path.hashCode();
     }
 }

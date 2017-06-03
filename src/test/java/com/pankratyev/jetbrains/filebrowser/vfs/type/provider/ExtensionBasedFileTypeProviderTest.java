@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 
 import static org.junit.Assert.assertTrue;
 
-public class ExtensionBasedFileTypeProviderTest {
+public final class ExtensionBasedFileTypeProviderTest {
     @Test
     public void testGetType() {
         FileType type = new ExtensionBasedFileTypeProvider().getType(new StubFileObject() {

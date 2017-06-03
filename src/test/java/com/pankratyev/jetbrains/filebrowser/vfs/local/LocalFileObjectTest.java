@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class LocalFileObjectTest {
+public final class LocalFileObjectTest {
     @Test
     public void testLocalFile() throws IOException {
         Path file = null;
@@ -145,5 +145,4 @@ public class LocalFileObjectTest {
             TestUtils.deleteFiles(dirPath, subDirPath, file1Path, file2Path, subFile1Path);
         }
     }
-
 }

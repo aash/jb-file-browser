@@ -44,8 +44,27 @@ public abstract class AbstractFileObject implements FileObject {
     }
 
     @Override
-    public abstract int hashCode();
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        AbstractFileObject object = (AbstractFileObject) o;
+
+        //noinspection SimplifiableIfStatement
+        if (isDirectory != object.isDirectory) {
+            return false;
+        }
+        return absolutePath.equals(object.absolutePath);
+    }
 
     @Override
-    public abstract boolean equals(Object obj);
+    public int hashCode() {
+        int result = absolutePath.hashCode();
+        result = 31 * result + (isDirectory ? 1 : 0);
+        return result;
+    }
 }
