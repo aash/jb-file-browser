@@ -86,4 +86,11 @@ public final class LocalFileObject extends AbstractFileObject {
             return fileObjectsByPaths.values();
         }
     }
+
+    @Override
+    public String toString() {
+        return "LocalFileObject{" +
+                "path=" + path +
+                '}';
+    }
 }
