@@ -83,19 +83,7 @@ public final class FileBrowser {
      */
     void setPreview(@Nonnull BufferedImage preview) {
         previewPanel.removeAll();
-
-        int previewWidth = preview.getWidth();
-        int previewHeight = preview.getHeight();
-        int previewPanelWidth = previewPanel.getWidth();
-        int previewPanelHeight = previewPanel.getHeight();
-
-        Image imageToDisplay = preview;
-        if (previewHeight > previewPanelHeight || previewWidth > previewPanelWidth) {
-            //TODO save width/height ratio
-            imageToDisplay = preview.getScaledInstance(
-                    previewPanel.getWidth(), previewPanel.getHeight(), Image.SCALE_DEFAULT);
-        }
-
+        Image imageToDisplay = resizePreviewIfNecessary(preview);
         previewPanel.add(new JLabel(new ImageIcon(imageToDisplay)));
         redrawPreview();
     }
@@ -105,6 +93,20 @@ public final class FileBrowser {
         previewPanel.repaint();
     }
 
+    private Image resizePreviewIfNecessary(BufferedImage preview) {
+        int previewWidth = preview.getWidth();
+        int previewHeight = preview.getHeight();
+        int previewPanelWidth = previewPanel.getWidth();
+        int previewPanelHeight = previewPanel.getHeight();
+
+        Image resultImage = preview;
+        if (previewHeight > previewPanelHeight || previewWidth > previewPanelWidth) {
+            //TODO save width/height ratio
+            resultImage = preview.getScaledInstance(
+                    previewPanel.getWidth(), previewPanel.getHeight(), Image.SCALE_DEFAULT);
+        }
+        return resultImage;
+    }
 
     public JPanel getMainPanel() {
         return mainPanel;
