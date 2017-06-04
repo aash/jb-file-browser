@@ -4,6 +4,7 @@ import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.FileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
 
+import javax.annotation.Nonnull;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import java.awt.Component;
@@ -15,7 +16,7 @@ import java.util.Objects;
 public final class FileListCellRenderer extends DefaultListCellRenderer {
     private final FileTypeProvider fileTypeProvider;
 
-    public FileListCellRenderer(FileTypeProvider provider) {
+    public FileListCellRenderer(@Nonnull FileTypeProvider provider) {
         fileTypeProvider = Objects.requireNonNull(provider);
     }
 

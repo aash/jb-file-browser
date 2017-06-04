@@ -18,6 +18,8 @@ public final class IconRegistry {
     public static final ImageIcon TEXT_FILE = getIcon("text-file.png");
     public static final ImageIcon PLAIN_FILE = getIcon("plain-file.png");
 
+    public static final ImageIcon FOLDER_PREVIEW = getIcon("folder-preview.png");
+
 
     private static ImageIcon getIcon(String iconName) {
         String resourceName = "icons/" + iconName;

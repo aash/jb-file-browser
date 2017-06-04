@@ -5,26 +5,28 @@ import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 
 import javax.annotation.Nonnull;
 import javax.swing.JList;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.util.Objects;
 
-public final class FileListDoubleClickListener extends MouseAdapter {
+public final class FileListSelectionListener implements ListSelectionListener {
     private final FileBrowserController controller;
 
-    public FileListDoubleClickListener(@Nonnull FileBrowserController controller) {
+    public FileListSelectionListener(@Nonnull FileBrowserController controller) {
         this.controller = Objects.requireNonNull(controller);
     }
 
     @SuppressWarnings("unchecked") // this listener is to be used with JList<FileObject>
     @Override
-    public void mouseClicked(MouseEvent e) {
-        //TODO consider using consume()  or  getClickCount() % 2 == 0
-        if (e.getClickCount() == 2) {
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
             JList<FileObject> fileList = (JList<FileObject>) e.getSource();
-            int index = fileList.locationToIndex(e.getPoint());
+            int index = fileList.getSelectedIndex();
+            if (index < 0) {
+                return;
+            }
             FileObject selectedFileObject = fileList.getModel().getElementAt(index);
-            controller.changeDirectory(selectedFileObject);
+            controller.showPreview(selectedFileObject);
         }
     }
 }
