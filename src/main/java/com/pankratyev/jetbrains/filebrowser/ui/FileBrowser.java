@@ -21,6 +21,7 @@ public final class FileBrowser {
 
     private final FileTypeProvider fileTypeProvider;
     private final UserDirectoriesProvider userDirectoriesProvider;
+    private final FileBrowserController controller;
 
     private final DefaultListModel<FileObject> fileListModel = new DefaultListModel<>();
 
@@ -40,7 +41,9 @@ public final class FileBrowser {
         fileList.setCellRenderer(new FileListCellRenderer(fileTypeProvider));
         fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        fileList.addMouseListener(new FileListDoubleClickListener(this));
+        this.controller = new FileBrowserController(this);
+
+        fileList.addMouseListener(new FileListDoubleClickListener(controller));
     }
 
     /**
@@ -71,6 +74,13 @@ public final class FileBrowser {
 
         LOGGER.debug("Directory changed to " + dir);
     }
+
+    public void clearPreview() {
+        previewPanel.removeAll();
+        previewPanel.revalidate();
+        previewPanel.repaint();
+    }
+
 
     public JPanel getMainPanel() {
         return mainPanel;
