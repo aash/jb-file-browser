@@ -1,6 +1,6 @@
 package com.pankratyev.jetbrains.filebrowser;
 
-import com.pankratyev.jetbrains.filebrowser.ui.Browser;
+import com.pankratyev.jetbrains.filebrowser.ui.FileBrowser;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObjectFactory;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProvider;
@@ -60,7 +60,7 @@ public final class App {
         UserDirectoriesProvider userDirProvider = getUserDirectoriesProvider();
         FileObject initialFileObject = getInitialFileObject(userDirProvider);
 
-        Browser browser = new Browser(fileTypeProvider, userDirProvider);
+        FileBrowser browser = new FileBrowser(fileTypeProvider, userDirProvider);
         browser.setCurrentDirectory(initialFileObject);
 
         frame.setContentPane(browser.getMainPanel());

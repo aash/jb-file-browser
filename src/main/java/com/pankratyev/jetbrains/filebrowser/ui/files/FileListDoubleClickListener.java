@@ -1,6 +1,6 @@
 package com.pankratyev.jetbrains.filebrowser.ui.files;
 
-import com.pankratyev.jetbrains.filebrowser.ui.Browser;
+import com.pankratyev.jetbrains.filebrowser.ui.FileBrowser;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +13,9 @@ import java.io.IOException;
 public final class FileListDoubleClickListener extends MouseAdapter {
     private final Logger LOGGER = LoggerFactory.getLogger(FileListDoubleClickListener.class);
 
-    private final Browser browser;
+    private final FileBrowser browser;
 
-    public FileListDoubleClickListener(Browser browser) {
+    public FileListDoubleClickListener(FileBrowser browser) {
         this.browser = browser;
     }
 

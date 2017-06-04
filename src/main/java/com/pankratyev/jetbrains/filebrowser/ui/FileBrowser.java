@@ -16,8 +16,8 @@ import javax.swing.ListSelectionModel;
 import java.io.IOException;
 import java.util.Collection;
 
-public final class Browser {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Browser.class);
+public final class FileBrowser {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileBrowser.class);
 
     private final FileTypeProvider fileTypeProvider;
     private final UserDirectoriesProvider userDirectoriesProvider;
@@ -32,7 +32,7 @@ public final class Browser {
     private JPanel navigationPanel;
 
     @SuppressWarnings("unchecked")
-    public Browser(FileTypeProvider fileTypeProvider, UserDirectoriesProvider userDirectoriesProvider) {
+    public FileBrowser(FileTypeProvider fileTypeProvider, UserDirectoriesProvider userDirectoriesProvider) {
         this.fileTypeProvider = fileTypeProvider;
         this.userDirectoriesProvider = userDirectoriesProvider;
 
