@@ -6,7 +6,7 @@ import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.JComponent;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,8 +73,8 @@ public final class FileBrowserController {
 
         //TODO this MUST NOT be executed in UI thread since reading file content may take a long time
         try {
-            JComponent previewComponent = type.getPreviewGenerator().generatePreview(fileObject);
-            browser.setPreview(previewComponent);
+            BufferedImage previewImage = type.getPreviewGenerator().generatePreview(fileObject);
+            browser.setPreview(previewImage);
         } catch (IOException e) {
             //TODO handle it more properly (display some error message)
             LOGGER.error("Unable to change directory", e);

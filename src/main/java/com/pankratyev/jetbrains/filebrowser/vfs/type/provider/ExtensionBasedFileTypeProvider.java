@@ -1,12 +1,9 @@
 package com.pankratyev.jetbrains.filebrowser.vfs.type.provider;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.BmpImageFileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.DirectoryFileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.FileType;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.GifImageFileType;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.JpegImageFileType;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.PngImageFileType;
+import com.pankratyev.jetbrains.filebrowser.vfs.type.ImageFileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.TextFileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.UnknownFileType;
 import org.apache.commons.io.FilenameUtils;
@@ -21,15 +18,14 @@ import java.util.Map;
  */
 public final class ExtensionBasedFileTypeProvider implements FileTypeProvider {
     private static final char EXTENSION_PREFIX = '.';
-    private static final Map<String, FileType> FILE_TYPES;
+    private static final Map<String, FileType> FILE_TYPES = new HashMap<>();
     static {
-        FILE_TYPES = new HashMap<>();
-        FILE_TYPES.put("png", new PngImageFileType());
-        FILE_TYPES.put("bmp", new BmpImageFileType());
-        FILE_TYPES.put("gif", new GifImageFileType());
-        JpegImageFileType jpegType = new JpegImageFileType();
-        FILE_TYPES.put("jpeg", jpegType);
-        FILE_TYPES.put("jpg", jpegType);
+        ImageFileType imageType = new ImageFileType();
+        FILE_TYPES.put("jpeg", imageType);
+        FILE_TYPES.put("jpg", imageType);
+        FILE_TYPES.put("png", imageType);
+        FILE_TYPES.put("bmp", imageType);
+        FILE_TYPES.put("gif", imageType);
         TextFileType textType = new TextFileType();
         FILE_TYPES.put("txt", textType);
         FILE_TYPES.put("log", textType);

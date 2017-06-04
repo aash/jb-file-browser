@@ -3,7 +3,8 @@ package com.pankratyev.jetbrains.filebrowser.ui.preview;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 
 import javax.annotation.Nonnull;
-import javax.swing.JComponent;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public interface PreviewGenerator {
@@ -12,9 +13,9 @@ public interface PreviewGenerator {
      * the preview but usually it includes reading file content (not applicable to directories).
      *
      * @param fileObject file to generate preview for.
-     * @return preview.
+     * @return preview; client may use {@link Image#getScaledInstance(int, int, int)} to get the scaled image.
      * @throws IOException on I/O errors while reading the file content.
      */
     @Nonnull
-    JComponent generatePreview(FileObject fileObject) throws IOException; //TODO is JComponent the best choice here?
+    BufferedImage generatePreview(FileObject fileObject) throws IOException;
 }

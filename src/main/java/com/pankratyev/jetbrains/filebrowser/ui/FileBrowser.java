@@ -1,6 +1,5 @@
 package com.pankratyev.jetbrains.filebrowser.ui;
 
-import com.intellij.uiDesigner.core.GridConstraints;
 import com.pankratyev.jetbrains.filebrowser.ui.files.FileListCellRenderer;
 import com.pankratyev.jetbrains.filebrowser.ui.files.FileListDoubleClickListener;
 import com.pankratyev.jetbrains.filebrowser.ui.files.FileListSelectionListener;
@@ -12,11 +11,14 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
 
@@ -79,9 +81,22 @@ public final class FileBrowser {
      * Sets the contents of the preview panel.
      * @param preview preview to display.
      */
-    void setPreview(@Nonnull JComponent preview) {
+    void setPreview(@Nonnull BufferedImage preview) {
         previewPanel.removeAll();
-        previewPanel.add(preview);
+
+        int previewWidth = preview.getWidth();
+        int previewHeight = preview.getHeight();
+        int previewPanelWidth = previewPanel.getWidth();
+        int previewPanelHeight = previewPanel.getHeight();
+
+        Image imageToDisplay = preview;
+        if (previewHeight > previewPanelHeight || previewWidth > previewPanelWidth) {
+            //TODO save width/height ratio
+            imageToDisplay = preview.getScaledInstance(
+                    previewPanel.getWidth(), previewPanel.getHeight(), Image.SCALE_DEFAULT);
+        }
+
+        previewPanel.add(new JLabel(new ImageIcon(imageToDisplay)));
         redrawPreview();
     }
 

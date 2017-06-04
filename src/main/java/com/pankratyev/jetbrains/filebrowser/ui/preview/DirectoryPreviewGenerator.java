@@ -4,13 +4,12 @@ import com.pankratyev.jetbrains.filebrowser.ui.IconRegistry;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 
 import javax.annotation.Nonnull;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
+import java.awt.image.BufferedImage;
 
 public final class DirectoryPreviewGenerator implements PreviewGenerator {
     @Nonnull
     @Override
-    public JComponent generatePreview(FileObject fileObject) {
-        return new JLabel(IconRegistry.FOLDER_PREVIEW);
+    public BufferedImage generatePreview(FileObject fileObject) {
+        return IconRegistry.FOLDER_PREVIEW;
     }
 }
