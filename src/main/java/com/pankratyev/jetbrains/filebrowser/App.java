@@ -61,13 +61,14 @@ public final class App {
         FileObject initialFileObject = getInitialFileObject(userDirProvider);
 
         FileBrowser browser = new FileBrowser(fileTypeProvider, userDirProvider);
-        browser.setCurrentDirectory(initialFileObject);
+        browser.getController().changeDirectory(initialFileObject);
 
         frame.setContentPane(browser.getMainPanel());
+        frame.setJMenuBar(createMenuBar());
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        frame.setJMenuBar(createMenuBar());
+        frame.setLocationByPlatform(true);
 
         return frame;
     }

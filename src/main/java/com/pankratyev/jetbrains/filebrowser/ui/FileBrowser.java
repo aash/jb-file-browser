@@ -14,8 +14,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.List;
 
+/**
+ * File browser UI.
+ * @see FileBrowserController
+ */
 public final class FileBrowser {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileBrowser.class);
 
@@ -47,32 +51,16 @@ public final class FileBrowser {
     }
 
     /**
-     * Sets current directory displayed in file list.
-     * @param dir current directory; its children and parent will be displayed.
+     * Sets current directory contents displayed in file list.
+     * @param contents {@link FileObject} list to be displayed; usually the first element in list should be a
+     * {@link ParentDirFileObject}.
      * @throws IOException on I/O errors while trying to read directory children.
      */
-    public void setCurrentDirectory(FileObject dir) throws IOException {
-        LOGGER.debug("Changing directory to " + dir);
-
-        if (!dir.isDirectory()) {
-            throw new IllegalArgumentException("Not a directory: " + dir);
-        }
-
+    public void setCurrentDirectoryContents(List<FileObject> contents) throws IOException {
         fileListModel.clear();
-
-        FileObject parent = dir.getParent();
-        if (parent != null) {
-            fileListModel.addElement(ParentDirFileObject.wrap(parent));
+        for (FileObject fileObject : contents) {
+            fileListModel.addElement(fileObject);
         }
-
-        Collection<FileObject> children = dir.getChildren();
-        if (children != null) {
-            for (FileObject child : children) {
-                fileListModel.addElement(child);
-            }
-        }
-
-        LOGGER.debug("Directory changed to " + dir);
     }
 
     public void clearPreview() {
@@ -84,5 +72,9 @@ public final class FileBrowser {
 
     public JPanel getMainPanel() {
         return mainPanel;
+    }
+
+    public FileBrowserController getController() {
+        return controller;
     }
 }
