@@ -1,5 +1,6 @@
 package com.pankratyev.jetbrains.filebrowser.vfs.type;
 
+import com.pankratyev.jetbrains.filebrowser.ui.IconRegistry;
 import com.pankratyev.jetbrains.filebrowser.ui.preview.DirectoryPreviewGenerator;
 import com.pankratyev.jetbrains.filebrowser.ui.preview.PreviewGenerator;
 
@@ -10,7 +11,7 @@ public final class DirectoryFileType implements FileType {
     @Nonnull
     @Override
     public Icon getIcon() {
-        throw new UnsupportedOperationException(); //TODO implement
+        return IconRegistry.FOLDER;
     }
 
     @Nonnull
