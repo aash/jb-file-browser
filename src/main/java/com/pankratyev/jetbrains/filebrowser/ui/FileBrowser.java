@@ -11,14 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
+import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.util.List;
 
@@ -79,12 +77,11 @@ public final class FileBrowser {
 
     /**
      * Sets the contents of the preview panel.
-     * @param preview preview to display.
+     * @param preview component with preview to display.
      */
-    void setPreview(@Nonnull BufferedImage preview) {
+    void setPreview(@Nonnull JComponent preview) {
         previewPanel.removeAll();
-        Image imageToDisplay = resizePreviewIfNecessary(preview);
-        previewPanel.add(new JLabel(new ImageIcon(imageToDisplay)));
+        previewPanel.add(preview);
         redrawPreview();
     }
 
@@ -93,19 +90,8 @@ public final class FileBrowser {
         previewPanel.repaint();
     }
 
-    private Image resizePreviewIfNecessary(BufferedImage preview) {
-        int previewWidth = preview.getWidth();
-        int previewHeight = preview.getHeight();
-        int previewPanelWidth = previewPanel.getWidth();
-        int previewPanelHeight = previewPanel.getHeight();
-
-        Image resultImage = preview;
-        if (previewHeight > previewPanelHeight || previewWidth > previewPanelWidth) {
-            //TODO save width/height ratio
-            resultImage = preview.getScaledInstance(
-                    previewPanel.getWidth(), previewPanel.getHeight(), Image.SCALE_DEFAULT);
-        }
-        return resultImage;
+    public Dimension getPreviewPanelSize() {
+        return previewPanel.getSize();
     }
 
     public JPanel getMainPanel() {
