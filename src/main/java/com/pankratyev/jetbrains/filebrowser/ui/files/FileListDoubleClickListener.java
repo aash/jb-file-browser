@@ -19,8 +19,9 @@ public final class FileListDoubleClickListener extends MouseAdapter {
     @SuppressWarnings("unchecked") // this listener is to be used with JList<FileObject>
     @Override
     public void mouseClicked(MouseEvent e) {
-        //TODO consider using consume()  or  getClickCount() % 2 == 0
-        if (e.getClickCount() == 2) {
+        // '% 2 == 0' instead of '== 2' to avoid not working listener
+        // if cursor position is not changed between two double-clicks
+        if (e.getClickCount() % 2 == 0) {
             JList<FileObject> fileList = (JList<FileObject>) e.getSource();
             int index = fileList.locationToIndex(e.getPoint());
             FileObject selectedFileObject = fileList.getModel().getElementAt(index);
