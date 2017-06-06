@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,6 +36,8 @@ public final class FileBrowserController {
      * @param fileObject element in file list; if it is not a directory no actions will be performed.
      */
     public void changeDirectory(FileObject fileObject) {
+        ensureEdt();
+
         if (!fileObject.isDirectory()) {
             return;
         }
@@ -71,6 +73,8 @@ public final class FileBrowserController {
      * @param fileObject selected element in file list.
      */
     public void showPreview(FileObject fileObject) {
+        ensureEdt();
+
         FileType type = fileTypeProvider.getType(fileObject);
 
         Dimension previewPanelSize = browser.getPreviewPanelSize();
@@ -85,6 +89,12 @@ public final class FileBrowserController {
         } catch (IOException e) {
             //TODO handle it more properly (display some error message)
             LOGGER.error("Unable to change directory", e);
+        }
+    }
+
+    private static void ensureEdt() {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            throw new RuntimeException(Thread.currentThread().getName());
         }
     }
 }
