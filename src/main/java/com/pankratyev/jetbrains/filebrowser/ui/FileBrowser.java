@@ -66,6 +66,11 @@ public final class FileBrowser {
         }
     }
 
+    void setCurrentPath(@Nonnull String path) {
+        //TODO if (isFtpConnection()) ...
+        pathField.setText(path);
+    }
+
     /**
      * Clears the preview panel.
      */

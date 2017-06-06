@@ -84,10 +84,11 @@ public final class FileBrowserController {
                     List<FileObject> fileObjectsToDisplay = get();
                     browser.setCurrentDirectoryContents(fileObjectsToDisplay);
                     browser.clearPreview();
+                    browser.setCurrentPath(fileObject.getFullName());
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 } catch (ExecutionException e) {
-                    //TODO handle it more properly (display some error message)
+                    //TODO handle it more properly (display some error message); handle AccessDeniedException
                     LOGGER.error(null, e);
                 }
             }
