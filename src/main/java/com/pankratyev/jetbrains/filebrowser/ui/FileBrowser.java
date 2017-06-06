@@ -46,7 +46,6 @@ public final class FileBrowser {
 
         fileList.setModel(fileListModel);
         fileList.setCellRenderer(new FileListCellRenderer(fileTypeProvider));
-        fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         this.controller = new FileBrowserController(this, fileTypeProvider);
 
@@ -94,7 +93,7 @@ public final class FileBrowser {
         previewPanel.repaint();
     }
 
-    public Dimension getPreviewPanelSize() {
+    Dimension getPreviewPanelSize() {
         return previewPanel.getSize();
     }
 
