@@ -13,6 +13,7 @@ public final class DirectoryPreviewGenerator implements PreviewGenerator {
     @Nonnull
     @Override
     public JComponent generatePreview(FileObject fileObject, int maxWidth, int maxHeight) {
+        //FIXME duplicate with UnknownFilePreviewGenerator
         Image previewImage = ImageScaleUtils.resizeIfNecessary(IconRegistry.FOLDER_PREVIEW, maxWidth, maxHeight);
         return new JLabel(new ImageIcon(previewImage));
     }
