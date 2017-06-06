@@ -58,9 +58,8 @@ public final class FileBrowser {
      * Sets current directory contents displayed in file list.
      * @param contents {@link FileObject} list to be displayed; usually the first element in list should be a
      * {@link ParentDirFileObject}.
-     * @throws IOException on I/O errors while trying to read directory children.
      */
-    void setCurrentDirectoryContents(@Nonnull List<FileObject> contents) throws IOException {
+    void setCurrentDirectoryContents(@Nonnull List<FileObject> contents) {
         fileListModel.clear();
         for (FileObject fileObject : contents) {
             fileListModel.addElement(fileObject);
