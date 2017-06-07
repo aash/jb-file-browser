@@ -9,12 +9,12 @@ import java.io.InputStream;
 import java.util.Collection;
 
 /**
- * Represents a file (or directory) inside zip archive. Zip archive itself is NOT a {@link ZipFileObject}.
+ * Represents a file (or directory) inside zip archive. Zip archive itself is NOT a {@link ZippedFileObject}.
  */
-public final class ZipFileObject extends AbstractFileObject {
+public final class ZippedFileObject extends AbstractFileObject {
     private final Collection<FileObject> children;
 
-    public ZipFileObject(String absolutePath, FileObject parent, boolean isDirectory, Collection<FileObject> children) {
+    public ZippedFileObject(String absolutePath, FileObject parent, boolean isDirectory, Collection<FileObject> children) {
         super(absolutePath, parent, isDirectory);
         this.children = children;
     }
