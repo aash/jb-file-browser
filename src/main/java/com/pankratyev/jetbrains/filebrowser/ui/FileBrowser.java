@@ -2,6 +2,7 @@ package com.pankratyev.jetbrains.filebrowser.ui;
 
 import com.pankratyev.jetbrains.filebrowser.ui.files.FileListCellRenderer;
 import com.pankratyev.jetbrains.filebrowser.ui.files.FileListDoubleClickListener;
+import com.pankratyev.jetbrains.filebrowser.ui.files.FileListEnterAction;
 import com.pankratyev.jetbrains.filebrowser.ui.files.FileListSelectionListener;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProvider;
@@ -15,9 +16,8 @@ import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
+import javax.swing.KeyStroke;
 import java.awt.Dimension;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -50,6 +50,10 @@ public final class FileBrowser {
         this.controller = new FileBrowserController(this, fileTypeProvider);
 
         fileList.addMouseListener(new FileListDoubleClickListener(controller));
+        fileList.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke("ENTER"), "changeDir");
+        fileList.getActionMap().put("changeDir", new FileListEnterAction(controller));
+
         fileList.addListSelectionListener(new FileListSelectionListener(controller));
     }
 
