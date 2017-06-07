@@ -82,7 +82,7 @@
         </constraints>
         <properties>
           <editable value="false"/>
-          <enabled value="true"/>
+          <enabled value="false"/>
         </properties>
       </component>
     </children>
