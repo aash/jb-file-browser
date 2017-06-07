@@ -24,6 +24,9 @@ public final class FileListDoubleClickListener extends MouseAdapter {
         if (e.getClickCount() % 2 == 0) {
             JList<FileObject> fileList = (JList<FileObject>) e.getSource();
             int index = fileList.locationToIndex(e.getPoint());
+            if (index < 0) {
+                return;
+            }
             FileObject selectedFileObject = fileList.getModel().getElementAt(index);
             controller.changeDirectory(selectedFileObject);
         }
