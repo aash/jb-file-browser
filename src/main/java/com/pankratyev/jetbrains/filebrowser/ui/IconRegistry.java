@@ -25,6 +25,7 @@ public final class IconRegistry {
     public static final BufferedImage FOLDER_PREVIEW = getImage("folder-preview.png");
     public static final BufferedImage ARCHIVE_PREVIEW = getImage("archive-preview.png");
     public static final BufferedImage PLAIN_FILE_PREVIEW = getImage("plain-file-preview.png");
+    public static final BufferedImage BROKEN_PREVIEW = getImage("broken-preview.png");
 
 
     private static ImageIcon getIcon(String name) {

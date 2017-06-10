@@ -1,5 +1,6 @@
 package com.pankratyev.jetbrains.filebrowser.ui.preview;
 
+import com.pankratyev.jetbrains.filebrowser.ui.IconRegistry;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 
 import javax.annotation.Nonnull;
@@ -26,8 +27,14 @@ public final class ImagePreviewGenerator implements PreviewGenerator {
                 throw new RuntimeException("Cannot read file contents: " + fileObject);
             }
             BufferedImage fileImage = ImageIO.read(is);
-            Image previewImage = ImageScaleUtils.resizeIfNecessary(fileImage, maxWidth, maxHeight);
-            return new JLabel(new ImageIcon(previewImage));
+            if (fileImage != null) {
+                Image previewImage = ImageScaleUtils.resizeIfNecessary(fileImage, maxWidth, maxHeight);
+                return new JLabel(new ImageIcon(previewImage));
+            } else {
+                Image previewImage = ImageScaleUtils.resizeIfNecessary(
+                        IconRegistry.BROKEN_PREVIEW, maxWidth, maxHeight);
+                return new JLabel(new ImageIcon(previewImage));
+            }
         }
     }
 }
