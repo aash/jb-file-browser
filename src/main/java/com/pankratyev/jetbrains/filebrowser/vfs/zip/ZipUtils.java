@@ -1,6 +1,7 @@
 package com.pankratyev.jetbrains.filebrowser.vfs.zip;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
+import com.pankratyev.jetbrains.filebrowser.vfs.VfsUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
@@ -61,7 +62,8 @@ public final class ZipUtils {
                 if (pathNestingLevel == currentNestingLevel) {
                     iter.remove(); // element is processed
 
-                    String parentDirPath = StringUtils.substringBeforeLast(path, ZIP_PATH_SEPARATOR);
+                    String normalizedPath = VfsUtils.normalizePath(path, ZIP_PATH_SEPARATOR);
+                    String parentDirPath = StringUtils.substringBeforeLast(normalizedPath, ZIP_PATH_SEPARATOR);
                     FileObject parent = fileObjectsByPaths.get(parentDirPath);
                     if (parent == null) {
                         parent = parentArchive;
@@ -69,7 +71,7 @@ public final class ZipUtils {
 
                     FileObject fileObject = new ZippedFileObject(
                             parentArchive, path, entry.getValue().isDirectory(), parent);
-                    fileObjectsByPaths.put(path, fileObject);
+                    fileObjectsByPaths.put(VfsUtils.normalizePath(path, ZIP_PATH_SEPARATOR), fileObject);
                 }
             }
 
@@ -80,12 +82,7 @@ public final class ZipUtils {
     }
 
     public static int getNestingLevel(@Nonnull String path) {
-        if (path.startsWith(ZIP_PATH_SEPARATOR)) {
-            path = path.substring(1);
-        }
-        if (path.endsWith(ZIP_PATH_SEPARATOR)) {
-            path = path.substring(0, path.length() - 1);
-        }
+        path = VfsUtils.normalizePath(path, ZIP_PATH_SEPARATOR);
         return StringUtils.countMatches(path, ZIP_PATH_SEPARATOR);
     }
 }

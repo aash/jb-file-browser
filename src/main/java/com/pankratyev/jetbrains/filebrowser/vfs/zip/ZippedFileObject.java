@@ -120,13 +120,32 @@ public final class ZippedFileObject extends AbstractFileObject {
     }
 
     @Override
-    public int hashCode() {
-        throw new UnsupportedOperationException(); //TODO implement
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        ZippedFileObject object = (ZippedFileObject) o;
+
+        //noinspection SimplifiableIfStatement
+        if (!parentZipArchive.equals(object.parentZipArchive)) {
+            return false;
+        }
+        return pathInArchive.equals(object.pathInArchive);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        throw new UnsupportedOperationException(); //TODO implement
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + parentZipArchive.hashCode();
+        result = 31 * result + pathInArchive.hashCode();
+        return result;
     }
 
     @Override
