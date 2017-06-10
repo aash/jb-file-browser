@@ -4,13 +4,13 @@ import com.pankratyev.jetbrains.filebrowser.ui.files.FileListCellRenderer;
 import com.pankratyev.jetbrains.filebrowser.ui.files.FileListDoubleClickListener;
 import com.pankratyev.jetbrains.filebrowser.ui.files.FileListEnterAction;
 import com.pankratyev.jetbrains.filebrowser.ui.files.FileListSelectionListener;
+import com.pankratyev.jetbrains.filebrowser.ui.userdir.UserDirectoryLink;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProvider;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import java.awt.Dimension;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,7 +26,6 @@ import java.util.List;
  * @see FileBrowserController
  */
 public final class FileBrowser {
-    private final UserDirectoriesProvider userDirectoriesProvider;
     private final FileBrowserController controller;
 
     private final DefaultListModel<FileObject> fileListModel = new DefaultListModel<>();
@@ -40,12 +40,24 @@ public final class FileBrowser {
     @SuppressWarnings("unchecked")
     public FileBrowser(@Nonnull FileTypeProvider fileTypeProvider,
             @Nonnull UserDirectoriesProvider userDirectoriesProvider) {
-        this.userDirectoriesProvider = userDirectoriesProvider;
+        this.controller = new FileBrowserController(this, fileTypeProvider);
+        setupFileList(fileTypeProvider);
+        addUserDirectories(userDirectoriesProvider.getUserDirectories());
+    }
 
+    private void addUserDirectories(Collection<String> userDirectories) {
+        //TODO probably WrapLayout would be better
+        userDirectoriesPanel.setLayout(new BoxLayout(userDirectoriesPanel, BoxLayout.Y_AXIS));
+
+        for (String userDirectory : userDirectories) {
+            UserDirectoryLink userDirLabel = new UserDirectoryLink(userDirectory, controller);
+            userDirectoriesPanel.add(userDirLabel);
+        }
+    }
+
+    private void setupFileList(FileTypeProvider fileTypeProvider) {
         fileList.setModel(fileListModel);
         fileList.setCellRenderer(new FileListCellRenderer(fileTypeProvider));
-
-        this.controller = new FileBrowserController(this, fileTypeProvider);
 
         fileList.addMouseListener(new FileListDoubleClickListener(controller));
         fileList.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)

@@ -11,8 +11,6 @@ import java.util.Objects;
  * Base class for implementations of {@link FileObject}.
  */
 public abstract class AbstractFileObject implements FileObject {
-    protected static final String PATH_SEPARATOR = File.separator;
-
     private final String absolutePath;
     private final FileObject parent;
     private final boolean isDirectory;
@@ -43,8 +41,13 @@ public abstract class AbstractFileObject implements FileObject {
     @Nonnull
     @Override
     public String getName() {
-        return FilenameUtils.getName(absolutePath.endsWith(PATH_SEPARATOR)
-                ? absolutePath.substring(0, absolutePath.length() - 1) : absolutePath);
+        return VfsUtils.getNameFromAbsolutePath(absolutePath);
+    }
+
+    @Override
+    public boolean isZipArchive() {
+        //TODO make it more reliable
+        return getName().toLowerCase().endsWith(".zip");
     }
 
     @Override
@@ -70,11 +73,5 @@ public abstract class AbstractFileObject implements FileObject {
         int result = absolutePath.hashCode();
         result = 31 * result + (isDirectory ? 1 : 0);
         return result;
-    }
-
-    @Override
-    public boolean isZipArchive() {
-        //TODO make it more reliable
-        return getName().toLowerCase().endsWith(".zip");
     }
 }

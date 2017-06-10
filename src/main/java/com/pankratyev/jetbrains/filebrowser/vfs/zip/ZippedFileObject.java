@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -107,9 +108,9 @@ public final class ZippedFileObject extends AbstractFileObject {
     }
 
     private static String getAbsolutePath(FileObject parentZipArchive, String pathInArchive) {
-        //TODO replace '/' in pathInArchive with PATH_SEPARATOR
-        if (!pathInArchive.startsWith(PATH_SEPARATOR)) {
-            pathInArchive = PATH_SEPARATOR + pathInArchive;
+        //TODO replace '/' in pathInArchive with File.separator
+        if (!pathInArchive.startsWith(File.separator)) {
+            pathInArchive = File.separator + pathInArchive;
         }
         return parentZipArchive.getFullName() + pathInArchive;
     }
@@ -117,35 +118,6 @@ public final class ZippedFileObject extends AbstractFileObject {
     @Nonnull
     public String getPathInArchive() {
         return pathInArchive;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-
-        ZippedFileObject object = (ZippedFileObject) o;
-
-        //noinspection SimplifiableIfStatement
-        if (!parentZipArchive.equals(object.parentZipArchive)) {
-            return false;
-        }
-        return pathInArchive.equals(object.pathInArchive);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + parentZipArchive.hashCode();
-        result = 31 * result + pathInArchive.hashCode();
-        return result;
     }
 
     @Override
