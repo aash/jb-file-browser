@@ -21,6 +21,7 @@ public final class ImagePreviewGenerator implements PreviewGenerator {
     public JComponent generatePreview(FileObject fileObject, int maxWidth, int maxHeight) throws IOException {
         try (InputStream is = fileObject.getInputStream()) {
             if (is == null) {
+                //FIXME what if file was deleted? Show some "absent file" preview?
                 // this implementation shouldn't be used with such FileObject
                 throw new RuntimeException("Cannot read file contents: " + fileObject);
             }

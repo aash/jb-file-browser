@@ -33,6 +33,7 @@ public final class TextFilePreviewGenerator implements PreviewGenerator {
 
         try (InputStream is = fileObject.getInputStream()) {
             if (is == null) {
+                //FIXME what if file was deleted? Show some "absent file" preview?
                 LOGGER.error("Unexpected null input stream for file object: " + fileObject);
                 return previewPane;
             }
