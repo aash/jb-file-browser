@@ -14,6 +14,7 @@ import java.util.Objects;
  * Link to user directory. Holds an absolute path that can be used to obtain {@link LocalFileObject} instance via
  * {@link LocalFileObjectFactory}.
  */
+//FIXME click/tooltip works not only on label but on full line width
 public final class UserDirectoryLink extends JLabel {
     private final String userDirPath;
 
