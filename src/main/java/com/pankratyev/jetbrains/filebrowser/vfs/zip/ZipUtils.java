@@ -21,7 +21,7 @@ public final class ZipUtils {
     }
 
     /**
-     * @param asFileObject zip archive represented as {@link FileObject}. //TODO what for?
+     * @param asFileObject zip archive represented as {@link FileObject}.
      * @param asZipFile zip archive represented as {@link ZipFile}.
      * @return zip archive contents (not only top level items but all of them).
      * @throws IOException on any I/O errors.

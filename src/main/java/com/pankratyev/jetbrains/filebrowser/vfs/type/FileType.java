@@ -15,7 +15,6 @@ import javax.swing.Icon;
 public interface FileType {
     /**
      * @return icon for this file type.
-     * TODO wrap it into another class-holder for icons with different sizes?
      */
     @Nonnull
     Icon getIcon();

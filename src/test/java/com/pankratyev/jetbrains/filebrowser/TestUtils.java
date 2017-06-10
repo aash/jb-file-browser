@@ -51,7 +51,7 @@ public final class TestUtils {
                     LOGGER.warn(null, e);
                 }
             } else if (Files.exists(file)) {
-                delete(file); //TODO handle non-empty directories
+                delete(file);
             }
         }
     }
