@@ -19,9 +19,6 @@ import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static com.pankratyev.jetbrains.filebrowser.vfs.zip.ZipUtils.ZIP_PATH_SEPARATOR;
-import static org.apache.commons.lang3.StringUtils.countMatches;
-
 /**
  * Represents a file (or directory) inside zip archive. Zip archive itself is NOT a {@link ZippedFileObject}.
  */
@@ -36,7 +33,7 @@ public final class ZippedFileObject extends AbstractFileObject {
 
     /**
      * @param parentZipArchive archive where this file is placed.
-     * @param pathInArchive path in archive.
+     * @param pathInArchive path in archive. It MUST be exactly the same value that {@link ZipEntry#getName()} returned.
      * @param isDirectory whether this {@link FileObject} is a directory.
      * @param parent parent of this {@link FileObject}; it may be a directory in the archive or archive itself (in last
      *               case this is the same {@link FileObject} that {@link #parentZipArchive}.
@@ -65,8 +62,8 @@ public final class ZippedFileObject extends AbstractFileObject {
             for (FileObject zippedFileObject : archiveContents) {
                 String pathInArchive = ((ZippedFileObject) zippedFileObject).getPathInArchive();
                 // leave only direct children of current zipped directory
-                if (pathInArchive.startsWith(getPathInArchive()) && countMatches(pathInArchive, ZIP_PATH_SEPARATOR)
-                        == countMatches(getPathInArchive(), ZIP_PATH_SEPARATOR) + 1) {
+                if (pathInArchive.startsWith(getPathInArchive()) &&
+                        ZipUtils.getNestingLevel(pathInArchive) == ZipUtils.getNestingLevel(getPathInArchive()) + 1) {
                     resultChildren.add(zippedFileObject);
                 }
             }
