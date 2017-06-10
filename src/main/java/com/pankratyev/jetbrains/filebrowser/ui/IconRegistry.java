@@ -18,10 +18,12 @@ public final class IconRegistry {
 
     public static final ImageIcon FOLDER = getIcon("folder.png");
     public static final ImageIcon IMAGE = getIcon("image.png");
+    public static final ImageIcon ARCHIVE = getIcon("archive.png");
     public static final ImageIcon TEXT_FILE = getIcon("text-file.png");
     public static final ImageIcon PLAIN_FILE = getIcon("plain-file.png");
 
     public static final BufferedImage FOLDER_PREVIEW = getImage("folder-preview.png");
+    public static final BufferedImage ARCHIVE_PREVIEW = getImage("archive-preview.png");
     public static final BufferedImage PLAIN_FILE_PREVIEW = getImage("plain-file-preview.png");
 
 

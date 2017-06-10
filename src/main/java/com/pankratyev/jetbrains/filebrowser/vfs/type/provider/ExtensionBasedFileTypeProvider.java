@@ -1,6 +1,7 @@
 package com.pankratyev.jetbrains.filebrowser.vfs.type.provider;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
+import com.pankratyev.jetbrains.filebrowser.vfs.type.ArchiveFileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.DirectoryFileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.FileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.ImageFileType;
@@ -39,6 +40,8 @@ public final class ExtensionBasedFileTypeProvider implements FileTypeProvider {
         FILE_TYPES.put("iml", textType);
         FILE_TYPES.put("js", textType);
         FILE_TYPES.put("md", textType);
+        ArchiveFileType archiveType = new ArchiveFileType();
+        FILE_TYPES.put("zip", archiveType);
     }
 
     @Nonnull
