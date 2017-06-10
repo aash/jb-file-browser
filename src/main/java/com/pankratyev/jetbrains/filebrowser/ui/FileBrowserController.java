@@ -42,12 +42,12 @@ public final class FileBrowserController {
     /**
      * Changes current directory. It causes clearing currently displayed preview.
      * Should be used to handle action performed on file list element (double click or Enter key press).
-     * @param fileObject element in file list; if it is not a directory no actions will be performed.
+     * @param fileObject element in file list; if it is not a directory and not an archive no actions will be performed.
      */
     public void changeDirectory(final FileObject fileObject) {
         ensureEdt();
 
-        if (!fileObject.isDirectory()) {
+        if (!fileObject.isDirectory() && !fileObject.isZipArchive()) {
             return;
         }
 
