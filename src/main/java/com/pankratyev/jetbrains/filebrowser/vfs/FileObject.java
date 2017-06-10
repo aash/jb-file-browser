@@ -5,6 +5,8 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 /**
  * Represents an abstract file (or directory).
@@ -48,4 +50,18 @@ public interface FileObject {
      */
     @Nullable
     InputStream getInputStream() throws IOException;
+
+    /**
+     * @return true if this {@link FileObject} is a zip archive; false otherwise.
+     */
+    boolean isZipArchive();
+
+    /**
+     * @return {@link ZipFile} instance for this {@link FileObject}.
+     * @throws IllegalStateException if this {@link FileObject} is not a zip archive.
+     * @throws ZipException if a ZIP format error has occurred.
+     * @throws IOException if an I/O error has occurred.
+     */
+    @Nonnull
+    ZipFile toZipFile() throws IOException;
 }

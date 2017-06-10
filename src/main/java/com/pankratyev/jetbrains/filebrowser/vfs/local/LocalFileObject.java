@@ -2,6 +2,8 @@ package com.pankratyev.jetbrains.filebrowser.vfs.local;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.AbstractFileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
+import com.pankratyev.jetbrains.filebrowser.vfs.zip.ZipUtils;
+import com.pankratyev.jetbrains.filebrowser.vfs.zip.ZippedFileObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,11 +15,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.zip.ZipFile;
 
 /**
  * Represents a file (or directory) located on local file system.
@@ -37,8 +37,8 @@ public final class LocalFileObject extends AbstractFileObject {
         if (isDirectory()) {
             return getDirectoryChildren();
         }
-        if (isZipFile()) {
-            return getZipChildren();
+        if (isZipArchive()) {
+            return getZipArchiveChildren();
         }
         return null;
     }
@@ -49,7 +49,17 @@ public final class LocalFileObject extends AbstractFileObject {
         if (isDirectory()) {
             return null;
         }
+        //TODO size limit
         return new BufferedInputStream(Files.newInputStream(path));
+    }
+
+    @Nonnull
+    @Override
+    public ZipFile toZipFile() throws IOException {
+        if (!isZipArchive()) {
+            throw new IllegalStateException("Not a zip archive: " + this);
+        }
+        return new ZipFile(path.toFile());
     }
 
     private List<FileObject> getDirectoryChildren() throws IOException {
@@ -62,28 +72,17 @@ public final class LocalFileObject extends AbstractFileObject {
         return children;
     }
 
-    // TODO consider moving isZipFile() and getZipChildren() to AbstractFileObject
-
-    private boolean isZipFile() {
-        //TODO make it more reliable
-        return getName().toLowerCase().endsWith(".zip");
-    }
-
-    private Collection<FileObject> getZipChildren() throws IOException {
-        //noinspection ConstantConditions - getInputStream() shouldn't return null if this method is invoked
-        try (ZipInputStream zis = new ZipInputStream(getInputStream())) {
-            List<ZipEntry> entries = new ArrayList<>();
-            ZipEntry entry;
-            while ((entry = zis.getNextEntry()) != null) {
-                entries.add(entry);
+    private List<FileObject> getZipArchiveChildren() throws IOException {
+        try (ZipFile asZipFile = toZipFile()) {
+            List<FileObject> archiveContents = ZipUtils.getAllZipChildren(this, asZipFile);
+            for (Iterator<FileObject> iter = archiveContents.iterator(); iter.hasNext(); ) {
+                ZippedFileObject zippedFileObject = (ZippedFileObject) iter.next();
+                if (ZipUtils.getNestingLevel(zippedFileObject.getPathInArchive()) > 0) {
+                    // leave only top-level files in archive
+                    iter.remove();
+                }
             }
-
-            Map<String, FileObject> fileObjectsByPaths = new HashMap<>();
-            for (ZipEntry e : entries) {
-                //TODO implement
-            }
-
-            return fileObjectsByPaths.values();
+            return archiveContents;
         }
     }
 

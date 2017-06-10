@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.zip.ZipFile;
 
 /**
  * Wrapper used only to display parent directory for some {@link FileObject} as ".." in UI.
@@ -60,5 +61,16 @@ final class ParentDirFileObject implements FileObject {
     @Override
     public InputStream getInputStream() throws IOException {
         return realFileObject.getInputStream();
+    }
+
+    @Override
+    public boolean isZipArchive() {
+        return realFileObject.isZipArchive();
+    }
+
+    @Nonnull
+    @Override
+    public ZipFile toZipFile() throws IOException {
+        return realFileObject.toZipFile();
     }
 }

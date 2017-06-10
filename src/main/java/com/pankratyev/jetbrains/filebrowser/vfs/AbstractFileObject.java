@@ -67,4 +67,10 @@ public abstract class AbstractFileObject implements FileObject {
         result = 31 * result + (isDirectory ? 1 : 0);
         return result;
     }
+
+    @Override
+    public boolean isZipArchive() {
+        //TODO make it more reliable
+        return getName().toLowerCase().endsWith(".zip");
+    }
 }

@@ -3,10 +3,12 @@ package com.pankratyev.jetbrains.filebrowser.vfs.ftp;
 import com.pankratyev.jetbrains.filebrowser.vfs.AbstractFileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.zip.ZipFile;
 
 /**
  * Represents a file (or directory) located on FTP server.
@@ -25,6 +27,12 @@ public final class FtpFileObject extends AbstractFileObject {
     @Nullable
     @Override
     public InputStream getInputStream() throws IOException {
+        throw new UnsupportedOperationException(); //TODO implement
+    }
+
+    @Nonnull
+    @Override
+    public ZipFile toZipFile() throws IOException {
         throw new UnsupportedOperationException(); //TODO implement
     }
 

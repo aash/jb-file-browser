@@ -2,6 +2,8 @@ package com.pankratyev.jetbrains.filebrowser.vfs.local;
 
 import com.pankratyev.jetbrains.filebrowser.TestUtils;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
+import com.pankratyev.jetbrains.filebrowser.vfs.zip.ZipUtils;
+import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
@@ -10,10 +12,16 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -143,6 +151,64 @@ public final class LocalFileObjectTest {
             }
         } finally {
             TestUtils.deleteFiles(dirPath, subDirPath, file1Path, file2Path, subFile1Path);
+        }
+    }
+
+    @Test
+    public void testZipArchiveChildren() throws IOException {
+        Path tempDirPath = null;
+        Path subDir1Path = null;
+        Path subDir2Path = null;
+
+        Path file1Path = null;
+        Path file2Path = null;
+        Path subFile1Path = null;
+        Path subFile2Path = null;
+        Path subFile3Path = null;
+
+        Path archivePath = null;
+
+        try {
+            tempDirPath = Files.createTempDirectory("ZipUtilsTest.testGetAllZipChildren.topdir");
+            subDir1Path = Files.createTempDirectory(tempDirPath, "ZipUtilsTest.testGetAllZipChildren.subdir1");
+            subDir2Path = Files.createTempDirectory(tempDirPath, "ZipUtilsTest.testGetAllZipChildren.subdir2");
+
+            file1Path = Files.createTempFile(tempDirPath, "ZipUtilsTest.testGetAllZipChildren", null);
+            file2Path = Files.createTempFile(tempDirPath, "ZipUtilsTest.testGetAllZipChildren", null);
+            subFile1Path = Files.createTempFile(subDir1Path, "ZipUtilsTest.testGetAllZipChildren", null);
+            subFile2Path = Files.createTempFile(subDir1Path, "ZipUtilsTest.testGetAllZipChildren", null);
+            subFile3Path = Files.createTempFile(subDir2Path, "ZipUtilsTest.testGetAllZipChildren", null);
+
+            archivePath = Files.createTempFile("ZipUtilsTest.testGetAllZipChildren", ".zip");
+
+            TestUtils.zipDirectory(tempDirPath, archivePath);
+            LocalFileObject archive = LocalFileObjectFactory.create(archivePath);
+
+            TestCase.assertTrue(archive.isZipArchive());
+            TestCase.assertFalse(archive.isDirectory());
+
+            TestCase.assertEquals(archivePath.getFileName().toString(), archive.getName());
+            TestCase.assertEquals(archivePath.toAbsolutePath().toString(), archive.getFullName());
+
+            try (ZipFile zf = archive.toZipFile()) {
+                Enumeration<? extends ZipEntry> entriesEnumeration = zf.entries();
+                List<ZipEntry> entries = new ArrayList<>(8);
+                while (entriesEnumeration.hasMoreElements()) {
+                    ZipEntry e = entriesEnumeration.nextElement();
+                    if (!e.getName().equals(ZipUtils.ZIP_PATH_SEPARATOR)) {
+                        entries.add(e);
+                    }
+                }
+                TestCase.assertEquals(entries.toString(), 7, entries.size()); // 2 directories + 5 files
+            }
+
+            Collection<FileObject> children = archive.getChildren();
+            TestCase.assertNotNull(children);
+            TestCase.assertEquals(children.toString(), 4, children.size()); // direct children are 2 directories + 2 files
+
+            //TODO verify each child
+        } finally {
+            TestUtils.deleteFiles(tempDirPath, archivePath);
         }
     }
 }

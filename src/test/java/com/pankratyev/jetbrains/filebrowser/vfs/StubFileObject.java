@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.zip.ZipFile;
 
 public class StubFileObject implements FileObject {
     @Nonnull
@@ -40,5 +41,16 @@ public class StubFileObject implements FileObject {
     @Override
     public InputStream getInputStream() throws IOException {
         return null;
+    }
+
+    @Override
+    public boolean isZipArchive() {
+        return false;
+    }
+
+    @Nonnull
+    @Override
+    public ZipFile toZipFile() throws IOException {
+        throw new UnsupportedOperationException();
     }
 }
