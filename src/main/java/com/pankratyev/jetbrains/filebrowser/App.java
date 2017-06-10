@@ -20,7 +20,6 @@ import javax.swing.WindowConstants;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 /**
  * Entry point.
@@ -44,17 +43,12 @@ public final class App {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                try {
-                    createAndInitFrame().setVisible(true);
-                } catch (IOException e) {
-                    //TODO what is the best way to handle this?
-                    throw new RuntimeException(e);
-                }
+                createAndInitFrame().setVisible(true);
             }
         });
     }
 
-    private static JFrame createAndInitFrame() throws IOException {
+    private static JFrame createAndInitFrame() {
         JFrame frame = new JFrame(WINDOW_TITLE);
 
         ExtensionBasedFileTypeProvider fileTypeProvider = getFileTypeProvider();

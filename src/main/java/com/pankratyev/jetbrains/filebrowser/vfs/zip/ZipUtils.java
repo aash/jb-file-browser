@@ -4,7 +4,6 @@ import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -22,12 +21,11 @@ public final class ZipUtils {
 
     /**
      * @param asFileObject zip archive represented as {@link FileObject}.
-     * @param asZipFile zip archive represented as {@link ZipFile}.
+     * @param asZipFile zip archive represented as {@link ZipFile}; must not be closed.
      * @return zip archive contents (not only top level items but all of them).
-     * @throws IOException on any I/O errors.
      */
     @Nonnull
-    public static List<FileObject> getAllZipChildren(FileObject asFileObject, ZipFile asZipFile) throws IOException {
+    public static List<FileObject> getAllZipChildren(FileObject asFileObject, ZipFile asZipFile) {
         Enumeration<? extends ZipEntry> entriesEnumeration = asZipFile.entries();
 
         Map<String, ZipEntry> entriesByPaths = new HashMap<>(); //TODO use LinkedHashMap to save contents order?

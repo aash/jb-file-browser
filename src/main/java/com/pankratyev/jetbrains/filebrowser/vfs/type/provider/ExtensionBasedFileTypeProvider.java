@@ -18,7 +18,6 @@ import java.util.Map;
  * Determines file type by extension.
  */
 public final class ExtensionBasedFileTypeProvider implements FileTypeProvider {
-    private static final char EXTENSION_PREFIX = '.';
     private static final Map<String, FileType> FILE_TYPES = new HashMap<>();
     static {
         ImageFileType imageType = new ImageFileType();

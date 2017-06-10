@@ -25,8 +25,6 @@ import java.util.List;
  * @see FileBrowserController
  */
 public final class FileBrowser {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileBrowser.class);
-
     private final UserDirectoriesProvider userDirectoriesProvider;
     private final FileBrowserController controller;
 
