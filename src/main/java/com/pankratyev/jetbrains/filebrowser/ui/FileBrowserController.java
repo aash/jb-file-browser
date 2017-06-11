@@ -1,6 +1,7 @@
 package com.pankratyev.jetbrains.filebrowser.ui;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
+import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpFileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.FileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
 import org.apache.commons.net.ftp.FTPClient;
@@ -35,12 +36,21 @@ public final class FileBrowserController {
 
     private final FileBrowser browser;
     private final FileTypeProvider fileTypeProvider;
+    private final FileObject initialFileObject;
 
-    FileBrowserController(@Nonnull FileBrowser browser, @Nonnull FileTypeProvider fileTypeProvider) {
+    FileBrowserController(@Nonnull FileBrowser browser, @Nonnull FileTypeProvider fileTypeProvider,
+            @Nonnull FileObject initialFileObject) {
         this.browser = Objects.requireNonNull(browser);
         this.fileTypeProvider = Objects.requireNonNull(fileTypeProvider);
+        this.initialFileObject = Objects.requireNonNull(initialFileObject);
     }
 
+    /**
+     * Changes current directory to the initial one. It causes clearing currently displayed preview.
+     */
+    public void changeDirectoryToInitial() {
+        changeDirectory(initialFileObject);
+    }
 
     /**
      * Changes current directory. It causes clearing currently displayed preview.
@@ -137,8 +147,20 @@ public final class FileBrowserController {
         });
     }
 
+    /**
+     * Switches application to FTP mode and shows FTP server contents in file list.
+     * @param client initialized FTP client with established connection.
+     */
     public void connectToFtp(@Nonnull FTPClient client) {
-        throw new UnsupportedOperationException(); //TODO implement
+        try {
+            String currentDirAbsolutePath = client.printWorkingDirectory();
+            FtpFileObject fileObject = new FtpFileObject(client, currentDirAbsolutePath, null, true);
+            //TODO implement
+        } catch (IOException e) {
+            LOGGER.warn("An error occurred while displaying FTP server contents", e);
+            //TODO show modal error dialog
+            changeDirectoryToInitial();
+        }
     }
 
 

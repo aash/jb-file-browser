@@ -57,9 +57,9 @@ public final class App {
         UserDirectoriesProvider userDirProvider = getUserDirectoriesProvider();
         FileObject initialFileObject = getInitialFileObject(userDirProvider);
 
-        FileBrowser browser = new FileBrowser(fileTypeProvider, userDirProvider);
+        FileBrowser browser = new FileBrowser(fileTypeProvider, userDirProvider, initialFileObject);
         FileBrowserController browserController = browser.getController();
-        browserController.changeDirectory(initialFileObject);
+        browserController.changeDirectoryToInitial();
 
         frame.setContentPane(browser.getMainPanel());
         frame.setJMenuBar(createMenuBar(frame, browserController));
