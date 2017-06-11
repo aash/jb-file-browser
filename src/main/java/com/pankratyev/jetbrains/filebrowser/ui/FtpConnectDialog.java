@@ -26,8 +26,6 @@ public class FtpConnectDialog extends JDialog {
     private static final int DEFAULT_FTP_PORT = 21;
     private static final String FTP_PREFIX = "ftp://";
 
-    private final FileBrowserController controller;
-
     private FTPClient createdClient = null;
 
     private JPanel contentPane;
@@ -39,9 +37,7 @@ public class FtpConnectDialog extends JDialog {
     private JTextField portField;
     private JLabel errorMessageLabel;
 
-    public FtpConnectDialog(@Nonnull FileBrowserController controller) {
-        this.controller = Objects.requireNonNull(controller);
-
+    public FtpConnectDialog() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);

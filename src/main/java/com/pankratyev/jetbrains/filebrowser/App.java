@@ -79,7 +79,7 @@ public final class App {
         ftpConnectItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FtpConnectDialog dialog = new FtpConnectDialog(controller);
+                FtpConnectDialog dialog = new FtpConnectDialog();
                 dialog.pack();
                 dialog.setLocationRelativeTo(frame);
                 dialog.setVisible(true);
