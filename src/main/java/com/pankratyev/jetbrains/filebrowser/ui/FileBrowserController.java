@@ -3,9 +3,11 @@ package com.pankratyev.jetbrains.filebrowser.ui;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.FileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
+import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -34,17 +36,18 @@ public final class FileBrowserController {
     private final FileBrowser browser;
     private final FileTypeProvider fileTypeProvider;
 
-    FileBrowserController(FileBrowser browser, FileTypeProvider fileTypeProvider) {
+    FileBrowserController(@Nonnull FileBrowser browser, @Nonnull FileTypeProvider fileTypeProvider) {
         this.browser = Objects.requireNonNull(browser);
         this.fileTypeProvider = Objects.requireNonNull(fileTypeProvider);
     }
+
 
     /**
      * Changes current directory. It causes clearing currently displayed preview.
      * Should be used to handle action performed on file list element (double click or Enter key press).
      * @param fileObject element in file list; if it is not a directory and not an archive no actions will be performed.
      */
-    public void changeDirectory(final FileObject fileObject) {
+    public void changeDirectory(@Nonnull final FileObject fileObject) {
         ensureEdt();
 
         if (!fileObject.isDirectory() && !fileObject.isZipArchive()) {
@@ -99,7 +102,7 @@ public final class FileBrowserController {
      * Handles file list element selection. Updates preview panel.
      * @param fileObject selected element in file list.
      */
-    public void showPreview(final FileObject fileObject) {
+    public void showPreview(@Nonnull final FileObject fileObject) {
         ensureEdt();
 
         runSwingWorker(new SwingWorker<JComponent, Void>() {
@@ -133,6 +136,11 @@ public final class FileBrowserController {
             }
         });
     }
+
+    public void connectToFtp(@Nonnull FTPClient client) {
+        throw new UnsupportedOperationException(); //TODO implement
+    }
+
 
     private void runSwingWorker(SwingWorker<?, ?> newWorker) {
         SwingWorker<?, ?> oldWorker = runningWorker.getAndSet(newWorker);

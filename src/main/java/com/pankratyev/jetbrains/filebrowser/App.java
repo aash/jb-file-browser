@@ -1,11 +1,14 @@
 package com.pankratyev.jetbrains.filebrowser;
 
 import com.pankratyev.jetbrains.filebrowser.ui.FileBrowser;
+import com.pankratyev.jetbrains.filebrowser.ui.FileBrowserController;
+import com.pankratyev.jetbrains.filebrowser.ui.FtpConnectDialog;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObjectFactory;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProvider;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProviderFactory;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.ExtensionBasedFileTypeProvider;
+import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +38,6 @@ public final class App {
     private static final String MENU_ITEM_FTP_CONNECT = "Connect to FTP server";
     private static final String MENU_ITEM_FTP_DISCONNECT = "Disconnect from FTP server";
 
-
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException,
             InstantiationException, IllegalAccessException {
         LOGGER.info("Application start");
@@ -56,10 +58,11 @@ public final class App {
         FileObject initialFileObject = getInitialFileObject(userDirProvider);
 
         FileBrowser browser = new FileBrowser(fileTypeProvider, userDirProvider);
-        browser.getController().changeDirectory(initialFileObject);
+        FileBrowserController browserController = browser.getController();
+        browserController.changeDirectory(initialFileObject);
 
         frame.setContentPane(browser.getMainPanel());
-        frame.setJMenuBar(createMenuBar());
+        frame.setJMenuBar(createMenuBar(frame, browserController));
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -69,14 +72,22 @@ public final class App {
         return frame;
     }
 
-    private static JMenuBar createMenuBar() {
+    private static JMenuBar createMenuBar(final JFrame frame, final FileBrowserController controller) {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu(MENU_FILE);
         JMenuItem ftpConnectItem = new JMenuItem(MENU_ITEM_FTP_CONNECT);
         ftpConnectItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO implement
+                FtpConnectDialog dialog = new FtpConnectDialog(controller);
+                dialog.pack();
+                dialog.setLocationRelativeTo(frame);
+                dialog.setVisible(true);
+
+                FTPClient client = dialog.getFtpClient();
+                if (client != null) {
+                    controller.connectToFtp(client);
+                } // else - do nothing, dialog was canceled
             }
         });
         fileMenu.add(ftpConnectItem);
