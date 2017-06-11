@@ -24,6 +24,7 @@ import java.util.Objects;
 
 public class FtpConnectDialog extends JDialog {
     private static final int DEFAULT_FTP_PORT = 21;
+    private static final String FTP_PREFIX = "ftp://";
 
     private final FileBrowserController controller;
 
@@ -75,6 +76,10 @@ public class FtpConnectDialog extends JDialog {
 
     private void onOK() {
         String host = hostField.getText();
+        if (host.startsWith(FTP_PREFIX)) {
+            host = host.substring(FTP_PREFIX.length());
+        }
+
         int port;
         try {
             if (StringUtils.isNotBlank(portField.getText())) {

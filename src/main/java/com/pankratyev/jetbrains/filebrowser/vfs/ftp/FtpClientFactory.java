@@ -1,5 +1,6 @@
 package com.pankratyev.jetbrains.filebrowser.vfs.ftp;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 
 import javax.annotation.Nonnull;
@@ -11,10 +12,10 @@ public final class FtpClientFactory {
     }
 
     /**
-     * @param host
-     * @param port
-     * @param username
-     * @param password
+     * @param host host to connect to; shouldn't have "ftp://" prefix.
+     * @param port port to use.
+     * @param username username, may be null or empty.
+     * @param password password, may be null or empty.
      * @return initialized {@link FTPClient} with established connection.
      * @throws IOException if connection cannot be established (because of network problems or wrong credentials).
      */
@@ -23,7 +24,7 @@ public final class FtpClientFactory {
         FTPClient client = new FTPClient();
         client.connect(host, port);
 
-        if (username != null && password != null) {
+        if (StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password)) {
             try {
                 boolean loggedIn = client.login(username, password);
                 if (!loggedIn) {
