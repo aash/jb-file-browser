@@ -23,7 +23,7 @@ final class ParentDirFileObject implements FileObject {
         realFileObject = Objects.requireNonNull(object);
     }
 
-    static ParentDirFileObject wrap(FileObject fileObject) {
+    static ParentDirFileObject wrap(@Nonnull FileObject fileObject) {
         return new ParentDirFileObject(fileObject);
     }
 
