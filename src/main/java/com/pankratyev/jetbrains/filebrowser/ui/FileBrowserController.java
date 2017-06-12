@@ -151,14 +151,70 @@ public final class FileBrowserController {
      * Switches application to FTP mode and shows FTP server contents in file list.
      * @param client initialized FTP client with established connection.
      */
-    public void connectToFtp(@Nonnull FTPClient client) {
-        try {
-            String currentDirAbsolutePath = client.printWorkingDirectory();
-            FtpFileObject fileObject = new FtpFileObject(client, currentDirAbsolutePath, null, true);
-            //TODO implement
-        } catch (IOException e) {
-            LOGGER.warn("An error occurred while displaying FTP server contents", e);
-            //TODO show modal error dialog
+    public void connectToFtp(@Nonnull final FTPClient client) {
+        ensureEdt();
+
+        final boolean[] ftpContentsShown = {false};
+        final String[] absolutePathToDisplay = {null};
+
+        runSwingWorker(new SwingWorker<List<FileObject>, Void>() {
+            @Override
+            protected List<FileObject> doInBackground() throws Exception {
+                try {
+                    String currentDirAbsolutePath = client.printWorkingDirectory();
+                    absolutePathToDisplay[0] = currentDirAbsolutePath;
+
+                    FtpFileObject fileObject = new FtpFileObject(
+                            client, currentDirAbsolutePath, null, true);
+                    Collection<FileObject> ftpContents = fileObject.getChildren();
+
+                    List<FileObject> fileObjectsToDisplay = new ArrayList<>();
+
+                    FileObject parent = fileObject.getParent();
+                    if (parent != null) {
+                        fileObjectsToDisplay.add(ParentDirFileObject.wrap(parent));
+                    }
+                    if (ftpContents != null) {
+                        fileObjectsToDisplay.addAll(ftpContents);
+                    } else {
+                        // shouldn't happen
+                        LOGGER.error("Unexpected null children for FTP initial file object: " + fileObject);
+                    }
+
+                    return fileObjectsToDisplay;
+                } catch (IOException e) {
+                    LOGGER.warn("An error occurred while displaying FTP server contents", e);
+                    //TODO show modal error dialog
+                    return null;
+                }
+            }
+
+            @Override
+            protected void done() {
+                if (isCancelled()) {
+                    return;
+                }
+
+                try {
+                    List<FileObject> fileObjectsToDisplay = get();
+
+                    if (fileObjectsToDisplay != null) {
+                        browser.setCurrentDirectoryContents(fileObjectsToDisplay);
+                        browser.clearPreview();
+                        browser.setCurrentPath(absolutePathToDisplay[0]);
+
+                        ftpContentsShown[0] = true;
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } catch (ExecutionException e) {
+                    //TODO handle it more properly (display some error message)
+                    LOGGER.error(null, e);
+                }
+            }
+        });
+
+        if (!ftpContentsShown[0]) {
             changeDirectoryToInitial();
         }
     }

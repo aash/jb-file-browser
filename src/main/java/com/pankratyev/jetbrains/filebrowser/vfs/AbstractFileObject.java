@@ -1,10 +1,7 @@
 package com.pankratyev.jetbrains.filebrowser.vfs;
 
-import org.apache.commons.io.FilenameUtils;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.File;
 import java.util.Objects;
 
 /**
