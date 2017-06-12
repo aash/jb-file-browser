@@ -52,13 +52,18 @@ final class ParentDirFileObject implements FileObject {
 
     @Override
     public boolean hasParent() {
-        return child.getParent().hasParent();
+        FileObject parent = child.getParent();
+        return parent != null && parent.hasParent();
     }
 
     @Nullable
     @Override
     public FileObject getParent() {
-        return child.getParent().getParent();
+        FileObject parent = child.getParent();
+        if (parent != null) {
+            return parent.getParent();
+        }
+        return null;
     }
 
     @Nullable

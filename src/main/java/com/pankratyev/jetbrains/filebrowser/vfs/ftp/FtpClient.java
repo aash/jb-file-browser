@@ -41,6 +41,8 @@ public final class FtpClient {
      * @throws IOException
      */
     public FileObject getCurrentDirectory() throws IOException {
+        ensureClientReady();
+
         String currentDirAbsolutePath = client.printWorkingDirectory();
         return new FtpFileObject(this, currentDirAbsolutePath, null, true);
     }
@@ -50,7 +52,11 @@ public final class FtpClient {
      * @return children of passed directory.
      * @throws IOException
      */
+    //TODO this method should also support zip
     List<FileObject> list(FileObject directory) throws IOException {
+        ensureClientReady();
+
+        client.changeWorkingDirectory(directory.getFullName());
         FTPFile[] files = client.listFiles();
         String currentDirectoryPath = directory.getFullName();
         List<FileObject> children = new ArrayList<>();
@@ -68,7 +74,29 @@ public final class FtpClient {
      * @throws IOException
      */
     InputStream getFileStream(FtpFileObject file) throws IOException {
+        ensureClientReady();
         return new BufferedInputStream(client.retrieveFileStream(file.getFullName()));
+    }
+
+    //TODO pass child directory to this method?
+    FileObject getParentDirectory() throws IOException {
+        ensureClientReady();
+
+        //TODO review, maybe there's a better way to obtain a parent directory without switching directory two times
+
+        FileObject current = getCurrentDirectory();
+        boolean changedToParent = client.changeToParentDirectory();
+        if (!changedToParent) {
+            throw new IOException("Cannot browse the parent directory");
+        }
+
+        FileObject parent = getCurrentDirectory();
+        boolean changedBack = client.changeWorkingDirectory(current.getFullName());
+        if (!changedBack) {
+            throw new IOException("Directory changed to parent, cannot change back");
+        }
+
+        return parent;
     }
 
     public void ensureClientReady() throws IOException {

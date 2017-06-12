@@ -9,8 +9,8 @@ import java.util.Objects;
  */
 public abstract class AbstractFileObject implements FileObject {
     private final String absolutePath;
-    private final FileObject parent;
     private final boolean isDirectory;
+    private FileObject parent; // not final since it may be lazy-computed
 
     protected AbstractFileObject(String absolutePath, FileObject parent, boolean isDirectory) {
         this.absolutePath = Objects.requireNonNull(absolutePath);
@@ -84,5 +84,9 @@ public abstract class AbstractFileObject implements FileObject {
             return 1;
         }
         return getName().compareToIgnoreCase(another.getName());
+    }
+
+    protected void setParent(FileObject parent) {
+        this.parent = parent;
     }
 }

@@ -151,15 +151,14 @@ public final class FileBrowserController {
     public void connectToFtp(@Nonnull final FtpClient client) {
         ensureEdt();
 
-        final boolean[] ftpContentsShown = {false};
-        final String[] absolutePathToDisplay = {null};
-
         runSwingWorker(new SwingWorker<List<FileObject>, Void>() {
+            private String absolutePathToDisplay = null;
+
             @Override
             protected List<FileObject> doInBackground() throws Exception {
                 try {
                     FileObject fileObject = client.getCurrentDirectory();
-                    absolutePathToDisplay[0] = fileObject.getFullName();
+                    absolutePathToDisplay = fileObject.getFullName();
 
                     List<FileObject> ftpContents = fileObject.getChildren();
                     List<FileObject> fileObjectsToDisplay = new ArrayList<>();
@@ -185,33 +184,39 @@ public final class FileBrowserController {
             @Override
             protected void done() {
                 if (isCancelled()) {
+                    backToInitialDirectory();
                     return;
                 }
 
                 try {
                     List<FileObject> fileObjectsToDisplay = get();
-
                     if (fileObjectsToDisplay != null) {
                         browser.setCurrentDirectoryContents(fileObjectsToDisplay);
                         browser.clearPreview();
-                        browser.setCurrentPath(absolutePathToDisplay[0]);
-
-                        ftpContentsShown[0] = true;
+                        if (absolutePathToDisplay != null) {
+                            browser.setCurrentPath(absolutePathToDisplay);
+                        } else {
+                            // shouldn't happen
+                            LOGGER.error("Unexpected null path to display");
+                        }
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 } catch (ExecutionException e) {
                     //TODO handle it more properly (display some error message)
                     LOGGER.error(null, e);
+                    backToInitialDirectory();
                 }
             }
-        });
 
-        if (!ftpContentsShown[0]) {
-            // go back to initial local directory if for some reason FTP contents are not shown
-            //TODO close client?
-            changeDirectoryToInitial();
-        }
+            //TODO better go to the previous directory
+            private void backToInitialDirectory() {
+                // go back to initial local directory if for some reason FTP contents are not shown
+                //TODO close client?
+                LOGGER.warn("Cannot show FTP contents, going back to initial local directory");
+                FileBrowserController.this.changeDirectoryToInitial();
+            }
+        });
     }
 
 
