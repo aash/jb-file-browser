@@ -26,9 +26,13 @@ import java.util.zip.ZipFile;
 public final class LocalFileObject extends AbstractFileObject {
     private final Path path;
 
+    /**
+     * @param parent parent of this {@link FileObject}; may be null if this {@link FileObject} doesn't have a parent.
+     * @param path local file path.
+     */
     LocalFileObject(@Nullable LocalFileObject parent, @Nonnull Path path) {
         super(path.toAbsolutePath().toString(), parent, Files.isDirectory(path));
-        this.path = path;
+        this.path = path; // TODO actually parent can be obtained from path; remove it?
     }
 
     @Nullable
