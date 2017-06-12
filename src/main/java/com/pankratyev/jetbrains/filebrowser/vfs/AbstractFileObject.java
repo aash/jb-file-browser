@@ -80,7 +80,7 @@ public abstract class AbstractFileObject implements FileObject {
         if (isDirectory() && !another.isDirectory()) {
             return -1;
         }
-        if (another.isDirectory() && isDirectory()) {
+        if (another.isDirectory() && !isDirectory()) {
             return 1;
         }
         return getName().compareToIgnoreCase(another.getName());
