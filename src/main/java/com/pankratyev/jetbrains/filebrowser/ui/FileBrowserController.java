@@ -15,7 +15,6 @@ import javax.swing.SwingWorker;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -76,7 +75,7 @@ public final class FileBrowserController {
                     fileObjectsToDisplay.add(ParentDirFileObject.wrap(parent));
                 }
 
-                Collection<FileObject> children = fileObject.getChildren();
+                List<FileObject> children = fileObject.getChildren();
                 if (children != null) {
                     fileObjectsToDisplay.addAll(children);
                 } else {
@@ -166,7 +165,7 @@ public final class FileBrowserController {
 
                     FtpFileObject fileObject = new FtpFileObject(
                             client, currentDirAbsolutePath, null, true);
-                    Collection<FileObject> ftpContents = fileObject.getChildren();
+                    List<FileObject> ftpContents = fileObject.getChildren();
 
                     List<FileObject> fileObjectsToDisplay = new ArrayList<>();
 

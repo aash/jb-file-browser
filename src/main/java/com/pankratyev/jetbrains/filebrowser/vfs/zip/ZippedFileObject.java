@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
@@ -50,7 +49,7 @@ public final class ZippedFileObject extends AbstractFileObject {
 
     @Nullable
     @Override
-    public Collection<FileObject> getChildren() throws IOException {
+    public List<FileObject> getChildren() throws IOException {
         //TODO it would be good to support zipped zip archives
         if (!isDirectory()) {
             return null;

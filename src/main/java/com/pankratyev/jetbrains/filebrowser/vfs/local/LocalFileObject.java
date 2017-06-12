@@ -14,7 +14,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipFile;
@@ -37,7 +36,7 @@ public final class LocalFileObject extends AbstractFileObject {
 
     @Nullable
     @Override
-    public Collection<FileObject> getChildren() throws IOException {
+    public List<FileObject> getChildren() throws IOException {
         if (isDirectory()) {
             return getDirectoryChildren();
         }

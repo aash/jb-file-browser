@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
+import java.util.List;
 import java.util.zip.ZipFile;
 
 public class StubFileObject implements FileObject {
@@ -33,7 +33,7 @@ public class StubFileObject implements FileObject {
 
     @Nullable
     @Override
-    public Collection<FileObject> getChildren() throws IOException {
+    public List<FileObject> getChildren() throws IOException {
         return null;
     }
 

@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.zip.ZipFile;
 
@@ -36,7 +35,7 @@ public final class FtpFileObject extends AbstractFileObject {
 
     @Nullable
     @Override
-    public Collection<FileObject> getChildren() throws IOException {
+    public List<FileObject> getChildren() throws IOException {
         FTPFile[] files = client.listFiles();
         List<FileObject> children = new ArrayList<>();
         for (FTPFile file : files) {

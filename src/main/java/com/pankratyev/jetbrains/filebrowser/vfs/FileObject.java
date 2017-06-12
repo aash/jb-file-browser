@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
+import java.util.List;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
@@ -42,7 +42,7 @@ public interface FileObject extends Comparable<FileObject> {
      * @throws IOException on any I/O errors.
      */
     @Nullable
-    Collection<FileObject> getChildren() throws IOException;
+    List<FileObject> getChildren() throws IOException;
 
     /**
      * @return input stream for this {@link FileObject} if it is a file; null if it is a directory.

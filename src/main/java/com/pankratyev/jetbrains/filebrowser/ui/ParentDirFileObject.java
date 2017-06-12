@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.zip.ZipFile;
 
@@ -53,7 +53,7 @@ final class ParentDirFileObject implements FileObject {
 
     @Nullable
     @Override
-    public Collection<FileObject> getChildren() throws IOException {
+    public List<FileObject> getChildren() throws IOException {
         return realFileObject.getChildren();
     }
 
