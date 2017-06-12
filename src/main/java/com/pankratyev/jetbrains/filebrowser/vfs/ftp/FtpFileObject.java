@@ -39,7 +39,7 @@ public final class FtpFileObject extends AbstractFileObject {
     public FileObject getParent() {
         if (super.getParent() == null) {
             try {
-                setParent(client.getParentDirectory());
+                setParent(client.getParentDirectory(this));
             } catch (IOException e) {
                 //TODO handle
             }
@@ -66,5 +66,12 @@ public final class FtpFileObject extends AbstractFileObject {
     @Override
     public ZipFile toZipFile() throws IOException {
         throw new UnsupportedOperationException(); //TODO implement
+    }
+
+    @Override
+    public String toString() {
+        return "FtpFileObject{" +
+                "fullName=" + getFullName() +
+                '}';
     }
 }

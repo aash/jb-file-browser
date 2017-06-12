@@ -36,8 +36,9 @@ public final class FtpClient {
         this.password = password;
     }
 
+
     /**
-     * @return current directory.
+     * @return current directory. It can be used right after FTP connection is established to display initial directory.
      * @throws IOException
      */
     public FileObject getCurrentDirectory() throws IOException {
@@ -79,25 +80,26 @@ public final class FtpClient {
     }
 
     //TODO pass child directory to this method?
-    FileObject getParentDirectory() throws IOException {
+    FileObject getParentDirectory(FtpFileObject fileObject) throws IOException {
         ensureClientReady();
 
         //TODO review, maybe there's a better way to obtain a parent directory without switching directory two times
 
-        FileObject current = getCurrentDirectory();
+        client.changeWorkingDirectory(fileObject.getFullName());
         boolean changedToParent = client.changeToParentDirectory();
         if (!changedToParent) {
-            throw new IOException("Cannot browse the parent directory");
+            return null;
         }
 
         FileObject parent = getCurrentDirectory();
-        boolean changedBack = client.changeWorkingDirectory(current.getFullName());
+        boolean changedBack = client.changeWorkingDirectory(fileObject.getFullName());
         if (!changedBack) {
             throw new IOException("Directory changed to parent, cannot change back");
         }
 
         return parent;
     }
+
 
     public void ensureClientReady() throws IOException {
         if (client != null) {
