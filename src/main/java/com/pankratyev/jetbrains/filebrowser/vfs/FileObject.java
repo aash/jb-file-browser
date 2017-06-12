@@ -13,7 +13,7 @@ import java.util.zip.ZipFile;
  * Some methods ({@link #getChildren()}, {@link #getInputStream()}) work only for specific files (zip archives) or
  * directories. This makes UI implementation easier; these methods designed the way it shouldn't bring any problems.
  */
-public interface FileObject {
+public interface FileObject extends Comparable<FileObject> {
     /**
      * @return name of this file or directory, i.e. the last segment in the full path (including extension).
      */

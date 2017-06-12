@@ -71,4 +71,18 @@ public abstract class AbstractFileObject implements FileObject {
         result = 31 * result + (isDirectory ? 1 : 0);
         return result;
     }
+
+    /**
+     * {@link FileObject}s can be compared to properly order a list of objects in UI.
+     */
+    @Override
+    public int compareTo(@Nonnull FileObject another) {
+        if (isDirectory() && !another.isDirectory()) {
+            return -1;
+        }
+        if (another.isDirectory() && isDirectory()) {
+            return 1;
+        }
+        return getName().compareToIgnoreCase(another.getName());
+    }
 }

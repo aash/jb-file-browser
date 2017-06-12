@@ -20,7 +20,6 @@ import javax.swing.KeyStroke;
 import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -38,19 +37,6 @@ public final class FileBrowser {
     private JPanel previewPanel;
     private JPanel userDirectoriesPanel;
     private JPanel navigationPanel;
-
-    private static final Comparator<FileObject> FILE_OBJECT_COMPARATOR = new Comparator<FileObject>() {
-        @Override
-        public int compare(FileObject fo1, FileObject fo2) {
-            if (fo1.isDirectory() && !fo2.isDirectory()) {
-                return -1;
-            }
-            if (fo2.isDirectory() && !fo1.isDirectory()) {
-                return 1;
-            }
-            return fo1.getName().compareToIgnoreCase(fo2.getName());
-        }
-    };
 
     @SuppressWarnings("unchecked")
     public FileBrowser(@Nonnull FileTypeProvider fileTypeProvider,
@@ -90,7 +76,7 @@ public final class FileBrowser {
      */
     void setCurrentDirectoryContents(@Nonnull List<FileObject> contents) {
         fileListModel.clear();
-        Collections.sort(contents, FILE_OBJECT_COMPARATOR);
+        Collections.sort(contents);
         for (FileObject fileObject : contents) {
             fileListModel.addElement(fileObject);
         }

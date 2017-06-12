@@ -53,4 +53,9 @@ public class StubFileObject implements FileObject {
     public ZipFile toZipFile() throws IOException {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public int compareTo(FileObject o) {
+        return 0;
+    }
 }
