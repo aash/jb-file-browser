@@ -1,10 +1,9 @@
 package com.pankratyev.jetbrains.filebrowser.ui;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
-import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpFileObject;
+import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpClient;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.FileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
-import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,7 +148,7 @@ public final class FileBrowserController {
      * Switches application to FTP mode and shows FTP server contents in file list.
      * @param client initialized FTP client with established connection.
      */
-    public void connectToFtp(@Nonnull final FTPClient client) {
+    public void connectToFtp(@Nonnull final FtpClient client) {
         ensureEdt();
 
         final boolean[] ftpContentsShown = {false};
@@ -159,13 +158,10 @@ public final class FileBrowserController {
             @Override
             protected List<FileObject> doInBackground() throws Exception {
                 try {
-                    String currentDirAbsolutePath = client.printWorkingDirectory();
-                    absolutePathToDisplay[0] = currentDirAbsolutePath;
+                    FileObject fileObject = client.getCurrentDirectory();
+                    absolutePathToDisplay[0] = fileObject.getFullName();
 
-                    FtpFileObject fileObject = new FtpFileObject(
-                            client, currentDirAbsolutePath, null, true);
                     List<FileObject> ftpContents = fileObject.getChildren();
-
                     List<FileObject> fileObjectsToDisplay = new ArrayList<>();
 
                     if (fileObject.hasParent()) {
@@ -212,6 +208,8 @@ public final class FileBrowserController {
         });
 
         if (!ftpContentsShown[0]) {
+            // go back to initial local directory if for some reason FTP contents are not shown
+            //TODO close client?
             changeDirectoryToInitial();
         }
     }

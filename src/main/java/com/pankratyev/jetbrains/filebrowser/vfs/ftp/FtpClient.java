@@ -1,0 +1,110 @@
+package com.pankratyev.jetbrains.filebrowser.vfs.ftp;
+
+import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Auto-reconnecting FTP client with {@link FileObject}-based API.
+ */
+public final class FtpClient {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FtpClient.class);
+
+    private final String host;
+    private final int port;
+    private final String username;
+    private final String password;
+
+    private FTPClient client = null;
+
+    public FtpClient(@Nonnull String host, int port, @Nonnull String username, @Nonnull String password) {
+        this.host = Objects.requireNonNull(host);
+        this.port = port;
+        this.username = username;
+        this.password = password;
+    }
+
+    /**
+     * @return current directory.
+     * @throws IOException
+     */
+    public FileObject getCurrentDirectory() throws IOException {
+        String currentDirAbsolutePath = client.printWorkingDirectory();
+        return new FtpFileObject(this, currentDirAbsolutePath, null, true);
+    }
+
+    /**
+     * @param directory directory to get children for.
+     * @return children of passed directory.
+     * @throws IOException
+     */
+    List<FileObject> list(FileObject directory) throws IOException {
+        FTPFile[] files = client.listFiles();
+        String currentDirectoryPath = directory.getFullName();
+        List<FileObject> children = new ArrayList<>();
+        for (FTPFile file : files) {
+            String fileAbsolutePath = currentDirectoryPath + File.separator + file.getName();
+            children.add(new FtpFileObject(this, fileAbsolutePath, directory, file.isDirectory()));
+        }
+
+        return children;
+    }
+
+    /**
+     * @param file file to get {@link InputStream} for.
+     * @return buffered {@link InputStream} for passed {@link FtpFileObject}.
+     * @throws IOException
+     */
+    InputStream getFileStream(FtpFileObject file) throws IOException {
+        return new BufferedInputStream(client.retrieveFileStream(file.getFullName()));
+    }
+
+    public void ensureClientReady() throws IOException {
+        if (client != null) {
+            boolean answer = client.sendNoOp();
+            if (!answer) {
+                //TODO try to reconnect?
+
+                try {
+                    client.disconnect();
+                } catch (IOException | RuntimeException e) {
+                    LOGGER.warn("An error occurred while trying to disconnect", e);
+                }
+                client = null;
+            }
+        }
+
+        if (client == null) {
+            client = new FTPClient();
+            client.connect(host, port);
+
+            if (StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password)) {
+                try {
+                    boolean loggedIn = client.login(username, password);
+                    if (!loggedIn) {
+                        throw new IOException("Login failed; wrong credentials?");
+                    }
+                } catch (IOException | RuntimeException e) {
+                    try {
+                        client.disconnect();
+                    } catch (IOException | RuntimeException disconnectEx) {
+                        e.addSuppressed(disconnectEx);
+                    }
+                    throw e;
+                }
+            }
+        }
+    }
+}

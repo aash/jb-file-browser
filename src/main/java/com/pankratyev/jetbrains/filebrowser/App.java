@@ -4,11 +4,11 @@ import com.pankratyev.jetbrains.filebrowser.ui.FileBrowser;
 import com.pankratyev.jetbrains.filebrowser.ui.FileBrowserController;
 import com.pankratyev.jetbrains.filebrowser.ui.FtpConnectDialog;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
+import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpClient;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObjectFactory;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProvider;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProviderFactory;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.ExtensionBasedFileTypeProvider;
-import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +84,7 @@ public final class App {
                 dialog.setLocationRelativeTo(frame);
                 dialog.setVisible(true);
 
-                FTPClient client = dialog.getFtpClient();
+                FtpClient client = dialog.getFtpClient();
                 if (client != null) {
                     controller.connectToFtp(client);
                 } // else - do nothing, dialog was canceled

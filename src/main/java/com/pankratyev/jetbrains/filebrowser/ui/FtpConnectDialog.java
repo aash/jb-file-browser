@@ -1,10 +1,8 @@
 package com.pankratyev.jetbrains.filebrowser.ui;
 
-import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpClientFactory;
+import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpClient;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.net.ftp.FTPClient;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -20,13 +18,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.Objects;
 
 public class FtpConnectDialog extends JDialog {
     private static final int DEFAULT_FTP_PORT = 21;
     private static final String FTP_PREFIX = "ftp://";
 
-    private FTPClient createdClient = null;
+    private FtpClient createdClient = null;
 
     private JPanel contentPane;
     private JButton buttonOK;
@@ -93,9 +90,11 @@ public class FtpConnectDialog extends JDialog {
         @SuppressWarnings("deprecation") // FTPClient.login() requires password as a String anyway
         String password = passwordField.getText();
 
+        createdClient = new FtpClient(host, port, username, password);
         try {
-            createdClient = FtpClientFactory.createClient(host, port, username, password);
-        } catch (IOException e) {
+            createdClient.ensureClientReady();
+        } catch (IOException | RuntimeException e) {
+            createdClient = null;
             errorMessageLabel.setText("Unable to connect: " + e.getMessage());
             pack();
             return;
@@ -113,7 +112,7 @@ public class FtpConnectDialog extends JDialog {
      * client if dialog was closed with OK button and connection was established.
      */
     @Nullable
-    public FTPClient getFtpClient() {
+    public FtpClient getFtpClient() {
         return createdClient;
     }
 }
