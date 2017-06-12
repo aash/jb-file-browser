@@ -5,8 +5,8 @@ import org.junit.Test;
 
 import java.nio.file.Paths;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 public final class LocalFileObjectFactoryTest {
     @Test

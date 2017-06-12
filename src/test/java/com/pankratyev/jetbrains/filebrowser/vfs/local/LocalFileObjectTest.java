@@ -3,7 +3,6 @@ package com.pankratyev.jetbrains.filebrowser.vfs.local;
 import com.pankratyev.jetbrains.filebrowser.TestUtils;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.zip.ZipUtils;
-import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
@@ -184,11 +183,11 @@ public final class LocalFileObjectTest {
             TestUtils.zipDirectory(tempDirPath, archivePath);
             LocalFileObject archive = LocalFileObjectFactory.create(archivePath);
 
-            TestCase.assertTrue(archive.isZipArchive());
-            TestCase.assertFalse(archive.isDirectory());
+            assertTrue(archive.isZipArchive());
+            assertFalse(archive.isDirectory());
 
-            TestCase.assertEquals(archivePath.getFileName().toString(), archive.getName());
-            TestCase.assertEquals(archivePath.toAbsolutePath().toString(), archive.getFullName());
+            assertEquals(archivePath.getFileName().toString(), archive.getName());
+            assertEquals(archivePath.toAbsolutePath().toString(), archive.getFullName());
 
             try (ZipFile zf = archive.toZipFile()) {
                 Enumeration<? extends ZipEntry> entriesEnumeration = zf.entries();
@@ -199,12 +198,12 @@ public final class LocalFileObjectTest {
                         entries.add(e);
                     }
                 }
-                TestCase.assertEquals(entries.toString(), 7, entries.size()); // 2 directories + 5 files
+                assertEquals(entries.toString(), 7, entries.size()); // 2 directories + 5 files
             }
 
             Collection<FileObject> children = archive.getChildren();
-            TestCase.assertNotNull(children);
-            TestCase.assertEquals(children.toString(), 4, children.size()); // direct children are 2 directories + 2 files
+            assertNotNull(children);
+            assertEquals(children.toString(), 4, children.size()); // direct children are 2 directories + 2 files
 
             //TODO verify each child
         } finally {
