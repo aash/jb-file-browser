@@ -13,18 +13,23 @@ import java.util.zip.ZipFile;
 
 /**
  * Wrapper used only to display parent directory for some {@link FileObject} as ".." in UI.
+ * This wrapper uses a child {@link FileObject}, not a directly parent one, because some {@link FileObject#getParent()}
+ * implementations may be lazy.
  *
  * @see FileListCellRenderer
  */
 final class ParentDirFileObject implements FileObject {
-    private final FileObject realFileObject;
+    private final FileObject child;
 
-    private ParentDirFileObject(FileObject object) {
-        realFileObject = Objects.requireNonNull(object);
+    private ParentDirFileObject(FileObject child) {
+        this.child = child;
     }
 
-    static ParentDirFileObject wrap(@Nonnull FileObject fileObject) {
-        return new ParentDirFileObject(fileObject);
+    static ParentDirFileObject createFor(@Nonnull FileObject currentFileObject) {
+        if (!Objects.requireNonNull(currentFileObject).hasParent()) {
+            throw new IllegalArgumentException("File object doesn't have a parent: " + currentFileObject);
+        }
+        return new ParentDirFileObject(currentFileObject);
     }
 
 
@@ -37,41 +42,46 @@ final class ParentDirFileObject implements FileObject {
     @Nonnull
     @Override
     public String getFullName() {
-        return realFileObject.getFullName();
+        return child.getParent().getFullName();
     }
 
     @Override
     public boolean isDirectory() {
-        return realFileObject.isDirectory();
+        return child.getParent().isDirectory();
+    }
+
+    @Override
+    public boolean hasParent() {
+        return child.getParent().hasParent();
     }
 
     @Nullable
     @Override
     public FileObject getParent() {
-        return realFileObject.getParent();
+        return child.getParent().getParent();
     }
 
     @Nullable
     @Override
     public List<FileObject> getChildren() throws IOException {
-        return realFileObject.getChildren();
+        return child.getParent().getChildren();
     }
 
     @Nullable
     @Override
     public InputStream getInputStream() throws IOException {
-        return realFileObject.getInputStream();
+        return child.getParent().getInputStream();
     }
 
     @Override
     public boolean isZipArchive() {
-        return realFileObject.isZipArchive();
+        return child.getParent().isZipArchive();
     }
 
     @Nonnull
     @Override
     public ZipFile toZipFile() throws IOException {
-        return realFileObject.toZipFile();
+        return child.getParent().toZipFile();
     }
 
     @Override

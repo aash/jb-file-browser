@@ -25,6 +25,11 @@ public class StubFileObject implements FileObject {
         return false;
     }
 
+    @Override
+    public boolean hasParent() {
+        return false;
+    }
+
     @Nullable
     @Override
     public FileObject getParent() {

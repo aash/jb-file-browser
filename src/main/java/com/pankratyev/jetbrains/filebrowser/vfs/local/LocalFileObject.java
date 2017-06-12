@@ -34,6 +34,11 @@ public final class LocalFileObject extends AbstractFileObject {
         this.path = path; // TODO actually parent can be obtained from path; remove it?
     }
 
+    @Override
+    public boolean hasParent() {
+        return getParent() != null;
+    }
+
     @Nullable
     @Override
     public List<FileObject> getChildren() throws IOException {

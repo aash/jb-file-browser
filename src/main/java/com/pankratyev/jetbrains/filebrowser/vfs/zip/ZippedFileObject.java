@@ -47,6 +47,11 @@ public final class ZippedFileObject extends AbstractFileObject {
         this.pathInArchive = pathInArchive;
     }
 
+    @Override
+    public boolean hasParent() {
+        return true; // zipped file always has a parent
+    }
+
     @Nullable
     @Override
     public List<FileObject> getChildren() throws IOException {

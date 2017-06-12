@@ -32,7 +32,13 @@ public interface FileObject extends Comparable<FileObject> {
     boolean isDirectory();
 
     /**
+     * @return true if this {@link FileObject} has a parent; false otherwise.
+     */
+    boolean hasParent();
+
+    /**
      * @return parent of this file/directory or null if none present (e.g. if this is a root directory).
+     * @see #hasParent()
      */
     @Nullable
     FileObject getParent();

@@ -70,9 +70,8 @@ public final class FileBrowserController {
                 List<FileObject> fileObjectsToDisplay = new ArrayList<>();
 
                 // add '..' parent folder
-                FileObject parent = fileObject.getParent();
-                if (parent != null) {
-                    fileObjectsToDisplay.add(ParentDirFileObject.wrap(parent));
+                if (fileObject.hasParent()) {
+                    fileObjectsToDisplay.add(ParentDirFileObject.createFor(fileObject));
                 }
 
                 List<FileObject> children = fileObject.getChildren();
@@ -169,9 +168,8 @@ public final class FileBrowserController {
 
                     List<FileObject> fileObjectsToDisplay = new ArrayList<>();
 
-                    FileObject parent = fileObject.getParent();
-                    if (parent != null) {
-                        fileObjectsToDisplay.add(ParentDirFileObject.wrap(parent));
+                    if (fileObject.hasParent()) {
+                        fileObjectsToDisplay.add(ParentDirFileObject.createFor(fileObject));
                     }
                     if (ftpContents != null) {
                         fileObjectsToDisplay.addAll(ftpContents);

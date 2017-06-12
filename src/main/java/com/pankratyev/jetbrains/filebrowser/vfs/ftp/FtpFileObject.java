@@ -33,6 +33,12 @@ public final class FtpFileObject extends AbstractFileObject {
         this.client = client;
     }
 
+    @Override
+    public boolean hasParent() {
+        //TODO implement properly
+        return true;
+    }
+
     @Nullable
     @Override
     public List<FileObject> getChildren() throws IOException {
