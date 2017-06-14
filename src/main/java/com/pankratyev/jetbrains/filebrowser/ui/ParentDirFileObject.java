@@ -47,7 +47,7 @@ final class ParentDirFileObject implements FileObject {
 
     @Override
     public boolean isDirectory() {
-        return child.getParent().isDirectory();
+        return true;
     }
 
     @Override
@@ -92,5 +92,13 @@ final class ParentDirFileObject implements FileObject {
     @Override
     public int compareTo(@Nonnull FileObject ignore) {
         return -1; // this FileObject implementation should always be displayed at the very top of list in UI
+    }
+
+    @Override
+    public String toString() {
+        FileObject realObject = child.getParent();
+        return "PDFO{" +
+                (realObject == null ? ("child=" + child) : realObject) +
+                '}';
     }
 }

@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.awt.Dimension;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -95,11 +96,16 @@ public final class FileBrowserController {
                     browser.setCurrentDirectoryContents(fileObjectsToDisplay);
                     browser.clearPreview();
                     browser.setCurrentPath(fileObject.getFullName());
+                    LOGGER.debug("cd: {}", fileObject);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 } catch (ExecutionException e) {
-                    //TODO handle it more properly (display some error message); handle AccessDeniedException
-                    LOGGER.error(null, e);
+                    if (e.getCause() instanceof AccessDeniedException) {
+                        browser.showErrorDialog("Access denied");
+                    } else {
+                        browser.showErrorDialog("An error occurred: " + e.getMessage());
+                        LOGGER.error(null, e);
+                    }
                 }
             }
         });
@@ -137,7 +143,7 @@ public final class FileBrowserController {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 } catch (ExecutionException e) {
-                    //TODO handle it more properly (display some error message)
+                    browser.showErrorDialog("An error occurred: " + e.getMessage());
                     LOGGER.error(null, e);
                 }
             }
@@ -158,6 +164,7 @@ public final class FileBrowserController {
             protected List<FileObject> doInBackground() throws Exception {
                 try {
                     FileObject fileObject = client.getCurrentDirectory();
+                    LOGGER.debug("Connected to FTP: {}", fileObject);
                     absolutePathToDisplay = fileObject.getFullName();
 
                     List<FileObject> ftpContents = fileObject.getChildren();

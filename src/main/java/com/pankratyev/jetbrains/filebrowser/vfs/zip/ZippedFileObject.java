@@ -37,12 +37,14 @@ public final class ZippedFileObject extends AbstractFileObject {
      * @param parent parent of this {@link FileObject}; it may be a directory in the archive or archive itself (in last
      *               case this is the same {@link FileObject} that {@link #parentZipArchive}.
      */
-    public ZippedFileObject(FileObject parentZipArchive, String pathInArchive, boolean isDirectory, FileObject parent) {
+    ZippedFileObject(FileObject parentZipArchive, String pathInArchive, boolean isDirectory, FileObject parent) {
         super(getAbsolutePath(Objects.requireNonNull(parentZipArchive), Objects.requireNonNull(pathInArchive)),
                 Objects.requireNonNull(parent), isDirectory);
+
         if (!parentZipArchive.isZipArchive()) {
             throw new IllegalArgumentException(parentZipArchive.toString());
         }
+
         this.parentZipArchive = parentZipArchive;
         this.pathInArchive = pathInArchive;
     }

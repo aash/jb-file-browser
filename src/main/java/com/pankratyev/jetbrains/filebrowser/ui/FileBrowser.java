@@ -14,6 +14,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -27,6 +28,8 @@ import java.util.List;
  * @see FileBrowserController
  */
 public final class FileBrowser {
+    private static final String ERROR_DIALOG_TITLE = "Error";
+
     private final FileBrowserController controller;
 
     private final DefaultListModel<FileObject> fileListModel = new DefaultListModel<>();
@@ -113,6 +116,12 @@ public final class FileBrowser {
     Dimension getPreviewPanelSize() {
         return previewPanel.getSize();
     }
+
+    void showErrorDialog(String message) {
+        JOptionPane.showMessageDialog(getMainPanel().getParent(), message,
+                ERROR_DIALOG_TITLE, JOptionPane.ERROR_MESSAGE);
+    }
+
 
     public JPanel getMainPanel() {
         return mainPanel;

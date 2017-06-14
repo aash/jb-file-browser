@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public final class FtpClient {
 
     private FTPClient client = null;
 
-    public FtpClient(@Nonnull String host, int port, @Nonnull String username, @Nonnull String password) {
+    public FtpClient(@Nonnull String host, int port, @Nullable String username, @Nullable String password) {
         this.host = Objects.requireNonNull(host);
         this.port = port;
         this.username = username;
@@ -45,7 +46,7 @@ public final class FtpClient {
         ensureClientReady();
 
         String currentDirAbsolutePath = client.printWorkingDirectory();
-        return new FtpFileObject(this, currentDirAbsolutePath, null, true);
+        return new FtpFileObject(this, currentDirAbsolutePath, null, true, new LocalCopyManager(host));
     }
 
     /**
@@ -54,7 +55,7 @@ public final class FtpClient {
      * @throws IOException
      */
     //TODO this method should also support zip
-    List<FileObject> list(FileObject directory) throws IOException {
+    List<FileObject> list(FtpFileObject directory) throws IOException {
         ensureClientReady();
 
         client.changeWorkingDirectory(directory.getFullName());
@@ -63,7 +64,8 @@ public final class FtpClient {
         List<FileObject> children = new ArrayList<>();
         for (FTPFile file : files) {
             String fileAbsolutePath = currentDirectoryPath + File.separator + file.getName();
-            children.add(new FtpFileObject(this, fileAbsolutePath, directory, file.isDirectory()));
+            children.add(new FtpFileObject(
+                    this, fileAbsolutePath, directory, file.isDirectory(), directory.getLocalCopyManager()));
         }
 
         return children;

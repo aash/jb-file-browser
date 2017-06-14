@@ -5,6 +5,7 @@ import com.pankratyev.jetbrains.filebrowser.vfs.VfsUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -18,6 +19,24 @@ public final class ZipUtils {
     public static final String ZIP_PATH_SEPARATOR = "/";
 
     private ZipUtils() {
+    }
+
+    /**
+     * @param asFileObject zip archive represented as {@link FileObject}.
+     * @param asZipFile zip archive represented as {@link ZipFile}; must not be closed.
+     * @return zip archive top-level files/directories.
+     */
+    public static List<FileObject> getZipArchiveTopLevelChildren(FileObject asFileObject, ZipFile asZipFile)
+            throws IOException {
+        List<FileObject> archiveContents = ZipUtils.getAllZipChildren(asFileObject, asZipFile);
+        for (Iterator<FileObject> iter = archiveContents.iterator(); iter.hasNext(); ) {
+            ZippedFileObject zippedFileObject = (ZippedFileObject) iter.next();
+            if (ZipUtils.getNestingLevel(zippedFileObject.getPathInArchive()) > 0) {
+                // leave only top-level files in archive
+                iter.remove();
+            }
+        }
+        return archiveContents;
     }
 
     /**

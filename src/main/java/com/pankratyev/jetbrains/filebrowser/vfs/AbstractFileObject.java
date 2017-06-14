@@ -12,7 +12,7 @@ public abstract class AbstractFileObject implements FileObject {
     private final boolean isDirectory;
     private FileObject parent; // not final since it may be lazy-computed
 
-    protected AbstractFileObject(String absolutePath, FileObject parent, boolean isDirectory) {
+    protected AbstractFileObject(@Nonnull String absolutePath, @Nullable FileObject parent, boolean isDirectory) {
         this.absolutePath = Objects.requireNonNull(absolutePath);
         this.parent = parent;
         this.isDirectory = isDirectory;
