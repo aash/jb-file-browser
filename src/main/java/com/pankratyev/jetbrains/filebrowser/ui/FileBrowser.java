@@ -17,6 +17,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import java.awt.Dimension;
@@ -47,6 +48,7 @@ public final class FileBrowser {
     private JPanel userDirectoriesPanel;
     private JPanel navigationPanel;
     private JSeparator userDirectoriesSeparator;
+    private JSplitPane splitPane;
 
     @SuppressWarnings("unchecked")
     public FileBrowser(@Nonnull FileTypeProvider fileTypeProvider,
@@ -55,6 +57,19 @@ public final class FileBrowser {
         this.controller = new FileBrowserController(this, fileTypeProvider, initialFileObject);
         setupFileList(fileTypeProvider);
         addUserDirectories(userDirectoriesProvider.getUserDirectories());
+        setupSplitPane();
+    }
+
+    private void setupFileList(FileTypeProvider fileTypeProvider) {
+        fileList.setModel(fileListModel);
+        fileList.setCellRenderer(new FileListCellRenderer(fileTypeProvider));
+
+        fileList.addMouseListener(new FileListDoubleClickListener(controller));
+        fileList.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke("ENTER"), "changeDir");
+        fileList.getActionMap().put("changeDir", new FileListEnterAction(controller));
+
+        fileList.addListSelectionListener(new FileListSelectionListener(controller));
     }
 
     private void addUserDirectories(Collection<String> userDirectories) {
@@ -69,17 +84,10 @@ public final class FileBrowser {
         }
     }
 
-    private void setupFileList(FileTypeProvider fileTypeProvider) {
-        fileList.setModel(fileListModel);
-        fileList.setCellRenderer(new FileListCellRenderer(fileTypeProvider));
-
-        fileList.addMouseListener(new FileListDoubleClickListener(controller));
-        fileList.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke("ENTER"), "changeDir");
-        fileList.getActionMap().put("changeDir", new FileListEnterAction(controller));
-
-        fileList.addListSelectionListener(new FileListSelectionListener(controller));
+    private void setupSplitPane() {
+        splitPane.setBorder(null);
     }
+
 
     /**
      * Sets current directory contents displayed in file list.
