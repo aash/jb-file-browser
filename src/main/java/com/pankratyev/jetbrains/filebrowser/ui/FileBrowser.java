@@ -54,6 +54,7 @@ public final class FileBrowser {
 
         for (String userDirectory : userDirectories) {
             UserDirectoryLink userDirLabel = new UserDirectoryLink(userDirectory, controller);
+            userDirLabel.setIcon(IconRegistry.FOLDER);
             userDirectoriesPanel.add(userDirLabel);
         }
     }
