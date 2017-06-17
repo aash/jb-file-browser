@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
+@SuppressWarnings("WeakerAccess") // it's more consistent when all the icons have the same access modifier
 public final class IconRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger(IconRegistry.class);
 
@@ -26,6 +27,8 @@ public final class IconRegistry {
     public static final BufferedImage ARCHIVE_PREVIEW = getImage("archive-preview.png");
     public static final BufferedImage PLAIN_FILE_PREVIEW = getImage("plain-file-preview.png");
     public static final BufferedImage BROKEN_PREVIEW = getImage("broken-preview.png");
+
+    public static final ImageIcon PRELOADER = getIcon("preloader.gif");
 
 
     private static ImageIcon getIcon(String name) {

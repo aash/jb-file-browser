@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -116,6 +117,15 @@ public final class FileBrowser {
     void clearPreview() {
         previewPanel.removeAll();
         previewPanel.add(previewHelpPanel);
+        redrawPreview();
+    }
+
+    /**
+     * Shows the preloader on the preview panel.
+     */
+    void showPreloader() {
+        previewPanel.removeAll();
+        previewPanel.add(new JLabel(IconRegistry.PRELOADER));
         redrawPreview();
     }
 

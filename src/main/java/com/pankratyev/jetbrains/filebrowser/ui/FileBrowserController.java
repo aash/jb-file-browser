@@ -124,7 +124,14 @@ public final class FileBrowserController {
 
         runSwingWorker(new SwingWorker<JComponent, Void>() {
             @Override
+            protected void process(List<Void> chunks) {
+                browser.showPreloader();
+            }
+
+            @Override
             protected JComponent doInBackground() throws IOException {
+                publish();
+
                 FileType type = fileTypeProvider.getType(fileObject);
 
                 Dimension previewPanelSize = browser.getPreviewPanelSize();
