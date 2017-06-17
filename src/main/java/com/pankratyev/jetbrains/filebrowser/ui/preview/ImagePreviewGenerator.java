@@ -1,14 +1,12 @@
 package com.pankratyev.jetbrains.filebrowser.ui.preview;
 
-import com.pankratyev.jetbrains.filebrowser.ui.IconRegistry;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,24 +15,24 @@ import java.io.InputStream;
  * {@link PreviewGenerator} implementation for image files (bmp, png, gif, jpeg).
  */
 public final class ImagePreviewGenerator implements PreviewGenerator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PreviewGenerator.class);
+
     @Nonnull
     @Override
-    public JComponent generatePreview(FileObject fileObject, int maxWidth, int maxHeight) throws IOException {
-        try (InputStream is = fileObject.getInputStream()) {
-            if (is == null) {
-                //FIXME what if file was deleted? Show some "absent file" preview?
-                // this implementation shouldn't be used with such FileObject
-                throw new RuntimeException("Cannot read file contents: " + fileObject);
+    public JComponent generatePreview(FileObject fileObject, int maxWidth, int maxHeight) {
+        try {
+            try (InputStream is = fileObject.getInputStream()) {
+                if (is != null) {
+                    BufferedImage fileImage = ImageIO.read(is);
+                    if (fileImage != null) {
+                        return PreviewUtils.getPreviewComponent(fileImage, maxWidth, maxHeight);
+                    }
+                }
             }
-            BufferedImage fileImage = ImageIO.read(is);
-            if (fileImage != null) {
-                Image previewImage = ImageScaleUtils.resizeIfNecessary(fileImage, maxWidth, maxHeight);
-                return new JLabel(new ImageIcon(previewImage));
-            } else {
-                Image previewImage = ImageScaleUtils.resizeIfNecessary(
-                        IconRegistry.BROKEN_PREVIEW, maxWidth, maxHeight);
-                return new JLabel(new ImageIcon(previewImage));
-            }
+        } catch (IOException e) {
+            LOGGER.warn("Cannot generate a preview for an image: " + fileObject, e);
         }
+
+        return PreviewUtils.getBrokenFilePreview(maxWidth, maxHeight);
     }
 }

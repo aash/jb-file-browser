@@ -10,44 +10,43 @@ import javax.swing.JTextPane;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 
 public final class TextFilePreviewGenerator implements PreviewGenerator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TextFilePreviewGenerator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PreviewGenerator.class);
+
+    private static final int LINE_COUNT_LIMIT = 100;
 
     @Nonnull
     @Override
-    public JComponent generatePreview(FileObject fileObject, int maxWidth, int maxHeight) throws IOException {
+    public JComponent generatePreview(FileObject fileObject, int maxWidth, int maxHeight) {
         JTextPane previewPane = new JTextPane();
         previewPane.setEditable(false);
         previewPane.setMaximumSize(new Dimension(maxWidth, maxHeight));
-        previewPane.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
+        previewPane.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
 
-        FontMetrics fontMetrics = previewPane.getFontMetrics(previewPane.getFont());
-        int lineHeight = fontMetrics.getHeight();
-        int maxLineCount = maxHeight / lineHeight;
+        try {
+            try (InputStream is = fileObject.getInputStream()) {
+                if (is != null) {
+                    try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(is))) {
+                        StringBuilder previewContent = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null && reader.getLineNumber() <= LINE_COUNT_LIMIT) {
+                            previewContent.append(line).append(System.lineSeparator());
+                        }
 
-        try (InputStream is = fileObject.getInputStream()) {
-            if (is == null) {
-                //FIXME what if file was deleted? Show some "absent file" preview?
-                LOGGER.error("Unexpected null input stream for file object: " + fileObject);
-                return previewPane;
-            }
-
-            try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(is))) {
-                StringBuilder previewContent = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null && reader.getLineNumber() <= maxLineCount) {
-                    previewContent.append(line).append(System.lineSeparator());
+                        previewPane.setText(previewContent.toString());
+                        return previewPane;
+                    }
                 }
-
-                previewPane.setText(previewContent.toString());
-                return previewPane;
             }
+        } catch (IOException e) {
+            LOGGER.warn("Cannot generate a preview for a text file: " + fileObject, e);
         }
+
+        return PreviewUtils.getBrokenFilePreview(maxWidth, maxHeight);
     }
 }
