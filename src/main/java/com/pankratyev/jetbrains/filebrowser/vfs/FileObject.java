@@ -27,7 +27,7 @@ public interface FileObject extends Comparable<FileObject> {
     String getFullName();
 
     /**
-     * @return true if this file is a directory; false otherwise.
+     * @return true if this {@link FileObject} is a directory; false otherwise.
      */
     boolean isDirectory();
 
