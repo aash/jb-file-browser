@@ -10,8 +10,17 @@ import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProvid
 import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -49,13 +58,14 @@ public final class FileBrowser {
     }
 
     private void addUserDirectories(Collection<String> userDirectories) {
-        //TODO probably WrapLayout would be better
         userDirectoriesPanel.setLayout(new BoxLayout(userDirectoriesPanel, BoxLayout.Y_AXIS));
 
         for (String userDirectory : userDirectories) {
             UserDirectoryLink userDirLabel = new UserDirectoryLink(userDirectory, controller);
             userDirLabel.setIcon(IconRegistry.FOLDER);
-            userDirectoriesPanel.add(userDirLabel);
+            JPanel labelWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            labelWrapper.add(userDirLabel);
+            userDirectoriesPanel.add(labelWrapper);
         }
     }
 

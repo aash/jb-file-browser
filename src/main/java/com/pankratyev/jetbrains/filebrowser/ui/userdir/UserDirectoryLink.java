@@ -7,7 +7,7 @@ import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObjectFactory;
 
 import javax.annotation.Nonnull;
 import javax.swing.JLabel;
-import java.awt.Cursor;
+import java.awt.*;
 import java.util.Objects;
 
 /**
