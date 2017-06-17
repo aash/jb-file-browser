@@ -92,6 +92,7 @@ public class FtpConnectDialog extends JDialog {
 
         createdClient = new FtpClient(host, port, username, password);
         try {
+            //TODO don't do it in UI thread
             createdClient.ensureClientReady();
         } catch (IOException | RuntimeException e) {
             createdClient = null;

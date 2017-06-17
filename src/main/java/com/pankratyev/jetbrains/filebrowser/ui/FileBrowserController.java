@@ -29,13 +29,14 @@ public final class FileBrowserController {
 
     /**
      * UI-related task currently being executed. Only one task can be running at once to avoid performance issues.
-     * TODO tasks like rendering a preview and changing the directory could be run in parallel; this would improve UX
      */
     private final AtomicReference<SwingWorker<?, ?>> runningWorker = new AtomicReference<>();
 
     private final FileBrowser browser;
     private final FileTypeProvider fileTypeProvider;
     private final FileObject initialFileObject;
+
+    private FtpClient ftpClient = null;
 
     FileBrowserController(@Nonnull FileBrowser browser, @Nonnull FileTypeProvider fileTypeProvider,
             @Nonnull FileObject initialFileObject) {
@@ -156,6 +157,7 @@ public final class FileBrowserController {
      */
     public void connectToFtp(@Nonnull final FtpClient client) {
         ensureEdt();
+        this.ftpClient = client;
 
         runSwingWorker(new SwingWorker<List<FileObject>, Void>() {
             private String absolutePathToDisplay = null;
@@ -183,7 +185,9 @@ public final class FileBrowserController {
                     return fileObjectsToDisplay;
                 } catch (IOException e) {
                     LOGGER.warn("An error occurred while displaying FTP server contents", e);
-                    //TODO show modal error dialog
+                    browser.showErrorDialog(
+                            "An error occurred while displaying FTP server contents: " + e.getMessage());
+                    disconnectFromFtp();
                     return null;
                 }
             }
@@ -210,8 +214,8 @@ public final class FileBrowserController {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 } catch (ExecutionException e) {
-                    //TODO handle it more properly (display some error message)
                     LOGGER.error(null, e);
+                    browser.showErrorDialog("An error occurred: " + e.getMessage());
                     backToInitialDirectory();
                 }
             }
@@ -219,13 +223,21 @@ public final class FileBrowserController {
             //TODO better go to the previous directory
             private void backToInitialDirectory() {
                 // go back to initial local directory if for some reason FTP contents are not shown
-                //TODO close client?
                 LOGGER.warn("Cannot show FTP contents, going back to initial local directory");
+                disconnectFromFtp();
                 FileBrowserController.this.changeDirectoryToInitial();
             }
         });
     }
 
+    public void disconnectFromFtp() {
+        ensureEdt();
+
+        if (ftpClient != null) {
+            ftpClient.disconnect();
+            ftpClient = null;
+        }
+    }
 
     private void runSwingWorker(SwingWorker<?, ?> newWorker) {
         SwingWorker<?, ?> oldWorker = runningWorker.getAndSet(newWorker);

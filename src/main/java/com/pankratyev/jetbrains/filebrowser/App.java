@@ -75,7 +75,18 @@ public final class App {
     private static JMenuBar createMenuBar(final JFrame frame, final FileBrowserController controller) {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu(MENU_FILE);
-        JMenuItem ftpConnectItem = new JMenuItem(MENU_ITEM_FTP_CONNECT);
+
+        final JMenuItem ftpDisconnectItem = new JMenuItem(MENU_ITEM_FTP_DISCONNECT);
+        final JMenuItem ftpConnectItem = new JMenuItem(MENU_ITEM_FTP_CONNECT);
+
+        ftpDisconnectItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.disconnectFromFtp();
+                controller.changeDirectoryToInitial();
+                ftpDisconnectItem.setEnabled(false);
+            }
+        });
         ftpConnectItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -86,20 +97,17 @@ public final class App {
 
                 FtpClient client = dialog.getFtpClient();
                 if (client != null) {
+                    controller.disconnectFromFtp(); // disconnect from the previous server
                     controller.connectToFtp(client);
+                    ftpDisconnectItem.setEnabled(true);
                 } // else - do nothing, dialog was canceled
             }
         });
-        fileMenu.add(ftpConnectItem);
-        JMenuItem ftpDisconnectItem = new JMenuItem(MENU_ITEM_FTP_DISCONNECT);
-        ftpDisconnectItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //TODO implement
-            }
-        });
+
         ftpDisconnectItem.setEnabled(false); // on application start there's no FTP connection
+        fileMenu.add(ftpConnectItem);
         fileMenu.add(ftpDisconnectItem);
+
         menuBar.add(fileMenu);
         return menuBar;
     }

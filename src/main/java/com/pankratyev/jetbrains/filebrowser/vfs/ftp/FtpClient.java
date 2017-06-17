@@ -96,6 +96,7 @@ public final class FtpClient {
         FileObject parent = getCurrentDirectory();
         boolean changedBack = client.changeWorkingDirectory(fileObject.getFullName());
         if (!changedBack) {
+            disconnect();
             throw new IOException("Directory changed to parent, cannot change back");
         }
 
@@ -105,16 +106,14 @@ public final class FtpClient {
 
     public void ensureClientReady() throws IOException {
         if (client != null) {
-            boolean answer = client.sendNoOp();
-            if (!answer) {
-                //TODO try to reconnect?
-
-                try {
-                    client.disconnect();
-                } catch (IOException | RuntimeException e) {
-                    LOGGER.warn("An error occurred while trying to disconnect", e);
+            try {
+                boolean answer = client.sendNoOp();
+                if (!answer) {
+                    disconnect();
                 }
-                client = null;
+            } catch (IOException e) {
+                LOGGER.debug(null, e);
+                disconnect();
             }
         }
 
@@ -129,14 +128,24 @@ public final class FtpClient {
                         throw new IOException("Login failed; wrong credentials?");
                     }
                 } catch (IOException | RuntimeException e) {
-                    try {
-                        client.disconnect();
-                    } catch (IOException | RuntimeException disconnectEx) {
-                        e.addSuppressed(disconnectEx);
-                    }
+                    disconnect();
                     throw e;
                 }
             }
         }
+    }
+
+    /**
+     * Disconnects from FTP server. After that {@link FtpClient} still can be used,
+     * connection will be established again if necessary.
+     */
+    public void disconnect() {
+        try {
+            client.disconnect();
+            LOGGER.debug("Disconnected from {}", host);
+        } catch (IOException | RuntimeException e) {
+            LOGGER.warn("An error occurred while trying to disconnect from " + host, e);
+        }
+        client = null;
     }
 }
