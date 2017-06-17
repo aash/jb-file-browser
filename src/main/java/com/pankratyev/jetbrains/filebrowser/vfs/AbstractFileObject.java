@@ -42,12 +42,6 @@ public abstract class AbstractFileObject implements FileObject {
     }
 
     @Override
-    public boolean isZipArchive() {
-        //TODO make it more reliable
-        return getName().toLowerCase().endsWith(".zip");
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

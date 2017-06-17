@@ -78,11 +78,6 @@ final class ParentDirFileObject implements FileObject {
         return child.getParent().getInputStream();
     }
 
-    @Override
-    public boolean isZipArchive() {
-        return child.getParent().isZipArchive();
-    }
-
     @Nonnull
     @Override
     public ZipFile toZipFile() throws IOException {

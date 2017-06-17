@@ -43,7 +43,7 @@ public final class LocalFileObject extends AbstractFileObject {
         if (isDirectory()) {
             return getDirectoryChildren();
         }
-        if (isZipArchive()) {
+        if (ZipUtils.isZipArchive(this)) {
             return ZipUtils.getZipArchiveTopLevelChildren(this, toZipFile());
         }
         return null;
@@ -62,7 +62,7 @@ public final class LocalFileObject extends AbstractFileObject {
     @Nonnull
     @Override
     public ZipFile toZipFile() throws IOException {
-        if (!isZipArchive()) {
+        if (!ZipUtils.isZipArchive(this)) {
             throw new IllegalStateException("Not a zip archive: " + this);
         }
         return new ZipFile(path.toFile());

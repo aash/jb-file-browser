@@ -58,11 +58,6 @@ public interface FileObject extends Comparable<FileObject> {
     InputStream getInputStream() throws IOException;
 
     /**
-     * @return true if this {@link FileObject} is a zip archive; false otherwise.
-     */
-    boolean isZipArchive();
-
-    /**
      * @return {@link ZipFile} instance for this {@link FileObject}.
      * @throws IllegalStateException if this {@link FileObject} is not a zip archive.
      * @throws ZipException if a ZIP format error has occurred.

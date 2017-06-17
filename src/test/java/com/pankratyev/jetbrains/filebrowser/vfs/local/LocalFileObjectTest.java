@@ -183,7 +183,7 @@ public final class LocalFileObjectTest {
             TestUtils.zipDirectory(tempDirPath, archivePath);
             LocalFileObject archive = LocalFileObjectFactory.create(archivePath);
 
-            assertTrue(archive.isZipArchive());
+            assertTrue(ZipUtils.isZipArchive(archive));
             assertFalse(archive.isDirectory());
 
             assertEquals(archivePath.getFileName().toString(), archive.getName());

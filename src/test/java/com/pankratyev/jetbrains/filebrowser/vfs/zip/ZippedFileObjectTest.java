@@ -31,7 +31,7 @@ public final class ZippedFileObjectTest {
             TestUtils.zipDirectory(topDir, archivePath);
 
             LocalFileObject archive = LocalFileObjectFactory.create(archivePath);
-            assertTrue(archive.isZipArchive());
+            assertTrue(ZipUtils.isZipArchive(archive));
 
             Collection<FileObject> children1 = archive.getChildren();
             assertNotNull(children1);

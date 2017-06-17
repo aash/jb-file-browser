@@ -22,12 +22,20 @@ public final class ZipUtils {
     }
 
     /**
+     * @return true if this {@link FileObject} is a zip archive; false otherwise.
+     */
+    public static boolean isZipArchive(@Nonnull FileObject fileObject) {
+        //TODO make it more reliable
+        return fileObject.getName().toLowerCase().endsWith(".zip");
+    }
+
+    /**
      * @param asFileObject zip archive represented as {@link FileObject}.
      * @param asZipFile zip archive represented as {@link ZipFile}; must not be closed.
      * @return zip archive top-level files/directories.
      */
-    public static List<FileObject> getZipArchiveTopLevelChildren(FileObject asFileObject, ZipFile asZipFile)
-            throws IOException {
+    public static List<FileObject> getZipArchiveTopLevelChildren(
+            @Nonnull FileObject asFileObject, @Nonnull ZipFile asZipFile) throws IOException {
         List<FileObject> archiveContents = ZipUtils.getAllZipChildren(asFileObject, asZipFile);
         for (Iterator<FileObject> iter = archiveContents.iterator(); iter.hasNext(); ) {
             ZippedFileObject zippedFileObject = (ZippedFileObject) iter.next();
@@ -45,7 +53,7 @@ public final class ZipUtils {
      * @return zip archive contents (not only top level items but all of them).
      */
     @Nonnull
-    public static List<FileObject> getAllZipChildren(FileObject asFileObject, ZipFile asZipFile) {
+    static List<FileObject> getAllZipChildren(@Nonnull FileObject asFileObject, @Nonnull ZipFile asZipFile) {
         Enumeration<? extends ZipEntry> entriesEnumeration = asZipFile.entries();
 
         Map<String, ZipEntry> entriesByPaths = new HashMap<>(); //TODO use LinkedHashMap to save contents order?
@@ -100,7 +108,7 @@ public final class ZipUtils {
         return new ArrayList<>(fileObjectsByPaths.values());
     }
 
-    public static int getNestingLevel(@Nonnull String path) {
+    static int getNestingLevel(@Nonnull String path) {
         path = VfsUtils.normalizePath(path, ZIP_PATH_SEPARATOR);
         return StringUtils.countMatches(path, ZIP_PATH_SEPARATOR);
     }

@@ -48,17 +48,13 @@ public class StubFileObject implements FileObject {
         return null;
     }
 
-    @Override
-    public boolean isZipArchive() {
-        return false;
-    }
-
     @Nonnull
     @Override
     public ZipFile toZipFile() throws IOException {
         throw new UnsupportedOperationException();
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public int compareTo(FileObject o) {
         return 0;

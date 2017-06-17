@@ -41,7 +41,7 @@ public final class ZippedFileObject extends AbstractFileObject {
         super(getAbsolutePath(Objects.requireNonNull(parentZipArchive), Objects.requireNonNull(pathInArchive)),
                 Objects.requireNonNull(parent), isDirectory);
 
-        if (!parentZipArchive.isZipArchive()) {
+        if (!ZipUtils.isZipArchive(parentZipArchive)) {
             throw new IllegalArgumentException(parentZipArchive.toString());
         }
 
@@ -122,7 +122,7 @@ public final class ZippedFileObject extends AbstractFileObject {
     }
 
     @Nonnull
-    public String getPathInArchive() {
+    String getPathInArchive() {
         return pathInArchive;
     }
 

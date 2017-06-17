@@ -69,7 +69,7 @@ public final class FtpFileObject extends AbstractFileObject {
         if (isDirectory()) {
             return client.list(this);
         }
-        if (isZipArchive()) {
+        if (ZipUtils.isZipArchive(this)) {
             Path localCopy = localCopyManager.getLocalCopy(this);
             if (localCopy == null) {
                 LOGGER.debug("Storing local copy to get children of {}", this);
@@ -112,7 +112,7 @@ public final class FtpFileObject extends AbstractFileObject {
     @Nonnull
     @Override
     public ZipFile toZipFile() throws IOException {
-        if (!isZipArchive()) {
+        if (!ZipUtils.isZipArchive(this)) {
             throw new IllegalStateException("Not a zip archive: " + this);
         }
 

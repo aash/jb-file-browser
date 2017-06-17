@@ -4,6 +4,7 @@ import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpClient;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.FileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
+import com.pankratyev.jetbrains.filebrowser.vfs.zip.ZipUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +61,7 @@ public final class FileBrowserController {
     public void changeDirectory(@Nonnull final FileObject fileObject) {
         ensureEdt();
 
-        if (!fileObject.isDirectory() && !fileObject.isZipArchive()) {
+        if (!fileObject.isDirectory() && !ZipUtils.isZipArchive(fileObject)) {
             return;
         }
 
