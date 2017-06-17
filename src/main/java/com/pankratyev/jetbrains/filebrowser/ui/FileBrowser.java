@@ -10,14 +10,7 @@ import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProvid
 import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
 
 import javax.annotation.Nonnull;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,6 +37,7 @@ public final class FileBrowser {
     private JPanel previewPanel;
     private JPanel userDirectoriesPanel;
     private JPanel navigationPanel;
+    private JSeparator userDirectoriesSeparator;
 
     @SuppressWarnings("unchecked")
     public FileBrowser(@Nonnull FileTypeProvider fileTypeProvider,
@@ -131,15 +125,27 @@ public final class FileBrowser {
     void enableFtpMode(String ftpPathPrefix) {
         ftpMode = true;
         this.ftpPathPrefix = ftpPathPrefix;
+        hideUserDirectories();
     }
 
     void disableFtpMode() {
         ftpMode = false;
         ftpPathPrefix = null;
+        showUserDirectories();
     }
 
     private boolean isFtpMode() {
         return ftpMode;
+    }
+
+    private void hideUserDirectories() {
+        userDirectoriesPanel.setVisible(false);
+        userDirectoriesSeparator.setVisible(false);
+    }
+
+    private void showUserDirectories() {
+        userDirectoriesPanel.setVisible(true);
+        userDirectoriesSeparator.setVisible(true);
     }
 
 
