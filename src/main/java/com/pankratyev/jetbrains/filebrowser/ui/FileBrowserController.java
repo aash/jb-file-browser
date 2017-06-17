@@ -80,8 +80,8 @@ public final class FileBrowserController {
                 if (children != null) {
                     fileObjectsToDisplay.addAll(children);
                 } else {
-                    // shouldn't happen since isDirectory() is true
-                    LOGGER.error("Unexpected null children for file object: " + fileObject);
+                    // archive in archive
+                    return null;
                 }
 
                 return fileObjectsToDisplay;
@@ -95,10 +95,12 @@ public final class FileBrowserController {
 
                 try {
                     List<FileObject> fileObjectsToDisplay = get();
-                    browser.setCurrentDirectoryContents(fileObjectsToDisplay);
-                    browser.clearPreview();
-                    browser.setCurrentPath(fileObject.getFullName());
-                    LOGGER.debug("cd: {}", fileObject);
+                    if (fileObjectsToDisplay != null) {
+                        browser.setCurrentDirectoryContents(fileObjectsToDisplay);
+                        browser.clearPreview();
+                        browser.setCurrentPath(fileObject.getFullName());
+                        LOGGER.debug("cd: {}", fileObject);
+                    }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 } catch (ExecutionException e) {

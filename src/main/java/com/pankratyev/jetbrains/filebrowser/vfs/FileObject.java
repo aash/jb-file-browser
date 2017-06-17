@@ -5,8 +5,6 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 
 /**
  * Represents an abstract file (or directory).
