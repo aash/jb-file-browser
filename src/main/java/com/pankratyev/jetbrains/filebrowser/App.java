@@ -23,6 +23,8 @@ import javax.swing.WindowConstants;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * Entry point.
@@ -58,13 +60,19 @@ public final class App {
         FileObject initialFileObject = getInitialFileObject(userDirProvider);
 
         FileBrowser browser = new FileBrowser(fileTypeProvider, userDirProvider, initialFileObject);
-        FileBrowserController browserController = browser.getController();
+        final FileBrowserController browserController = browser.getController();
         browserController.changeDirectoryToInitial();
 
         frame.setContentPane(browser.getMainPanel());
         frame.setJMenuBar(createMenuBar(frame, browserController));
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                browserController.disconnectFromFtp(); //TODO don't to it in UI thread
+            }
+        });
         frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         frame.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         frame.setLocationByPlatform(true);
