@@ -47,9 +47,9 @@ public final class FileBrowser {
     private JList<FileObject> fileList;
     private JPanel previewPanel;
     private JPanel userDirectoriesPanel;
-    private JPanel navigationPanel;
     private JSeparator userDirectoriesSeparator;
     private JSplitPane splitPane;
+    private JPanel previewHelpPanel;
 
     @SuppressWarnings("unchecked")
     public FileBrowser(@Nonnull FileTypeProvider fileTypeProvider,
@@ -115,6 +115,7 @@ public final class FileBrowser {
      */
     void clearPreview() {
         previewPanel.removeAll();
+        previewPanel.add(previewHelpPanel);
         redrawPreview();
     }
 
