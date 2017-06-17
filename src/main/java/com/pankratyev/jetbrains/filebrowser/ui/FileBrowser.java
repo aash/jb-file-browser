@@ -24,6 +24,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -96,7 +97,7 @@ public final class FileBrowser {
      */
     void setCurrentDirectoryContents(@Nonnull List<FileObject> contents) {
         fileListModel.clear();
-        Collections.sort(contents);
+        Collections.sort(contents, FILE_OBJECT_COMPARATOR);
         for (FileObject fileObject : contents) {
             fileListModel.addElement(fileObject);
         }
@@ -175,4 +176,26 @@ public final class FileBrowser {
     public FileBrowserController getController() {
         return controller;
     }
+
+
+    private static final Comparator<FileObject> FILE_OBJECT_COMPARATOR = new Comparator<FileObject>() {
+        @Override
+        public int compare(FileObject o1, FileObject o2) {
+            if (o1 instanceof ParentDirFileObject) {
+                return -1;
+            }
+            if (o2 instanceof ParentDirFileObject) {
+                return 1;
+            }
+
+            if (o1.isDirectory() && !o2.isDirectory()) {
+                return -1;
+            }
+            if (o2.isDirectory() && !o1.isDirectory()) {
+                return 1;
+            }
+
+            return o1.getName().compareToIgnoreCase(o2.getName());
+        }
+    };
 }
