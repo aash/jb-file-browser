@@ -28,6 +28,7 @@ public final class ZippedFileObject extends AbstractFileObject {
     private static final int ZIP_ENTRY_SIZE_LIMIT = 30 * 1024 * 1024; // bytes
 
     private final FileObject parentZipArchive;
+    private final ZipFileProvider parentArchiveZipFileProvider;
     private final String pathInArchive;
 
     /**
@@ -35,9 +36,11 @@ public final class ZippedFileObject extends AbstractFileObject {
      * @param pathInArchive path in archive. It MUST be exactly the same value that {@link ZipEntry#getName()} returned.
      * @param isDirectory whether this {@link FileObject} is a directory.
      * @param parent parent of this {@link FileObject}; it may be a directory in the archive or archive itself (in last
-     *               case this is the same {@link FileObject} that {@link #parentZipArchive}.
+*               case this is the same {@link FileObject} that {@link #parentZipArchive}.
+     * @param parentArchiveZipFileProvider {@link ZipFile} provider for parent archive.
      */
-    ZippedFileObject(FileObject parentZipArchive, String pathInArchive, boolean isDirectory, FileObject parent) {
+    ZippedFileObject(FileObject parentZipArchive, String pathInArchive, ZipFileProvider parentArchiveZipFileProvider,
+            boolean isDirectory, FileObject parent) {
         super(getAbsolutePath(Objects.requireNonNull(parentZipArchive), Objects.requireNonNull(pathInArchive)),
                 Objects.requireNonNull(parent), isDirectory);
 
@@ -46,6 +49,7 @@ public final class ZippedFileObject extends AbstractFileObject {
         }
 
         this.parentZipArchive = parentZipArchive;
+        this.parentArchiveZipFileProvider = Objects.requireNonNull(parentArchiveZipFileProvider);
         this.pathInArchive = pathInArchive;
     }
 
@@ -62,9 +66,11 @@ public final class ZippedFileObject extends AbstractFileObject {
             return null;
         }
 
-        try (ZipFile parentAsZipFile = parentZipArchive.toZipFile()) {
-            List<FileObject> archiveContents = ZipUtils.getAllZipChildren(parentZipArchive, parentAsZipFile);
+        try (ZipFile parentAsZipFile = getParentArchiveZipFile()) {
+            List<FileObject> archiveContents = ZipUtils.getAllZipChildren(
+                    parentZipArchive, parentAsZipFile, parentArchiveZipFileProvider);
             List<FileObject> resultChildren = new ArrayList<>();
+
             for (FileObject zippedFileObject : archiveContents) {
                 String pathInArchive = ((ZippedFileObject) zippedFileObject).getPathInArchive();
                 // leave only direct children of current zipped directory
@@ -85,7 +91,7 @@ public final class ZippedFileObject extends AbstractFileObject {
             return null;
         }
 
-        try (ZipFile zip = parentZipArchive.toZipFile()) {
+        try (ZipFile zip = getParentArchiveZipFile()) {
             ZipEntry entry = zip.getEntry(pathInArchive);
             if (entry == null) {
                 return null;
@@ -107,10 +113,8 @@ public final class ZippedFileObject extends AbstractFileObject {
         }
     }
 
-    @Nonnull
-    @Override
-    public ZipFile toZipFile() throws IOException {
-        throw new UnsupportedOperationException("Cannot represent zipped file as ZipFile");
+    private ZipFile getParentArchiveZipFile() throws IOException {
+        return parentArchiveZipFileProvider.getZipFile();
     }
 
     private static String getAbsolutePath(FileObject parentZipArchive, String pathInArchive) {

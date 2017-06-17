@@ -18,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
-import java.util.zip.ZipFile;
 
 /**
  * Represents a file (or directory) located on FTP server.
@@ -81,7 +80,7 @@ public final class FtpFileObject extends AbstractFileObject {
             }
 
             if (localCopy != null) {
-                return ZipUtils.getZipArchiveTopLevelChildren(this, toZipFile());
+                return ZipUtils.getZipArchiveTopLevelChildren(this);
             }
         }
         return null;
@@ -109,22 +108,12 @@ public final class FtpFileObject extends AbstractFileObject {
         return new TeeInputStream(ftpFileStream, localCopyOs, true);
     }
 
-    @Nonnull
-    @Override
-    public ZipFile toZipFile() throws IOException {
-        if (!ZipUtils.isZipArchive(this)) {
-            throw new IllegalStateException("Not a zip archive: " + this);
-        }
-
-        Path localCopy = localCopyManager.getLocalCopy(this);
-        if (localCopy == null) {
-            throw new IOException("No local copy available for archive");
-        }
-        return new ZipFile(localCopy.toFile());
-    }
-
     LocalCopyManager getLocalCopyManager() {
         return localCopyManager;
+    }
+
+    public Path getLocalCopy() {
+        return getLocalCopyManager().getLocalCopy(this);
     }
 
     @Override

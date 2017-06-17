@@ -189,7 +189,7 @@ public final class LocalFileObjectTest {
             assertEquals(archivePath.getFileName().toString(), archive.getName());
             assertEquals(archivePath.toAbsolutePath().toString(), archive.getFullName());
 
-            try (ZipFile zf = archive.toZipFile()) {
+            try (ZipFile zf = new ZipUtils.LocalArchiveZipFileProvider(archive).getZipFile()) {
                 Enumeration<? extends ZipEntry> entriesEnumeration = zf.entries();
                 List<ZipEntry> entries = new ArrayList<>(8);
                 while (entriesEnumeration.hasMoreElements()) {

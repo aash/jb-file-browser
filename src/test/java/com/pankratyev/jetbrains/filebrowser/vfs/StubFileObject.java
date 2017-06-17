@@ -47,10 +47,4 @@ public class StubFileObject implements FileObject {
     public InputStream getInputStream() throws IOException {
         return null;
     }
-
-    @Nonnull
-    @Override
-    public ZipFile toZipFile() throws IOException {
-        throw new UnsupportedOperationException();
-    }
 }

@@ -56,13 +56,4 @@ public interface FileObject {
      */
     @Nullable
     InputStream getInputStream() throws IOException;
-
-    /**
-     * @return {@link ZipFile} instance for this {@link FileObject}.
-     * @throws IllegalStateException if this {@link FileObject} is not a zip archive.
-     * @throws ZipException if a ZIP format error has occurred.
-     * @throws IOException if an I/O error has occurred.
-     */
-    @Nonnull
-    ZipFile toZipFile() throws IOException;
 }

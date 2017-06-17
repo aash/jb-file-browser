@@ -2,16 +2,20 @@ package com.pankratyev.jetbrains.filebrowser.vfs.zip;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.VfsUtils;
+import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpFileObject;
+import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObject;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -21,6 +25,7 @@ public final class ZipUtils {
     private ZipUtils() {
     }
 
+
     /**
      * @return true if this {@link FileObject} is a zip archive; false otherwise.
      */
@@ -29,14 +34,33 @@ public final class ZipUtils {
         return fileObject.getName().toLowerCase().endsWith(".zip");
     }
 
+
     /**
-     * @param asFileObject zip archive represented as {@link FileObject}.
-     * @param asZipFile zip archive represented as {@link ZipFile}; must not be closed.
+     * @param archive local zip archive.
      * @return zip archive top-level files/directories.
      */
-    public static List<FileObject> getZipArchiveTopLevelChildren(
-            @Nonnull FileObject asFileObject, @Nonnull ZipFile asZipFile) throws IOException {
-        List<FileObject> archiveContents = ZipUtils.getAllZipChildren(asFileObject, asZipFile);
+    public static List<FileObject> getZipArchiveTopLevelChildren(@Nonnull LocalFileObject archive) throws IOException {
+        LocalArchiveZipFileProvider archiveZipFileProvider = new LocalArchiveZipFileProvider(archive);
+        try (ZipFile zipFile = archiveZipFileProvider.getZipFile()) {
+            return doGetZipArchiveTopLevelChildren(archive, zipFile, archiveZipFileProvider);
+        }
+    }
+
+    /**
+     * @param archive zip archive placed on FTP server.
+     * @return zip archive top-level files/directories.
+     */
+    public static List<FileObject> getZipArchiveTopLevelChildren(@Nonnull FtpFileObject archive) throws IOException {
+        FtpArchiveZipFileProvider archiveZipFileProvider = new FtpArchiveZipFileProvider(archive);
+        try (ZipFile zipFile = archiveZipFileProvider.getZipFile()) {
+            return doGetZipArchiveTopLevelChildren(archive, zipFile, archiveZipFileProvider);
+        }
+    }
+
+    private static List<FileObject> doGetZipArchiveTopLevelChildren(FileObject archive, ZipFile zipFile,
+            ZipFileProvider archiveZipFileProvider) {
+        List<FileObject> archiveContents = ZipUtils.getAllZipChildren(archive, zipFile, archiveZipFileProvider);
+
         for (Iterator<FileObject> iter = archiveContents.iterator(); iter.hasNext(); ) {
             ZippedFileObject zippedFileObject = (ZippedFileObject) iter.next();
             if (ZipUtils.getNestingLevel(zippedFileObject.getPathInArchive()) > 0) {
@@ -44,8 +68,10 @@ public final class ZipUtils {
                 iter.remove();
             }
         }
+
         return archiveContents;
     }
+
 
     /**
      * @param asFileObject zip archive represented as {@link FileObject}.
@@ -53,7 +79,8 @@ public final class ZipUtils {
      * @return zip archive contents (not only top level items but all of them).
      */
     @Nonnull
-    static List<FileObject> getAllZipChildren(@Nonnull FileObject asFileObject, @Nonnull ZipFile asZipFile) {
+    static List<FileObject> getAllZipChildren(@Nonnull FileObject asFileObject, @Nonnull ZipFile asZipFile,
+            ZipFileProvider archiveZipFileProvider) {
         Enumeration<? extends ZipEntry> entriesEnumeration = asZipFile.entries();
 
         Map<String, ZipEntry> entriesByPaths = new HashMap<>(); //TODO use LinkedHashMap to save contents order?
@@ -65,10 +92,11 @@ public final class ZipUtils {
             }
         }
 
-        return processEntries(entriesByPaths, asFileObject);
+        return processEntries(entriesByPaths, asFileObject, archiveZipFileProvider);
     }
 
-    private static List<FileObject> processEntries(Map<String, ZipEntry> entriesByPaths, FileObject parentArchive) {
+    private static List<FileObject> processEntries(Map<String, ZipEntry> entriesByPaths, FileObject parentArchive,
+            ZipFileProvider archiveZipFileProvider) {
         int currentNestingLevel = 0;
         Map<String, FileObject> fileObjectsByPaths = new HashMap<>();
 
@@ -96,8 +124,8 @@ public final class ZipUtils {
                         parent = parentArchive;
                     }
 
-                    FileObject fileObject = new ZippedFileObject(
-                            parentArchive, path, entry.getValue().isDirectory(), parent);
+                    ZippedFileObject fileObject = new ZippedFileObject(
+                            parentArchive, path, archiveZipFileProvider, entry.getValue().isDirectory(), parent);
                     fileObjectsByPaths.put(VfsUtils.normalizePath(path, ZIP_PATH_SEPARATOR), fileObject);
                 }
             }
@@ -108,8 +136,49 @@ public final class ZipUtils {
         return new ArrayList<>(fileObjectsByPaths.values());
     }
 
+
     static int getNestingLevel(@Nonnull String path) {
         path = VfsUtils.normalizePath(path, ZIP_PATH_SEPARATOR);
         return StringUtils.countMatches(path, ZIP_PATH_SEPARATOR);
+    }
+
+
+    public static final class LocalArchiveZipFileProvider implements ZipFileProvider {
+        private final LocalFileObject fileObject;
+
+        public LocalArchiveZipFileProvider(@Nonnull LocalFileObject fileObject) {
+            this.fileObject = Objects.requireNonNull(fileObject);
+        }
+
+        @Nonnull
+        @Override
+        public ZipFile getZipFile() throws IOException {
+            if (!isZipArchive(fileObject)) {
+                throw new IllegalStateException("Not a zip archive: " + this);
+            }
+            return new ZipFile(fileObject.getPath().toFile());
+        }
+    }
+
+    public static final class FtpArchiveZipFileProvider implements ZipFileProvider {
+        private final FtpFileObject fileObject;
+
+        FtpArchiveZipFileProvider(@Nonnull FtpFileObject fileObject) {
+            this.fileObject = Objects.requireNonNull(fileObject);
+        }
+
+        @Nonnull
+        @Override
+        public ZipFile getZipFile() throws IOException {
+            if (!isZipArchive(fileObject)) {
+                throw new IllegalStateException("Not a zip archive: " + this);
+            }
+
+            Path localCopy = fileObject.getLocalCopy();
+            if (localCopy == null) {
+                throw new IOException("No local copy available for archive");
+            }
+            return new ZipFile(localCopy.toFile());
+        }
     }
 }

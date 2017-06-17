@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipFile;
 
 /**
  * Represents a file (or directory) located on local file system.
@@ -44,7 +43,7 @@ public final class LocalFileObject extends AbstractFileObject {
             return getDirectoryChildren();
         }
         if (ZipUtils.isZipArchive(this)) {
-            return ZipUtils.getZipArchiveTopLevelChildren(this, toZipFile());
+            return ZipUtils.getZipArchiveTopLevelChildren(this);
         }
         return null;
     }
@@ -59,15 +58,6 @@ public final class LocalFileObject extends AbstractFileObject {
         return new BufferedInputStream(Files.newInputStream(path));
     }
 
-    @Nonnull
-    @Override
-    public ZipFile toZipFile() throws IOException {
-        if (!ZipUtils.isZipArchive(this)) {
-            throw new IllegalStateException("Not a zip archive: " + this);
-        }
-        return new ZipFile(path.toFile());
-    }
-
     private List<FileObject> getDirectoryChildren() throws IOException {
         List<FileObject> children = new ArrayList<>();
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(path)) {
@@ -76,6 +66,10 @@ public final class LocalFileObject extends AbstractFileObject {
             }
         }
         return children;
+    }
+
+    public Path getPath() {
+        return path;
     }
 
     @Override
