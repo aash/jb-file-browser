@@ -54,7 +54,7 @@ public final class LocalFileObject extends AbstractFileObject {
         if (isDirectory()) {
             return null;
         }
-        //TODO size limit
+        //TODO size limit (not for text files)
         return new BufferedInputStream(Files.newInputStream(path));
     }
 

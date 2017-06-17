@@ -23,7 +23,7 @@ import java.util.zip.ZipFile;
  */
 public final class ZippedFileObject extends AbstractFileObject {
     /**
-     * If this file size in archive is greater than this limit in archive {@link #getInputStream()} will return null.
+     * If this file size in archive is greater than this limit {@link #getInputStream()} will return null.
      */
     private static final int ZIP_ENTRY_SIZE_LIMIT = 30 * 1024 * 1024; // bytes
 

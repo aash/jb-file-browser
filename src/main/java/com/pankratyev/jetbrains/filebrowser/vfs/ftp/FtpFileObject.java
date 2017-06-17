@@ -27,7 +27,7 @@ public final class FtpFileObject extends AbstractFileObject {
     private static final Logger LOGGER = LoggerFactory.getLogger(FtpFileObject.class);
 
     private final FtpClient client;
-    private final LocalCopyManager localCopyManager; //TODO init
+    private final LocalCopyManager localCopyManager;
 
     /**
      * @param client initialized FTP client with established connection.
