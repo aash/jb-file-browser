@@ -68,7 +68,16 @@ public final class FileBrowserController {
         // changing the directory may take some time (e.g. when using FTP); so it should be executed in separate thread
         runSwingWorker(new SwingWorker<List<FileObject>, Void>() {
             @Override
+            protected void process(List<Void> chunks) {
+                if (browser.isFtpMode()) {
+                    browser.showPreloader();
+                }
+            }
+
+            @Override
             protected List<FileObject> doInBackground() throws IOException {
+                publish();
+
                 List<FileObject> fileObjectsToDisplay = new ArrayList<>();
 
                 // add '..' parent folder

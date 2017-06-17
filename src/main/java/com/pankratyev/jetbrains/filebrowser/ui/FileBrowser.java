@@ -165,7 +165,7 @@ public final class FileBrowser {
         showUserDirectories();
     }
 
-    private boolean isFtpMode() {
+    boolean isFtpMode() {
         return ftpMode;
     }
 
