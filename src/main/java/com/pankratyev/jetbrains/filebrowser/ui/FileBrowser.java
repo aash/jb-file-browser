@@ -34,6 +34,10 @@ public final class FileBrowser {
 
     private final DefaultListModel<FileObject> fileListModel = new DefaultListModel<>();
 
+    private boolean ftpMode = false;
+    private String ftpPathPrefix = null;
+
+
     private JPanel mainPanel;
     private JTextField pathField;
     private JList<FileObject> fileList;
@@ -86,7 +90,9 @@ public final class FileBrowser {
     }
 
     void setCurrentPath(@Nonnull String path) {
-        //TODO if (isFtpConnection()) ...
+        if (isFtpMode()) {
+            path = ftpPathPrefix + path;
+        }
         pathField.setText(path);
     }
 
@@ -120,6 +126,20 @@ public final class FileBrowser {
     void showErrorDialog(String message) {
         JOptionPane.showMessageDialog(getMainPanel().getParent(), message,
                 ERROR_DIALOG_TITLE, JOptionPane.ERROR_MESSAGE);
+    }
+
+    void enableFtpMode(String ftpPathPrefix) {
+        ftpMode = true;
+        this.ftpPathPrefix = ftpPathPrefix;
+    }
+
+    void disableFtpMode() {
+        ftpMode = false;
+        ftpPathPrefix = null;
+    }
+
+    private boolean isFtpMode() {
+        return ftpMode;
     }
 
 

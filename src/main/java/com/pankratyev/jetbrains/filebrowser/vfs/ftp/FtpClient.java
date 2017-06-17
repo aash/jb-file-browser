@@ -148,4 +148,11 @@ public final class FtpClient {
         }
         client = null;
     }
+
+    /**
+     * @return current FTP URL including username and port, trailing slash is absent.
+     */
+    public String getFtpUrl() {
+        return "ftp://" + (StringUtils.isEmpty(username) ? "" : username + "@") + host + ":" + port;
+    }
 }

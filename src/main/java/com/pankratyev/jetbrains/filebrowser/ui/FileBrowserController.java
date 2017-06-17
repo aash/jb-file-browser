@@ -204,6 +204,7 @@ public final class FileBrowserController {
                     if (fileObjectsToDisplay != null) {
                         browser.setCurrentDirectoryContents(fileObjectsToDisplay);
                         browser.clearPreview();
+                        browser.enableFtpMode(client.getFtpUrl());
                         if (absolutePathToDisplay != null) {
                             browser.setCurrentPath(absolutePathToDisplay);
                         } else {
@@ -237,6 +238,8 @@ public final class FileBrowserController {
             ftpClient.disconnect();
             ftpClient = null;
         }
+
+        browser.disableFtpMode();
     }
 
     private void runSwingWorker(SwingWorker<?, ?> newWorker) {
