@@ -68,12 +68,18 @@ public final class FtpFileObject extends AbstractFileObject {
         if (isDirectory()) {
             return client.list(this);
         }
+
         if (ZipUtils.isZipArchive(this)) {
             Path localCopy = localCopyManager.getLocalCopy(this);
             if (localCopy == null) {
                 LOGGER.debug("Storing local copy to get children of {}", this);
+
                 try (InputStream ftpFileStream = client.getFileStream(this);
                         OutputStream localCopyOs = localCopyManager.getLocalCopyOutputStream(this)) {
+                    if (localCopyOs == null) {
+                        throw new IOException("Unable to store a local copy of archive: " + getName());
+                    }
+
                     IOUtils.copy(ftpFileStream, localCopyOs);
                     localCopy = localCopyManager.getLocalCopy(this);
                 }
@@ -83,6 +89,7 @@ public final class FtpFileObject extends AbstractFileObject {
                 return ZipUtils.getZipArchiveTopLevelChildren(this);
             }
         }
+
         return null;
     }
 
