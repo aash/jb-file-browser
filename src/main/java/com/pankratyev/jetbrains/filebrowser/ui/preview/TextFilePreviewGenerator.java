@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
@@ -34,12 +35,16 @@ public final class TextFilePreviewGenerator implements PreviewGenerator {
                     try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(is))) {
                         StringBuilder previewContent = new StringBuilder();
                         String line;
-                        while ((line = reader.readLine()) != null && reader.getLineNumber() <= LINE_COUNT_LIMIT) {
+                        while ((line = reader.readLine()) != null) {
+                            if (reader.getLineNumber() > LINE_COUNT_LIMIT) {
+                                previewContent.append(System.lineSeparator()).append("...");
+                                break;
+                            }
                             previewContent.append(line).append(System.lineSeparator());
                         }
 
                         previewPane.setText(previewContent.toString());
-                        return previewPane;
+                        return new JScrollPane(previewPane);
                     }
                 }
             }
