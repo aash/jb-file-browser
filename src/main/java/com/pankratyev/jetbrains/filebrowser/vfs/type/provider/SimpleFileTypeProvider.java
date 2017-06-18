@@ -20,6 +20,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystemException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -106,6 +107,8 @@ public final class SimpleFileTypeProvider implements FileTypeProvider {
                 } catch (CharacterCodingException ignore) {
                 }
             }
+        } catch (FileSystemException ignore) {
+            // it happens on Windows for some specific files like ntuser.dat.LOG
         } catch (IOException e) {
             LOGGER.warn("An error occurred while probing the file", e);
         }
