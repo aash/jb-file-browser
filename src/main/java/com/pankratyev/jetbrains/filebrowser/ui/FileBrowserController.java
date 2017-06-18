@@ -28,6 +28,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public final class FileBrowserController {
     private final Logger LOGGER = LoggerFactory.getLogger(FileBrowserController.class);
 
+    private FileObject currentFileObject = null;
+
     /**
      * UI-related task currently being executed. Only one task can be running at once to avoid performance issues.
      */
@@ -108,6 +110,8 @@ public final class FileBrowserController {
                         browser.setCurrentDirectoryContents(fileObjectsToDisplay);
                         browser.clearPreview();
                         browser.setCurrentPath(fileObject.getFullName());
+
+                        currentFileObject = fileObject;
                         LOGGER.debug("cd: {}", fileObject);
                     }
                 } catch (InterruptedException e) {
@@ -196,6 +200,7 @@ public final class FileBrowserController {
                     }
                     if (ftpContents != null) {
                         fileObjectsToDisplay.addAll(ftpContents);
+                        currentFileObject = fileObject;
                     } else {
                         // shouldn't happen
                         LOGGER.error("Unexpected null children for FTP initial file object: " + fileObject);
@@ -259,6 +264,24 @@ public final class FileBrowserController {
         }
 
         browser.disableFtpMode();
+    }
+
+    /**
+     * Reopens currently opened path (directory or archive). If FTP connection is established a local copies
+     * for currently opened path will be invalidated.
+     */
+    public void refresh() {
+        if (currentFileObject == null) {
+            // shouldn't happen
+            LOGGER.error("Unexpected state: no current file object");
+            return;
+        }
+
+        if (ftpClient != null) {
+            ftpClient.getLocalCopyManager().invalidate(currentFileObject.getFullName());
+        }
+
+        changeDirectory(currentFileObject);
     }
 
     private void runSwingWorker(SwingWorker<?, ?> newWorker) {

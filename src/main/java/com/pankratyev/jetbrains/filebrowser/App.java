@@ -39,6 +39,7 @@ public final class App {
     private static final String MENU_FILE = "File";
     private static final String MENU_ITEM_FTP_CONNECT = "Connect to FTP server";
     private static final String MENU_ITEM_FTP_DISCONNECT = "Disconnect from FTP server";
+    private static final String MENU_ITEM_REFRESH = "Refresh";
 
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException,
             InstantiationException, IllegalAccessException {
@@ -85,7 +86,9 @@ public final class App {
         JMenu fileMenu = new JMenu(MENU_FILE);
 
         final JMenuItem ftpDisconnectItem = new JMenuItem(MENU_ITEM_FTP_DISCONNECT);
+        ftpDisconnectItem.setEnabled(false); // on application start there's no FTP connection
         final JMenuItem ftpConnectItem = new JMenuItem(MENU_ITEM_FTP_CONNECT);
+        JMenuItem refreshItem = new JMenuItem(MENU_ITEM_REFRESH);
 
         ftpDisconnectItem.addActionListener(new ActionListener() {
             @Override
@@ -111,10 +114,16 @@ public final class App {
                 } // else - do nothing, dialog was canceled
             }
         });
+        refreshItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.refresh();
+            }
+        });
 
-        ftpDisconnectItem.setEnabled(false); // on application start there's no FTP connection
         fileMenu.add(ftpConnectItem);
         fileMenu.add(ftpDisconnectItem);
+        fileMenu.add(refreshItem);
 
         menuBar.add(fileMenu);
         return menuBar;

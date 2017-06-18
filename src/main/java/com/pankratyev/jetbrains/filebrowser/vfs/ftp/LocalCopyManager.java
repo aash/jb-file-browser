@@ -1,6 +1,7 @@
 package com.pankratyev.jetbrains.filebrowser.vfs.ftp;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
+import com.pankratyev.jetbrains.filebrowser.vfs.VfsUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,16 +22,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 /**
  * Utility class to manage files cached to local disk from FTP server.
  */
-final class LocalCopyManager {
+public final class LocalCopyManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalCopyManager.class);
 
     static final String TEMP_DIRECTORY_BASE_NAME = "jetbrains_filebrowser_pankratyev";
 
-    /**
-     * If a local copy for the same file requested twice with interval less than that value local copy will be
-     * deleted to obtain new up-to-date local copy.
-     */
-    private static final int DOUBLE_REQUEST_TIME_INTERVAL = 5 * 1000; // millis
     /**
      * If a local copy was created more than this time interval ago it will be considered outdated.
      */
@@ -97,11 +93,6 @@ final class LocalCopyManager {
         BasicFileAttributes attrs = Files.readAttributes(localCopy, BasicFileAttributes.class);
         long currentTime = System.currentTimeMillis();
 
-        //FIXME this should be done on App level, to avoid invalidating cached file when it's written and read instantly
-//        if (currentTime - attrs.lastAccessTime().toMillis() < DOUBLE_REQUEST_TIME_INTERVAL) {
-//            return false;
-//        }
-
         //noinspection RedundantIfStatement
         if (currentTime - attrs.creationTime().toMillis() > LOCAL_COPY_EXPIRE_TIME_INTERVAL) {
             return false;
@@ -131,5 +122,18 @@ final class LocalCopyManager {
         }
         dirPath += TEMP_DIRECTORY_BASE_NAME + File.separator + host;
         return Paths.get(dirPath);
+    }
+
+    /**
+     * Removes file local copies for passed path and current host.
+     * @param fullPath full path on FTP server under which all the file local copies should be removed.
+     */
+    public void invalidate(String fullPath) {
+        if (!Files.exists(basePath)) {
+            return;
+        }
+        Path pathToDelete = basePath.resolve(fullPath.substring(File.separator.length()));
+        LOGGER.debug("Removing {}", pathToDelete);
+        VfsUtils.deleteQuietly(pathToDelete);
     }
 }

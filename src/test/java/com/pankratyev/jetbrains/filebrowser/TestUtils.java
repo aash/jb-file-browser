@@ -1,8 +1,7 @@
 package com.pankratyev.jetbrains.filebrowser;
 
+import com.pankratyev.jetbrains.filebrowser.vfs.VfsUtils;
 import com.pankratyev.jetbrains.filebrowser.vfs.zip.ZipUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,8 +14,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public final class TestUtils {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestUtils.class);
-
     private TestUtils() {
     }
 
@@ -29,30 +26,7 @@ public final class TestUtils {
             return;
         }
         for (Path file : files) {
-            if (file == null) {
-                continue;
-            }
-            if (Files.isDirectory(file)) {
-                try {
-                    Files.walkFileTree(file, new SimpleFileVisitor<Path>() {
-                        @Override
-                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                            delete(file);
-                            return FileVisitResult.CONTINUE;
-                        }
-
-                        @Override
-                        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                            delete(dir);
-                            return FileVisitResult.CONTINUE;
-                        }
-                    });
-                } catch (IOException e) {
-                    LOGGER.warn(null, e);
-                }
-            } else if (Files.exists(file)) {
-                delete(file);
-            }
+            VfsUtils.deleteQuietly(file);
         }
     }
 
@@ -76,14 +50,6 @@ public final class TestUtils {
                     return FileVisitResult.CONTINUE;
                 }
             });
-        }
-    }
-
-    private static void delete(Path file) {
-        try {
-            Files.delete(file);
-        } catch (IOException e) {
-            LOGGER.warn("Cannot delete temp file/directory: " + file, e);
         }
     }
 }

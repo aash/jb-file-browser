@@ -29,6 +29,7 @@ public final class FtpClient {
     private final String password;
 
     private FTPClient client = null;
+    private LocalCopyManager localCopyManager = null;
 
     public FtpClient(@Nonnull String host, int port, @Nullable String username, @Nullable String password) {
         this.host = Objects.requireNonNull(host);
@@ -46,7 +47,8 @@ public final class FtpClient {
         ensureClientReady();
 
         String currentDirAbsolutePath = client.printWorkingDirectory();
-        return new FtpFileObject(this, currentDirAbsolutePath, null, true, new LocalCopyManager(host));
+        localCopyManager = new LocalCopyManager(host);
+        return new FtpFileObject(this, currentDirAbsolutePath, null, true, localCopyManager);
     }
 
     /**
@@ -154,5 +156,9 @@ public final class FtpClient {
      */
     public String getFtpUrl() {
         return "ftp://" + (StringUtils.isEmpty(username) ? "" : username + "@") + host + ":" + port;
+    }
+
+    public LocalCopyManager getLocalCopyManager() {
+        return localCopyManager;
     }
 }
