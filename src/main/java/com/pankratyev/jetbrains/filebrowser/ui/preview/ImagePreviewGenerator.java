@@ -10,6 +10,7 @@ import javax.swing.JComponent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.ClosedByInterruptException;
 
 /**
  * {@link PreviewGenerator} implementation for image files (bmp, png, gif, jpeg).
@@ -29,6 +30,7 @@ public final class ImagePreviewGenerator implements PreviewGenerator {
                     }
                 }
             }
+        } catch (ClosedByInterruptException ignore) {
         } catch (IOException e) {
             LOGGER.warn("Cannot generate a preview for an image: " + fileObject, e);
         }
