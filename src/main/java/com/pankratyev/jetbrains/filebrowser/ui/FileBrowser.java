@@ -144,6 +144,7 @@ public final class FileBrowser {
         previewPanel.repaint();
     }
 
+    @Nonnull
     Dimension getPreviewPanelSize() {
         return previewPanel.getSize();
     }
@@ -180,10 +181,12 @@ public final class FileBrowser {
     }
 
 
+    @Nonnull
     public JPanel getMainPanel() {
         return mainPanel;
     }
 
+    @Nonnull
     public FileBrowserController getController() {
         return controller;
     }
