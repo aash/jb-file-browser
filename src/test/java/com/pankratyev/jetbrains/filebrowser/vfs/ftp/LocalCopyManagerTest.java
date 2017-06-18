@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,9 +21,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.spy;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest
+@PrepareForTest(LocalCopyManager.class)
 public class LocalCopyManagerTest {
     @Test
     public void testGetLocalCopyOutputStream() throws IOException {
@@ -74,7 +75,7 @@ public class LocalCopyManagerTest {
 
 
     @Test
-    public void testExpire() throws IOException, InterruptedException {
+    public void testExpire() throws Exception {
         LocalCopyManager subj = new LocalCopyManager("testhost4");
         String testPath = separator + "absolute" + separator + "path" + separator + "testExpire";
         Path localCopyPath = Paths.get(FileUtils.getTempDirectoryPath() + separator
@@ -89,12 +90,13 @@ public class LocalCopyManagerTest {
             assertNotNull(subj.getLocalCopy(testFileObject));
 
             // set very short expire interval
+            LocalCopyManager spy = spy(subj);
             int expireInterval = 1;
-            Whitebox.setInternalState(LocalCopyManager.class, "LOCAL_COPY_EXPIRE_TIME_INTERVAL", expireInterval);
+            doReturn(expireInterval).when(spy, "getLocalCopyExpireTimeInterval");
 
             Thread.sleep(expireInterval);
-            // should be null on second request
-            assertNull(subj.getLocalCopy(testFileObject));
+            // should be null (expired) on second request (on spy this time)
+            assertNull(spy.getLocalCopy(testFileObject));
         } finally {
             TestUtils.deleteFiles(localCopyPath);
         }

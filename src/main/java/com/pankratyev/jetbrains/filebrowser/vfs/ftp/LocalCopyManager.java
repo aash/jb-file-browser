@@ -22,17 +22,15 @@ import java.nio.file.attribute.BasicFileAttributes;
 /**
  * Utility class to manage files cached to local disk from FTP server.
  */
-public final class LocalCopyManager {
+public class LocalCopyManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalCopyManager.class);
 
     static final String TEMP_DIRECTORY_BASE_NAME = "jetbrains_filebrowser_pankratyev";
 
     /**
      * If a local copy was created more than this time interval ago it will be considered outdated.
-     * NOTE: name of this field is used in LocalCopyManagerTest.
-     * Wrapper class (Integer) has to be used because there's no way to change a private static final primitive.
      */
-    private static final Integer LOCAL_COPY_EXPIRE_TIME_INTERVAL = 3 * 60 * 1000; // millis
+    private static final int LOCAL_COPY_EXPIRE_TIME_INTERVAL = 3 * 60 * 1000; // millis
 
     private final Path basePath;
 
@@ -96,7 +94,7 @@ public final class LocalCopyManager {
         long currentTime = System.currentTimeMillis();
 
         //noinspection RedundantIfStatement
-        if (currentTime - attrs.creationTime().toMillis() > LOCAL_COPY_EXPIRE_TIME_INTERVAL) {
+        if (currentTime - attrs.creationTime().toMillis() > getLocalCopyExpireTimeInterval()) {
             return false;
         }
 
@@ -124,6 +122,13 @@ public final class LocalCopyManager {
         }
         dirPath += TEMP_DIRECTORY_BASE_NAME + File.separator + host;
         return Paths.get(dirPath);
+    }
+
+    /**
+     * NOTE: name of this method is used in LocalCopyManagerTest.
+     */
+    private int getLocalCopyExpireTimeInterval() {
+        return LOCAL_COPY_EXPIRE_TIME_INTERVAL;
     }
 
     /**
