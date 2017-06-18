@@ -21,8 +21,13 @@ import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.Timer;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -60,6 +65,7 @@ public final class FileBrowser {
         setupFileList(fileTypeProvider);
         addUserDirectories(userDirectoriesProvider.getUserDirectories());
         setupSplitPane();
+        setupPreviewResizeListener();
     }
 
     private void setupFileList(FileTypeProvider fileTypeProvider) {
@@ -88,6 +94,31 @@ public final class FileBrowser {
 
     private void setupSplitPane() {
         splitPane.setBorder(null);
+    }
+
+    private void setupPreviewResizeListener() {
+        final Timer resizeTimer = new Timer(100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = fileList.getSelectedIndex();
+                if (index < 0) {
+                    return;
+                }
+                controller.showPreview(fileList.getModel().getElementAt(index), false);
+            }
+        });
+        resizeTimer.setRepeats(false);
+
+        previewPanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                if (resizeTimer.isRunning()) {
+                    resizeTimer.restart();
+                } else {
+                    resizeTimer.start();
+                }
+            }
+        });
     }
 
 

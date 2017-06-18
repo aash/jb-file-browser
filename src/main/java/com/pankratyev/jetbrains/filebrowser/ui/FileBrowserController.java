@@ -135,15 +135,27 @@ public final class FileBrowserController {
 
     /**
      * Handles file list element selection. Updates preview panel.
+     * Preloader is displayed while preview is being generated.
      * @param fileObject selected element in file list.
      */
     public void showPreview(@Nonnull final FileObject fileObject) {
+        showPreview(fileObject, true);
+    }
+
+    /**
+     * Handles file list element selection. Updates preview panel.
+     * @param fileObject selected element in file list.
+     * @param showPreloader whether the preloader should be displayed while preview is being generated.
+     */
+    void showPreview(@Nonnull final FileObject fileObject, final boolean showPreloader) {
         ensureEdt();
 
         runSwingWorker(new SwingWorker<JComponent, Void>() {
             @Override
             protected void process(List<Void> chunks) {
-                browser.showPreloader();
+                if (showPreloader) {
+                    browser.showPreloader();
+                }
             }
 
             @Override
