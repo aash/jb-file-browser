@@ -10,6 +10,7 @@ import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProvid
 import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
 
 import javax.annotation.Nonnull;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
@@ -71,6 +72,7 @@ public final class FileBrowser {
     private void setupFileList(FileTypeProvider fileTypeProvider) {
         fileList.setModel(fileListModel);
         fileList.setCellRenderer(new FileListCellRenderer(fileTypeProvider));
+        fileList.setBorder(BorderFactory.createEmptyBorder());
 
         fileList.addMouseListener(new FileListDoubleClickListener(controller));
         fileList.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)

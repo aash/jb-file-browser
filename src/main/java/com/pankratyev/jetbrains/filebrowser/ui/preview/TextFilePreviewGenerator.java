@@ -49,7 +49,7 @@ public final class TextFilePreviewGenerator implements PreviewGenerator {
                         previewPane.setText(previewContent.toString());
 
                         JScrollPane scrollPane = new JScrollPane(previewPane);
-                        scrollPane.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
+                        scrollPane.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
                         return scrollPane;
                     }
                 }
