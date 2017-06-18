@@ -7,6 +7,7 @@ import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObject;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public final class ZipUtils {
-    public static final String ZIP_PATH_SEPARATOR = "/";
+    public static final String ZIP_PATH_SEPARATOR = File.separator;
 
     private ZipUtils() {
     }
