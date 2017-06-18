@@ -29,7 +29,7 @@ import java.awt.event.WindowEvent;
 /**
  * Entry point.
  */
-public final class App {
+final class App {
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
     private static final String WINDOW_TITLE = "File browser with preview";

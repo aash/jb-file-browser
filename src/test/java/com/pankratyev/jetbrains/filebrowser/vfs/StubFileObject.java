@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.zip.ZipFile;
 
 public class StubFileObject implements FileObject {
     @Nonnull

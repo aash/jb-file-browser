@@ -29,7 +29,7 @@ public final class UserDirectoryLink extends JLabel {
         return userDirPath;
     }
 
-    private static final String getLabel(String absolutePath) {
+    private static String getLabel(String absolutePath) {
         String name = VfsUtils.getNameFromAbsolutePath(absolutePath);
         return "<HTML><U>" + name + "</U></HTML>";
     }

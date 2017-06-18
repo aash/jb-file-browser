@@ -75,29 +75,6 @@ public class LocalCopyManagerTest {
     }
 
 
-
-    @Ignore //FIXME
-    @Test
-    public void testDoubleRequest() throws IOException {
-        LocalCopyManager subj = new LocalCopyManager("testhost3");
-        String testPath = separator + "absolute" + separator + "path" + separator + "testDoubleRequest";
-        Path localCopyPath = Paths.get(FileUtils.getTempDirectoryPath() + separator
-                + TEMP_DIRECTORY_BASE_NAME + separator + "testhost3" + testPath);
-
-        try {
-            // set very long double request interval
-            Whitebox.setInternalState(LocalCopyManager.class, "DOUBLE_REQUEST_TIME_INTERVAL", 1000000);
-
-            FtpFileObject testFileObject = new FtpFileObject(
-                    new FtpClient("", 0, null, null), testPath, null, false, subj);
-            assertNotNull(subj.getLocalCopy(testFileObject));
-            // should be null on second request
-            assertNull(subj.getLocalCopy(testFileObject));
-        } finally {
-            TestUtils.deleteFiles(localCopyPath);
-        }
-    }
-
     @Ignore //FIXME
     @Test
     public void testExpire() throws IOException, InterruptedException {
