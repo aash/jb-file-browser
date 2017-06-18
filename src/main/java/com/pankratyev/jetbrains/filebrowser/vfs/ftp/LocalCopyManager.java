@@ -30,8 +30,9 @@ public final class LocalCopyManager {
     /**
      * If a local copy was created more than this time interval ago it will be considered outdated.
      * NOTE: name of this field is used in LocalCopyManagerTest.
+     * Wrapper class (Integer) has to be used because there's no way to change a private static final primitive.
      */
-    private static final int LOCAL_COPY_EXPIRE_TIME_INTERVAL = 3 * 60 * 1000; // millis
+    private static final Integer LOCAL_COPY_EXPIRE_TIME_INTERVAL = 3 * 60 * 1000; // millis
 
     private final Path basePath;
 

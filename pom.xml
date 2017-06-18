@@ -57,14 +57,9 @@
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
-            <artifactId>powermock-core</artifactId>
+            <artifactId>powermock-api-mockito</artifactId>
             <version>1.6.6</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito-common</artifactId>
-            <version>1.6.6</version>
         </dependency>
     </dependencies>
 

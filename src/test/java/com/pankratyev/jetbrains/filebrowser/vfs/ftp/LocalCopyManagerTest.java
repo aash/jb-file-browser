@@ -2,7 +2,6 @@ package com.pankratyev.jetbrains.filebrowser.vfs.ftp;
 
 import com.pankratyev.jetbrains.filebrowser.TestUtils;
 import org.apache.commons.io.FileUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -24,9 +23,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-//TODO fix PowerMock-related things
-//@RunWith(PowerMockRunner.class)
-//@PrepareForTest
+@RunWith(PowerMockRunner.class)
+@PrepareForTest
 public class LocalCopyManagerTest {
     @Test
     public void testGetLocalCopyOutputStream() throws IOException {
@@ -75,7 +73,6 @@ public class LocalCopyManagerTest {
     }
 
 
-    @Ignore //FIXME
     @Test
     public void testExpire() throws IOException, InterruptedException {
         LocalCopyManager subj = new LocalCopyManager("testhost4");
@@ -84,13 +81,17 @@ public class LocalCopyManagerTest {
                 + TEMP_DIRECTORY_BASE_NAME + separator + "testhost4" + testPath);
 
         try {
-            // set very short expire interval
-            int expireInterval = 1;
-            Whitebox.setInternalState(LocalCopyManager.class, "LOCAL_COPY_EXPIRE_TIME_INTERVAL", expireInterval);
+            Files.createDirectories(localCopyPath.getParent());
+            Files.createFile(localCopyPath);
 
             FtpFileObject testFileObject = new FtpFileObject(
                     new FtpClient("", 0, null, null), testPath, null, false, subj);
             assertNotNull(subj.getLocalCopy(testFileObject));
+
+            // set very short expire interval
+            int expireInterval = 1;
+            Whitebox.setInternalState(LocalCopyManager.class, "LOCAL_COPY_EXPIRE_TIME_INTERVAL", expireInterval);
+
             Thread.sleep(expireInterval);
             // should be null on second request
             assertNull(subj.getLocalCopy(testFileObject));
