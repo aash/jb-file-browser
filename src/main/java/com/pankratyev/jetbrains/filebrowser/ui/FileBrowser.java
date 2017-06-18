@@ -111,6 +111,10 @@ public final class FileBrowser {
         pathField.setText(path);
     }
 
+    void setSelectedFileObject(@Nonnull FileObject toSelect) {
+        fileList.setSelectedValue(toSelect, true);
+    }
+
     /**
      * Clears the preview panel.
      */

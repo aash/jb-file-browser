@@ -111,6 +111,11 @@ public final class FileBrowserController {
                         browser.clearPreview();
                         browser.setCurrentPath(fileObject.getFullName());
 
+                        // select previously opened child if was navigated to parent
+                        if (currentFileObject != null) { // null on initial folder display
+                            browser.setSelectedFileObject(currentFileObject);
+                        }
+
                         currentFileObject = fileObject;
                         LOGGER.debug("cd: {}", fileObject);
                     }
