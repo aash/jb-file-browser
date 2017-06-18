@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.nio.charset.StandardCharsets;
 
 public final class TextFilePreviewGenerator implements PreviewGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(PreviewGenerator.class);
@@ -32,7 +33,8 @@ public final class TextFilePreviewGenerator implements PreviewGenerator {
         try {
             try (InputStream is = fileObject.getInputStream()) {
                 if (is != null) {
-                    try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(is))) {
+                    try (LineNumberReader reader = new LineNumberReader(
+                            new InputStreamReader(is, StandardCharsets.UTF_8))) {
                         StringBuilder previewContent = new StringBuilder();
                         String line;
                         while ((line = reader.readLine()) != null) {
