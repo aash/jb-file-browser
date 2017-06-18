@@ -56,7 +56,6 @@ public final class FtpClient {
      * @return children of passed directory.
      * @throws IOException
      */
-    //TODO this method should also support zip
     List<FileObject> list(FtpFileObject directory) throws IOException {
         ensureClientReady();
 
@@ -83,7 +82,6 @@ public final class FtpClient {
         return new BufferedInputStream(client.retrieveFileStream(file.getFullName()));
     }
 
-    //TODO pass child directory to this method?
     FileObject getParentDirectory(FtpFileObject fileObject) throws IOException {
         ensureClientReady();
 

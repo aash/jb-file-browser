@@ -71,7 +71,7 @@ final class App {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                browserController.disconnectFromFtp(); //TODO don't to it in UI thread
+                browserController.disconnectFromFtp();
             }
         });
         frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);

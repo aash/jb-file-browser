@@ -56,7 +56,7 @@ public final class FtpFileObject extends AbstractFileObject {
             try {
                 setParent(client.getParentDirectory(this));
             } catch (IOException e) {
-                //TODO handle
+                LOGGER.warn("Cannot get the parent of FTP file object", e);
             }
         }
         return super.getParent();

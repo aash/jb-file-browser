@@ -263,7 +263,6 @@ public final class FileBrowserController {
                 }
             }
 
-            //TODO better go to the previous directory
             private void backToInitialDirectory() {
                 // go back to initial local directory if for some reason FTP contents are not shown
                 LOGGER.warn("Cannot show FTP contents, going back to initial local directory");

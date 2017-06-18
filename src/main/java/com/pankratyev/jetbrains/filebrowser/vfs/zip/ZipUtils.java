@@ -83,7 +83,7 @@ public final class ZipUtils {
             ZipFileProvider archiveZipFileProvider) {
         Enumeration<? extends ZipEntry> entriesEnumeration = asZipFile.entries();
 
-        Map<String, ZipEntry> entriesByPaths = new HashMap<>(); //TODO use LinkedHashMap to save contents order?
+        Map<String, ZipEntry> entriesByPaths = new HashMap<>();
         while (entriesEnumeration.hasMoreElements()) {
             ZipEntry entry = entriesEnumeration.nextElement();
             String name = entry.getName();

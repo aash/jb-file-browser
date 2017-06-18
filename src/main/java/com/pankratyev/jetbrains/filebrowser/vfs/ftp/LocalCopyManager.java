@@ -29,6 +29,7 @@ public final class LocalCopyManager {
 
     /**
      * If a local copy was created more than this time interval ago it will be considered outdated.
+     * NOTE: name of this field is used in LocalCopyManagerTest.
      */
     private static final int LOCAL_COPY_EXPIRE_TIME_INTERVAL = 3 * 60 * 1000; // millis
 
