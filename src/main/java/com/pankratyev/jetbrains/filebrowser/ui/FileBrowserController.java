@@ -219,6 +219,7 @@ public final class FileBrowserController {
             @Override
             protected void done() {
                 if (isCancelled()) {
+                    client.disconnect();
                     backToInitialDirectory();
                     return;
                 }
@@ -271,6 +272,8 @@ public final class FileBrowserController {
      * for currently opened path will be invalidated.
      */
     public void refresh() {
+        ensureEdt();
+
         if (currentFileObject == null) {
             // shouldn't happen
             LOGGER.error("Unexpected state: no current file object");
