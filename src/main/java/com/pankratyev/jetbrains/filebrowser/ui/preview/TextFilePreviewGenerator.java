@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -25,11 +26,6 @@ public final class TextFilePreviewGenerator implements PreviewGenerator {
     @Nonnull
     @Override
     public JComponent generatePreview(FileObject fileObject, int maxWidth, int maxHeight) {
-        JTextPane previewPane = new JTextPane();
-        previewPane.setEditable(false);
-        previewPane.setMaximumSize(new Dimension(maxWidth, maxHeight));
-        previewPane.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
-
         try {
             try (InputStream is = fileObject.getInputStream()) {
                 if (is != null) {
@@ -45,8 +41,16 @@ public final class TextFilePreviewGenerator implements PreviewGenerator {
                             previewContent.append(line).append(System.lineSeparator());
                         }
 
+                        JTextPane previewPane = new JTextPane();
+                        previewPane.setEditable(false);
+                        previewPane.setMaximumSize(new Dimension(maxWidth, maxHeight));
+                        previewPane.setBorder(BorderFactory.createCompoundBorder(
+                                null, BorderFactory.createEmptyBorder(3, 3, 3, 3)));
                         previewPane.setText(previewContent.toString());
-                        return new JScrollPane(previewPane);
+
+                        JScrollPane scrollPane = new JScrollPane(previewPane);
+                        scrollPane.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
+                        return scrollPane;
                     }
                 }
             }
