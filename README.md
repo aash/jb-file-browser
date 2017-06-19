@@ -17,3 +17,7 @@ mvn clean package
 cd target
 java -jar file-browser-1.0.0-jar-with-dependencies.jar
 ```
+
+## Testing
+In **test-files** folder there are some text files, images and an archive. 
+Also for testing FTP-related things there's a public FTP server [test.rebex.net](http://test.rebex.net/).
