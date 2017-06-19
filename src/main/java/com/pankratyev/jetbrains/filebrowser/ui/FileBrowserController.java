@@ -128,6 +128,7 @@ public final class FileBrowserController {
                         browser.showErrorDialog("An error occurred: " + e.getMessage());
                         LOGGER.error(null, e);
                     }
+                    browser.clearPreview();
                 }
             }
         });

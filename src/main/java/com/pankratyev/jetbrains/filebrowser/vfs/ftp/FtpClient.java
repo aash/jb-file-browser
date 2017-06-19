@@ -23,6 +23,11 @@ import java.util.Objects;
 public final class FtpClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(FtpClient.class);
 
+    private static final String FTP_DEFAULT_PATH = "/";
+    private static final String FTP_PATH_SEPARATOR = "/";
+    private static final String FTP_DEFAULT_USERNAME = "anonymous";
+    private static final String FTP_DEFAULT_PASSWORD = "anonymous";
+
     private final String host;
     private final int port;
     private final String username;
@@ -47,6 +52,10 @@ public final class FtpClient {
         ensureClientReady();
 
         String currentDirAbsolutePath = client.printWorkingDirectory();
+        if (currentDirAbsolutePath == null) {
+            // can happen with some FTP servers
+            currentDirAbsolutePath = FTP_DEFAULT_PATH;
+        }
         localCopyManager = new LocalCopyManager(host);
         return new FtpFileObject(this, currentDirAbsolutePath, null, true, localCopyManager);
     }
@@ -64,7 +73,8 @@ public final class FtpClient {
         String currentDirectoryPath = directory.getFullName();
         List<FileObject> children = new ArrayList<>();
         for (FTPFile file : files) {
-            String fileAbsolutePath = currentDirectoryPath + File.separator + file.getName();
+            String fileAbsolutePath = (currentDirectoryPath.endsWith(FTP_PATH_SEPARATOR) ? "" : currentDirectoryPath)
+                    + FTP_PATH_SEPARATOR + file.getName();
             children.add(new FtpFileObject(
                     this, fileAbsolutePath, directory, file.isDirectory(), directory.getLocalCopyManager()));
         }
@@ -120,17 +130,16 @@ public final class FtpClient {
         if (client == null) {
             client = new FTPClient();
             client.connect(host, port);
-
-            if (StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password)) {
-                try {
-                    boolean loggedIn = client.login(username, password);
-                    if (!loggedIn) {
-                        throw new IOException("Login failed; wrong credentials?");
-                    }
-                } catch (IOException | RuntimeException e) {
-                    disconnect();
-                    throw e;
+            try {
+                boolean loggedIn = client.login(
+                        StringUtils.isNotEmpty(username) ? username : FTP_DEFAULT_USERNAME,
+                        StringUtils.isNotEmpty(password) ? password : FTP_DEFAULT_PASSWORD);
+                if (!loggedIn) {
+                    throw new IOException("Login failed; wrong credentials?");
                 }
+            } catch (IOException e) {
+                disconnect();
+                throw e;
             }
         }
     }
