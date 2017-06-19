@@ -27,6 +27,7 @@ public final class FtpClient {
     private static final String FTP_PATH_SEPARATOR = "/";
     private static final String FTP_DEFAULT_USERNAME = "anonymous";
     private static final String FTP_DEFAULT_PASSWORD = "anonymous";
+    private static final int FTP_TIMEOUT = 30 * 1000; // millis
 
     private final String host;
     private final int port;
@@ -129,6 +130,9 @@ public final class FtpClient {
 
         if (client == null) {
             client = new FTPClient();
+            client.enterLocalPassiveMode();
+            client.setConnectTimeout(FTP_TIMEOUT);
+
             client.connect(host, port);
             try {
                 boolean loggedIn = client.login(
