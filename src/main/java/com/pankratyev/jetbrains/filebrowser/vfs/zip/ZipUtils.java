@@ -4,6 +4,9 @@ import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.VfsUtils;
 import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpFileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObject;
+import com.pankratyev.jetbrains.filebrowser.vfs.type.ArchiveFileType;
+import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
+import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.SimpleFileTypeProvider;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
@@ -26,6 +29,8 @@ public final class ZipUtils {
      */
     public static final String ZIP_PATH_SEPARATOR = "/";
 
+    private static final FileTypeProvider FILE_TYPE_PROVIDER = new SimpleFileTypeProvider();
+
     private ZipUtils() {
     }
 
@@ -34,8 +39,7 @@ public final class ZipUtils {
      * @return true if this {@link FileObject} is a zip archive; false otherwise.
      */
     public static boolean isZipArchive(@Nonnull FileObject fileObject) {
-        //TODO make it more reliable
-        return fileObject.getName().toLowerCase().endsWith(".zip");
+        return FILE_TYPE_PROVIDER.getType(fileObject) instanceof ArchiveFileType;
     }
 
 

@@ -28,7 +28,7 @@ public final class LocalFileObject extends AbstractFileObject {
      */
     LocalFileObject(@Nullable FileObject parent, @Nonnull Path path) {
         super(path.toAbsolutePath().toString(), parent, Files.isDirectory(path));
-        this.path = path; // TODO actually parent can be obtained from path; remove it?
+        this.path = path;
     }
 
     @Override
@@ -54,7 +54,6 @@ public final class LocalFileObject extends AbstractFileObject {
         if (isDirectory()) {
             return null;
         }
-        //TODO size limit (not for text files)
         return new BufferedInputStream(Files.newInputStream(path));
     }
 

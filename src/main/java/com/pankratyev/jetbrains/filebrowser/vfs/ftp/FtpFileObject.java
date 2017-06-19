@@ -45,7 +45,7 @@ public final class FtpFileObject extends AbstractFileObject {
 
     @Override
     public boolean hasParent() {
-        //TODO implement properly
+        //TODO implement properly, though it won't cause any problems as is
         return true;
     }
 
