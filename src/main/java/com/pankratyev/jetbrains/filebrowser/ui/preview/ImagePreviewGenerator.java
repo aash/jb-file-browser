@@ -30,7 +30,6 @@ public final class ImagePreviewGenerator implements PreviewGenerator {
                     }
                 }
             }
-        } catch (ClosedByInterruptException ignore) {
         } catch (IOException e) {
             LOGGER.warn("Cannot generate a preview for an image: " + fileObject, e);
         }
