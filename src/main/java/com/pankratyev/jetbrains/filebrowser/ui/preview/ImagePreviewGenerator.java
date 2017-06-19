@@ -31,7 +31,7 @@ public final class ImagePreviewGenerator implements PreviewGenerator {
                 }
             }
         } catch (IOException e) {
-            LOGGER.warn("Cannot generate a preview for an image: " + fileObject, e);
+            LOGGER.debug("Cannot generate a preview for an image: " + fileObject, e);
         }
 
         return PreviewUtils.getBrokenFilePreview(maxWidth, maxHeight);

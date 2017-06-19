@@ -54,7 +54,7 @@ public final class TextFilePreviewGenerator implements PreviewGenerator {
                 }
             }
         } catch (IOException e) {
-            LOGGER.warn("Cannot generate a preview for a text file: " + fileObject, e);
+            LOGGER.debug("Cannot generate a preview for a text file: " + fileObject, e);
         }
 
         return PreviewUtils.getBrokenFilePreview(maxWidth, maxHeight);
