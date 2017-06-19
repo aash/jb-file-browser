@@ -51,6 +51,5 @@ abstract class AbstractUserDirectoriesProvider implements UserDirectoriesProvide
     }
 
     @Nonnull
-    //TODO think about localized folders names
     protected abstract String[] getUserDirectoriesNames();
 }

@@ -1,7 +1,9 @@
 # JetBrains test assignment
 
-A simple file browser that supports preview for several file types: text files, images ...to be continued
+A simple file browser that displays preview for text files and images. 
+Supported storage types: local disk, zip archives, FTP server.
 
+![alt text](https://gist.githubusercontent.com/yarps95/57c64da171e37148cc3936df5349b587/raw/1447d8f13f0f37a437ad38f2b0804f1e7110866b/screenshot.png "File browser with preview")
 
 ## Build
 

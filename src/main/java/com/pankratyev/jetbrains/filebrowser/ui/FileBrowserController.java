@@ -128,6 +128,7 @@ public final class FileBrowserController {
                         browser.showErrorDialog("An error occurred: " + e.getMessage());
                         LOGGER.error(null, e);
                     }
+                    browser.clearPreview();
                 }
             }
         });
@@ -235,7 +236,6 @@ public final class FileBrowserController {
                     LOGGER.warn("An error occurred while displaying FTP server contents", e);
                     browser.showErrorDialog(
                             "An error occurred while displaying FTP server contents: " + e.getMessage());
-                    disconnectFromFtp();
                     return null;
                 }
             }
@@ -260,6 +260,8 @@ public final class FileBrowserController {
                             // shouldn't happen
                             LOGGER.error("Unexpected null path to display");
                         }
+                    } else {
+                        backToInitialDirectory();
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -274,7 +276,8 @@ public final class FileBrowserController {
                 // go back to initial local directory if for some reason FTP contents are not shown
                 LOGGER.warn("Cannot show FTP contents, going back to initial local directory");
                 disconnectFromFtp();
-                FileBrowserController.this.changeDirectoryToInitial();
+                changeDirectoryToInitial();
+                browser.clearPreview();
             }
         });
     }

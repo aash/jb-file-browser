@@ -9,7 +9,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.IOException;
