@@ -4,7 +4,6 @@ import com.pankratyev.jetbrains.filebrowser.vfs.AbstractFileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.zip.ZipUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.TeeInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,13 +105,26 @@ public final class FtpFileObject extends AbstractFileObject {
             return new BufferedInputStream(Files.newInputStream(localCopy));
         }
 
-        InputStream ftpFileStream = client.getFileStream(this);
-        OutputStream localCopyOs = localCopyManager.getLocalCopyOutputStream(this);
-        LOGGER.debug("Local copy will be stored for {}", this);
-        if (localCopyOs == null) {
-            return ftpFileStream;
+        try (OutputStream localCopyOs = localCopyManager.getLocalCopyOutputStream(this);
+             InputStream ftpFileStream = client.getFileStream(this)) {
+            if (localCopyOs == null) {
+                LOGGER.warn("Unable to store a local copy of {}", this);
+                return ftpFileStream;
+            }
+
+            LOGGER.debug("Local copy will be stored for {}", this);
+            try {
+                IOUtils.copy(ftpFileStream, localCopyOs);
+            } catch (IOException e) {
+                LOGGER.warn("Cannot store the local copy", e);
+            }
+            localCopy = localCopyManager.getLocalCopy(this);
+
+            if (localCopy == null) {
+                throw new IOException("Cannot read the file: " + getName());
+            }
+            return new BufferedInputStream(Files.newInputStream(localCopy));
         }
-        return new TeeInputStream(ftpFileStream, localCopyOs, true);
     }
 
     LocalCopyManager getLocalCopyManager() {
