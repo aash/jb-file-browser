@@ -25,6 +25,7 @@ public final class FileListSelectionListener implements ListSelectionListener {
             if (index < 0) {
                 return;
             }
+            //TODO for FtpFileObjects show preview with delay if element is still selected to avoid unnecessary requests to FTP
             FileObject selectedFileObject = fileList.getModel().getElementAt(index);
             controller.showPreview(selectedFileObject);
         }

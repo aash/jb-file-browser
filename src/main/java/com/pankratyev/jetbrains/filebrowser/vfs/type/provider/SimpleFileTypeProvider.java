@@ -1,6 +1,7 @@
 package com.pankratyev.jetbrains.filebrowser.vfs.type.provider;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
+import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpFileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.ArchiveFileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.DirectoryFileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.FileType;
@@ -73,7 +74,16 @@ public final class SimpleFileTypeProvider implements FileTypeProvider {
         }
         FileType type = FILE_TYPES.get(extension);
 
-        return type != null ? type : determineByContent(file);
+        if (type != null) {
+            return type;
+        }
+
+        if (file instanceof FtpFileObject) {
+            // it is really a bad idea to probe content of files placed on FTP
+            return UNKNOWN_TYPE;
+        }
+
+        return determineByContent(file);
     }
 
     private static FileType determineByContent(FileObject file) {

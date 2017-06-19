@@ -79,9 +79,6 @@ final class ParentDirFileObject implements FileObject {
 
     @Override
     public String toString() {
-        FileObject realObject = child.getParent();
-        return "PDFO{" +
-                (realObject == null ? ("child=" + child) : realObject) +
-                '}';
+        return "PDFO{child=" + child + '}';
     }
 }
