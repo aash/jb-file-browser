@@ -3,7 +3,6 @@ package com.pankratyev.jetbrains.filebrowser.vfs.ftp;
 import com.pankratyev.jetbrains.filebrowser.vfs.AbstractFileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.zip.ZipUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +41,7 @@ public final class FtpFileObject extends AbstractFileObject {
         this.localCopyManager = Objects.requireNonNull(localCopyManager);
     }
 
+
     @Override
     public boolean hasParent() {
         //TODO implement properly, though it won't cause any problems as is
@@ -73,20 +73,25 @@ public final class FtpFileObject extends AbstractFileObject {
             if (localCopy == null) {
                 LOGGER.debug("Storing local copy to get children of {}", this);
 
-                try (InputStream ftpFileStream = client.getFileStream(this);
-                        OutputStream localCopyOs = localCopyManager.getLocalCopyOutputStream(this)) {
+                try (OutputStream localCopyOs = localCopyManager.getLocalCopyOutputStream(this)) {
                     if (localCopyOs == null) {
-                        throw new IOException("Unable to store a local copy of archive: " + getName());
+                        throw new IOException("Unable to store a local copy of " + this);
                     }
 
-                    IOUtils.copy(ftpFileStream, localCopyOs);
+                    LOGGER.debug("Local copy will be stored for {}", this);
+
+                    client.retrieveFile(this, localCopyOs);
                     localCopy = localCopyManager.getLocalCopy(this);
+                } catch (IOException e) {
+                    localCopyManager.deleteLocalCopy(this);
+                    throw e;
                 }
             }
 
             if (localCopy != null) {
                 return ZipUtils.getZipArchiveTopLevelChildren(this);
             }
+            throw new IOException("Local copy not found for " + this);
         }
 
         return null;
@@ -100,39 +105,31 @@ public final class FtpFileObject extends AbstractFileObject {
         }
 
         Path localCopy = localCopyManager.getLocalCopy(this);
-        if (localCopy != null) {
-            LOGGER.debug("Using local copy of {}", this);
-            return new BufferedInputStream(Files.newInputStream(localCopy));
-        }
+        if (localCopy == null) {
+            try (OutputStream localCopyOs = localCopyManager.getLocalCopyOutputStream(this)) {
+                if (localCopyOs == null) {
+                    // TODO in such case it's possible to use direct FTP stream
+                    throw new IOException("Unable to store a local copy of " + this);
+                }
 
-        try (OutputStream localCopyOs = localCopyManager.getLocalCopyOutputStream(this);
-             InputStream ftpFileStream = client.getFileStream(this)) {
-            if (localCopyOs == null) {
-                LOGGER.warn("Unable to store a local copy of {}", this);
-                return ftpFileStream;
-            }
-
-            LOGGER.debug("Local copy will be stored for {}", this);
-            try {
-                IOUtils.copy(ftpFileStream, localCopyOs);
+                LOGGER.debug("Local copy will be stored for {}", this);
+                client.retrieveFile(this, localCopyOs);
+                localCopy = localCopyManager.getLocalCopy(this);
             } catch (IOException e) {
-                LOGGER.warn("Cannot store the local copy", e);
+                localCopyManager.deleteLocalCopy(this);
+                throw e;
             }
-            localCopy = localCopyManager.getLocalCopy(this);
+        }
 
-            if (localCopy == null) {
-                throw new IOException("Cannot read the file: " + getName());
-            }
+        if (localCopy != null) {
             return new BufferedInputStream(Files.newInputStream(localCopy));
         }
+        throw new IOException("Local copy not found for " + this);
     }
 
-    LocalCopyManager getLocalCopyManager() {
-        return localCopyManager;
-    }
 
     public Path getLocalCopy() {
-        return getLocalCopyManager().getLocalCopy(this);
+        return localCopyManager.getLocalCopy(this);
     }
 
     @Override

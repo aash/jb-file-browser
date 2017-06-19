@@ -213,7 +213,7 @@ public final class FileBrowserController {
                 publish();
 
                 try {
-                    FileObject fileObject = client.getCurrentDirectory();
+                    FileObject fileObject = client.getInitialDirectory();
                     LOGGER.debug("Connected to FTP: {}", fileObject);
                     absolutePathToDisplay = fileObject.getFullName();
 
@@ -243,7 +243,6 @@ public final class FileBrowserController {
             @Override
             protected void done() {
                 if (isCancelled()) {
-                    client.disconnect();
                     backToInitialDirectory();
                     return;
                 }
@@ -284,12 +283,7 @@ public final class FileBrowserController {
 
     public void disconnectFromFtp() {
         ensureEdt();
-
-        if (ftpClient != null) {
-            ftpClient.disconnect();
-            ftpClient = null;
-        }
-
+        ftpClient = null;
         browser.disableFtpMode();
     }
 

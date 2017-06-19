@@ -6,7 +6,7 @@ import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpFileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.ArchiveFileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.SimpleFileTypeProvider;
+import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.ExtensionBasedFileTypeProvider;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
@@ -29,7 +29,7 @@ public final class ZipUtils {
      */
     public static final String ZIP_PATH_SEPARATOR = "/";
 
-    private static final FileTypeProvider FILE_TYPE_PROVIDER = new SimpleFileTypeProvider();
+    private static final FileTypeProvider FILE_TYPE_PROVIDER = new ExtensionBasedFileTypeProvider();
 
     private ZipUtils() {
     }

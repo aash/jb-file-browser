@@ -111,7 +111,7 @@ public class FtpConnectDialog extends JDialog {
             @Override
             protected String doInBackground() {
                 try {
-                    createdClient.ensureClientReady();
+                    createdClient.testConnection();
                     return null;
                 } catch (IOException e) {
                     createdClient = null;

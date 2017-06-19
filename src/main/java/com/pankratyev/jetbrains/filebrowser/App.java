@@ -8,7 +8,7 @@ import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpClient;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObjectFactory;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProvider;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProviderFactory;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.SimpleFileTypeProvider;
+import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.ExtensionBasedFileTypeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +56,7 @@ final class App {
     private static JFrame createAndInitFrame() {
         JFrame frame = new JFrame(WINDOW_TITLE);
 
-        SimpleFileTypeProvider fileTypeProvider = getFileTypeProvider();
+        ExtensionBasedFileTypeProvider fileTypeProvider = getFileTypeProvider();
         UserDirectoriesProvider userDirProvider = getUserDirectoriesProvider();
         FileObject initialFileObject = getInitialFileObject(userDirProvider);
 
@@ -129,8 +129,8 @@ final class App {
         return menuBar;
     }
 
-    private static SimpleFileTypeProvider getFileTypeProvider() {
-        return new SimpleFileTypeProvider();
+    private static ExtensionBasedFileTypeProvider getFileTypeProvider() {
+        return new ExtensionBasedFileTypeProvider();
     }
 
     private static UserDirectoriesProvider getUserDirectoriesProvider() {
