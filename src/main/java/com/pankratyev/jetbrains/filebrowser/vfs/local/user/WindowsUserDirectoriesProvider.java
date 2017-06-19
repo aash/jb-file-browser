@@ -7,9 +7,9 @@ final class WindowsUserDirectoriesProvider extends AbstractUserDirectoriesProvid
     @Override
     protected String[] getUserDirectoriesNames() {
         return new String[] {
-                "My Documents",
+                "Documents",
                 "Downloads",
-                "My Pictures",
+                "Pictures",
                 "Desktop"
         };
     }
