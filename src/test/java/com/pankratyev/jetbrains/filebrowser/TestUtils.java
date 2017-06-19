@@ -3,6 +3,7 @@ package com.pankratyev.jetbrains.filebrowser;
 import com.pankratyev.jetbrains.filebrowser.vfs.VfsUtils;
 import com.pankratyev.jetbrains.filebrowser.vfs.zip.ZipUtils;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -36,7 +37,8 @@ public final class TestUtils {
             Files.walkFileTree(directoryToZip, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    zos.putNextEntry(new ZipEntry(directoryToZip.relativize(file).toString()));
+                    zos.putNextEntry(new ZipEntry(directoryToZip.relativize(file).toString()
+                            .replace(File.separator, ZipUtils.ZIP_PATH_SEPARATOR)));
                     Files.copy(file, zos);
                     zos.closeEntry();
                     return FileVisitResult.CONTINUE;
@@ -45,7 +47,9 @@ public final class TestUtils {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                     zos.putNextEntry(new ZipEntry(
-                            directoryToZip.relativize(dir).toString() + ZipUtils.ZIP_PATH_SEPARATOR));
+                            directoryToZip.relativize(dir).toString()
+                                    .replace(File.separator, ZipUtils.ZIP_PATH_SEPARATOR)
+                                    + ZipUtils.ZIP_PATH_SEPARATOR));
                     zos.closeEntry();
                     return FileVisitResult.CONTINUE;
                 }

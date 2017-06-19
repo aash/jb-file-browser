@@ -118,7 +118,7 @@ public final class ZippedFileObject extends AbstractFileObject {
     }
 
     private static String getAbsolutePath(FileObject parentZipArchive, String pathInArchive) {
-        //TODO replace '/' in pathInArchive with File.separator
+        pathInArchive = pathInArchive.replace(ZipUtils.ZIP_PATH_SEPARATOR, File.separator);
         if (!pathInArchive.startsWith(File.separator)) {
             pathInArchive = File.separator + pathInArchive;
         }

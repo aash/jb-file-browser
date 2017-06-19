@@ -7,7 +7,6 @@ import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObject;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -21,7 +20,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public final class ZipUtils {
-    public static final String ZIP_PATH_SEPARATOR = File.separator;
+    /**
+     * ZIP spec (4.4.17 file name): All slashes MUST be forward slashes '/' as opposed to
+     * backwards slashes '\' for compatibility with Amiga and UNIX file systems etc.
+     */
+    public static final String ZIP_PATH_SEPARATOR = "/";
 
     private ZipUtils() {
     }
@@ -127,7 +130,7 @@ public final class ZipUtils {
 
                     ZippedFileObject fileObject = new ZippedFileObject(
                             parentArchive, path, archiveZipFileProvider, entry.getValue().isDirectory(), parent);
-                    fileObjectsByPaths.put(VfsUtils.normalizePath(path, ZIP_PATH_SEPARATOR), fileObject);
+                    fileObjectsByPaths.put(normalizedPath, fileObject);
                 }
             }
 
@@ -138,6 +141,10 @@ public final class ZipUtils {
     }
 
 
+    /**
+     * @param path path in archive (with {@link #ZIP_PATH_SEPARATOR} separators).
+     * @return nesting level of passed path (0 for top-level paths).
+     */
     static int getNestingLevel(@Nonnull String path) {
         path = VfsUtils.normalizePath(path, ZIP_PATH_SEPARATOR);
         return StringUtils.countMatches(path, ZIP_PATH_SEPARATOR);
