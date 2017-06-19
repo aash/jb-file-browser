@@ -22,5 +22,5 @@ public interface PreviewGenerator {
      * @return preview (usually it is a {@link JLabel} with image).
      */
     @Nonnull
-    JComponent generatePreview(FileObject fileObject, int maxWidth, int maxHeight);
+    JComponent generatePreview(@Nonnull FileObject fileObject, int maxWidth, int maxHeight);
 }

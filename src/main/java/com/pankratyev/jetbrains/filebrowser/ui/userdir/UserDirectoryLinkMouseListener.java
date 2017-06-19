@@ -4,14 +4,16 @@ import com.pankratyev.jetbrains.filebrowser.ui.FileBrowserController;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObjectFactory;
 
+import javax.annotation.Nonnull;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Objects;
 
 final class UserDirectoryLinkMouseListener extends MouseAdapter {
     private final FileBrowserController controller;
 
-    UserDirectoryLinkMouseListener(FileBrowserController controller) {
-        this.controller = controller;
+    UserDirectoryLinkMouseListener(@Nonnull FileBrowserController controller) {
+        this.controller = Objects.requireNonNull(controller);
     }
 
     @Override

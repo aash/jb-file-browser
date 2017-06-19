@@ -2,6 +2,7 @@ package com.pankratyev.jetbrains.filebrowser.ui.preview;
 
 import com.pankratyev.jetbrains.filebrowser.ui.IconRegistry;
 
+import javax.annotation.Nonnull;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -12,10 +13,12 @@ final class PreviewUtils {
     private PreviewUtils() {
     }
 
+    @Nonnull
     static JComponent getBrokenFilePreview(int maxWidth, int maxHeight) {
         return getPreviewComponent(IconRegistry.BROKEN_PREVIEW, maxWidth, maxHeight);
     }
 
+    @Nonnull
     static JComponent getPreviewComponent(BufferedImage previewImage, int maxWidth, int maxHeight) {
         Image resizedImage = resizeIfNecessary(previewImage, maxWidth, maxHeight);
         return new JLabel(new ImageIcon(resizedImage));

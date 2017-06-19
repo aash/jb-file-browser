@@ -47,6 +47,7 @@ public final class ZipUtils {
      * @param archive local zip archive.
      * @return zip archive top-level files/directories.
      */
+    @Nonnull
     public static List<FileObject> getZipArchiveTopLevelChildren(@Nonnull LocalFileObject archive) throws IOException {
         LocalArchiveZipFileProvider archiveZipFileProvider = new LocalArchiveZipFileProvider(archive);
         try (ZipFile zipFile = archiveZipFileProvider.getZipFile()) {
@@ -58,6 +59,7 @@ public final class ZipUtils {
      * @param archive zip archive placed on FTP server.
      * @return zip archive top-level files/directories.
      */
+    @Nonnull
     public static List<FileObject> getZipArchiveTopLevelChildren(@Nonnull FtpFileObject archive) throws IOException {
         FtpArchiveZipFileProvider archiveZipFileProvider = new FtpArchiveZipFileProvider(archive);
         try (ZipFile zipFile = archiveZipFileProvider.getZipFile()) {

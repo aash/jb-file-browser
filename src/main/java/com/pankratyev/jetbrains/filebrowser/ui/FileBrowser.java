@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * File browser UI.
@@ -186,14 +187,14 @@ public final class FileBrowser {
         return previewPanel.getSize();
     }
 
-    void showErrorDialog(String message) {
-        JOptionPane.showMessageDialog(getMainPanel().getParent(), message,
+    void showErrorDialog(@Nonnull String message) {
+        JOptionPane.showMessageDialog(getMainPanel().getParent(), Objects.requireNonNull(message),
                 ERROR_DIALOG_TITLE, JOptionPane.ERROR_MESSAGE);
     }
 
-    void enableFtpMode(String ftpPathPrefix) {
+    void enableFtpMode(@Nonnull String ftpPathPrefix) {
         ftpMode = true;
-        this.ftpPathPrefix = ftpPathPrefix;
+        this.ftpPathPrefix = Objects.requireNonNull(ftpPathPrefix);
         hideUserDirectories();
     }
 

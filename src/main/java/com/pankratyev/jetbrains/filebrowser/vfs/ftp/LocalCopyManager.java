@@ -150,7 +150,7 @@ public class LocalCopyManager {
      * Removes file local copies for passed path and current host.
      * @param fullPath full path on FTP server under which all the file local copies should be removed.
      */
-    public void invalidate(String fullPath) {
+    public void invalidate(@Nonnull String fullPath) {
         if (!Files.exists(basePath)) {
             return;
         }

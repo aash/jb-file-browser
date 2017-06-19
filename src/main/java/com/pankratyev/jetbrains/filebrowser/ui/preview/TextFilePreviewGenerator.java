@@ -24,7 +24,7 @@ public final class TextFilePreviewGenerator implements PreviewGenerator {
 
     @Nonnull
     @Override
-    public JComponent generatePreview(FileObject fileObject, int maxWidth, int maxHeight) {
+    public JComponent generatePreview(@Nonnull FileObject fileObject, int maxWidth, int maxHeight) {
         try {
             try (InputStream is = fileObject.getInputStream()) {
                 if (is != null) {

@@ -56,6 +56,7 @@ public final class FtpClient {
         }
     }
 
+    @Nonnull
     public FileObject getInitialDirectory() throws IOException {
         FTPClient client = createClient();
         try {
@@ -76,7 +77,8 @@ public final class FtpClient {
     }
 
 
-    List<FileObject> list(FtpFileObject directory) throws IOException {
+    @Nonnull
+    List<FileObject> list(@Nonnull FtpFileObject directory) throws IOException {
         FTPClient client = createClient();
         try {
             String dirPath = directory.getFullName();
@@ -97,7 +99,8 @@ public final class FtpClient {
         }
     }
 
-    FileObject getParentDirectory(FtpFileObject fileObject) throws IOException {
+    @Nullable
+    FileObject getParentDirectory(@Nonnull FtpFileObject fileObject) throws IOException {
         FTPClient client = createClient();
         try {
             client.changeWorkingDirectory(fileObject.getFullName());
@@ -119,7 +122,7 @@ public final class FtpClient {
         }
     }
 
-    void retrieveFile(FtpFileObject file, OutputStream to) throws IOException {
+    void retrieveFile(@Nonnull FtpFileObject file, @Nonnull OutputStream to) throws IOException {
         String pathToRetrieve = file.getFullName();
         FTPClient client = createClient();
         try {
@@ -182,10 +185,12 @@ public final class FtpClient {
     /**
      * @return current FTP URL including username and port, trailing slash is absent.
      */
+    @Nonnull
     public String getFtpUrl() {
         return "ftp://" + (StringUtils.isEmpty(username) ? "" : username + "@") + host + ":" + port;
     }
 
+    @Nonnull
     public LocalCopyManager getLocalCopyManager() {
         return localCopyManager;
     }

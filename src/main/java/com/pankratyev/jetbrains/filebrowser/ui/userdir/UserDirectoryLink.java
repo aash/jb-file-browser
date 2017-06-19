@@ -25,6 +25,7 @@ public final class UserDirectoryLink extends JLabel {
         addMouseListener(new UserDirectoryLinkMouseListener(controller));
     }
 
+    @Nonnull
     String getUserDirPath() {
         return userDirPath;
     }

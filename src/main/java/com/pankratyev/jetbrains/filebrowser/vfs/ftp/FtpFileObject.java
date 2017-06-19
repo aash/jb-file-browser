@@ -127,6 +127,7 @@ public final class FtpFileObject extends AbstractFileObject {
     }
 
 
+    @Nullable
     public Path getLocalCopy() {
         return localCopyManager.getLocalCopy(this);
     }

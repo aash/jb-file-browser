@@ -9,7 +9,7 @@ import javax.swing.JComponent;
 public final class ArchivePreviewGenerator implements PreviewGenerator {
     @Nonnull
     @Override
-    public JComponent generatePreview(FileObject fileObject, int maxWidth, int maxHeight) {
+    public JComponent generatePreview(@Nonnull FileObject fileObject, int maxWidth, int maxHeight) {
         return PreviewUtils.getPreviewComponent(IconRegistry.ARCHIVE_PREVIEW, maxWidth, maxHeight);
     }
 }
