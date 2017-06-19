@@ -10,7 +10,6 @@ import javax.swing.JComponent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.channels.ClosedByInterruptException;
 
 /**
  * {@link PreviewGenerator} implementation for image files (bmp, png, gif, jpeg).

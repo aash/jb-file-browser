@@ -17,6 +17,7 @@ import java.util.Objects;
  *
  * @see FileListCellRenderer
  */
+@SuppressWarnings("ConstantConditions")
 final class ParentDirFileObject implements FileObject {
     private final FileObject child;
 

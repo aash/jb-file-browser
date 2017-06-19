@@ -61,7 +61,6 @@ public final class ZippedFileObject extends AbstractFileObject {
     @Nullable
     @Override
     public List<FileObject> getChildren() throws IOException {
-        //TODO it would be good to support zipped zip archives
         if (!isDirectory()) {
             return null;
         }

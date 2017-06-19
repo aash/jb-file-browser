@@ -204,8 +204,6 @@ public final class LocalFileObjectTest {
             Collection<FileObject> children = archive.getChildren();
             assertNotNull(children);
             assertEquals(children.toString(), 4, children.size()); // direct children are 2 directories + 2 files
-
-            //TODO better to verify each child
         } finally {
             TestUtils.deleteFiles(tempDirPath, archivePath);
         }
