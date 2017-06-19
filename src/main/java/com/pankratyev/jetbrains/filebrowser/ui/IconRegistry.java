@@ -29,6 +29,7 @@ public final class IconRegistry {
     public static final BufferedImage BROKEN_PREVIEW = getImage("broken-preview.png");
 
     public static final ImageIcon PRELOADER = getIcon("preloader.gif");
+    public static final ImageIcon PRELOADER_SMALL = getIcon("preloader-small.gif");
 
 
     private static ImageIcon getIcon(String name) {

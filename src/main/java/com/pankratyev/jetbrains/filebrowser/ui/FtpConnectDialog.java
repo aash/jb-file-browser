@@ -2,6 +2,8 @@ package com.pankratyev.jetbrains.filebrowser.ui;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpClient;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import javax.swing.JButton;
@@ -12,18 +14,22 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingWorker;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class FtpConnectDialog extends JDialog {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FtpConnectDialog.class);
+
     private static final int DEFAULT_FTP_PORT = 21;
     private static final String FTP_PREFIX = "ftp://";
 
-    private FtpClient createdClient = null;
+    private volatile FtpClient createdClient = null;
 
     private JPanel contentPane;
     private JButton buttonOK;
@@ -73,6 +79,12 @@ public class FtpConnectDialog extends JDialog {
             host = host.substring(FTP_PREFIX.length());
         }
 
+        if (host.isEmpty()) {
+            errorMessageLabel.setText("Invalid host");
+            pack();
+            return;
+        }
+
         int port;
         try {
             if (StringUtils.isNotBlank(portField.getText())) {
@@ -85,23 +97,49 @@ public class FtpConnectDialog extends JDialog {
             pack();
             return;
         }
-        String username = usernameField.getText();
 
+        String username = usernameField.getText();
         @SuppressWarnings("deprecation") // FTPClient.login() requires password as a String anyway
         String password = passwordField.getText();
 
         createdClient = new FtpClient(host, port, username, password);
-        try {
-            //TODO don't do it in UI thread
-            createdClient.ensureClientReady();
-        } catch (IOException | RuntimeException e) {
-            createdClient = null;
-            errorMessageLabel.setText("Unable to connect: " + e.getMessage());
-            pack();
-            return;
-        }
 
-        dispose();
+        errorMessageLabel.setIcon(IconRegistry.PRELOADER_SMALL);
+        pack();
+
+        new SwingWorker<String, Void>() {
+            @Override
+            protected String doInBackground() {
+                try {
+                    createdClient.ensureClientReady();
+                    return null;
+                } catch (IOException e) {
+                    createdClient = null;
+                    return e.getMessage();
+                }
+            }
+
+            @Override
+            protected void done() {
+                errorMessageLabel.setIcon(null);
+
+                try {
+                    String errorMessage = get();
+                    if (errorMessage == null) {
+                        dispose();
+                    } else {
+                        errorMessageLabel.setText("Unable to connect: " + errorMessage);
+                        pack();
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } catch (ExecutionException e) {
+                    LOGGER.warn("Cannot perform FTP connection check", e);
+                    errorMessageLabel.setText("Cannot perform FTP connection check: " + e.getMessage());
+                    pack();
+                }
+            }
+        }.execute();
     }
 
     private void onCancel() {

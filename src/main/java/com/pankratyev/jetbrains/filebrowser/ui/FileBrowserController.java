@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public final class FileBrowserController {
     private final Logger LOGGER = LoggerFactory.getLogger(FileBrowserController.class);
 
-    private FileObject currentFileObject = null;
+    private volatile FileObject currentFileObject = null;
 
     /**
      * UI-related task currently being executed. Only one task can be running at once to avoid performance issues.
@@ -200,10 +200,17 @@ public final class FileBrowserController {
         this.ftpClient = client;
 
         runSwingWorker(new SwingWorker<List<FileObject>, Void>() {
-            private String absolutePathToDisplay = null;
+            private volatile String absolutePathToDisplay = null;
 
             @Override
-            protected List<FileObject> doInBackground() throws Exception {
+            protected void process(List<Void> chunks) {
+                browser.showPreloader();
+            }
+
+            @Override
+            protected List<FileObject> doInBackground() {
+                publish();
+
                 try {
                     FileObject fileObject = client.getCurrentDirectory();
                     LOGGER.debug("Connected to FTP: {}", fileObject);
