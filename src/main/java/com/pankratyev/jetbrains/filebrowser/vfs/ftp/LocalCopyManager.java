@@ -89,6 +89,21 @@ public class LocalCopyManager {
         return null;
     }
 
+    /**
+     * Deletes the local copy of passed {@link FtpFileObject} if present.
+     * @param fileObject file located on FTP server to delete local copy of.
+     * @throws IOException on I/O errors while deleting the local copy.
+     */
+    void deleteLocalCopy(@Nonnull FtpFileObject fileObject) throws IOException {
+        Path localCopy = getLocalCopy(fileObject);
+        if (localCopy == null) {
+            return;
+        }
+        if (Files.exists(localCopy)) {
+            Files.delete(localCopy);
+        }
+    }
+
     private boolean checkLocalCopyIsValid(Path localCopy) throws IOException {
         BasicFileAttributes attrs = Files.readAttributes(localCopy, BasicFileAttributes.class);
         long currentTime = System.currentTimeMillis();
