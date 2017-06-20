@@ -7,7 +7,7 @@ import com.pankratyev.jetbrains.filebrowser.ui.files.FileListSelectionListener;
 import com.pankratyev.jetbrains.filebrowser.ui.userdir.UserDirectoryLink;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProvider;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.provider.FileTypeProvider;
 
 import javax.annotation.Nonnull;
 import javax.swing.BorderFactory;

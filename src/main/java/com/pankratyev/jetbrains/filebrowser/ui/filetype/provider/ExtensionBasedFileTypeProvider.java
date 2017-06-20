@@ -1,12 +1,12 @@
-package com.pankratyev.jetbrains.filebrowser.vfs.type.provider;
+package com.pankratyev.jetbrains.filebrowser.ui.filetype.provider;
 
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.TextFileType;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.ArchiveFileType;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.DirectoryFileType;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.FileType;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.ImageFileType;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.TextFileType;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.UnknownFileType;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.ArchiveFileType;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.DirectoryFileType;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.FileType;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.ImageFileType;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.UnknownFileType;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.annotation.Nonnull;

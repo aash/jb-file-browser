@@ -1,4 +1,4 @@
-package com.pankratyev.jetbrains.filebrowser.vfs.type;
+package com.pankratyev.jetbrains.filebrowser.ui.filetype;
 
 import com.pankratyev.jetbrains.filebrowser.ui.preview.PreviewGenerator;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;

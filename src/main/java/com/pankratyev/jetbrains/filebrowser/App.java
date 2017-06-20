@@ -8,7 +8,7 @@ import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpClient;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObjectFactory;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProvider;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProviderFactory;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.ExtensionBasedFileTypeProvider;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.provider.ExtensionBasedFileTypeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

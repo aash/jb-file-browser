@@ -1,8 +1,8 @@
 package com.pankratyev.jetbrains.filebrowser.ui.files;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.FileType;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.FileType;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.provider.FileTypeProvider;
 
 import javax.annotation.Nonnull;
 import javax.swing.DefaultListCellRenderer;

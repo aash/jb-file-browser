@@ -2,8 +2,8 @@ package com.pankratyev.jetbrains.filebrowser.ui;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpClient;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.FileType;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.FileType;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.provider.FileTypeProvider;
 import com.pankratyev.jetbrains.filebrowser.vfs.zip.ZipUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -4,9 +4,9 @@ import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.VfsUtils;
 import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpFileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObject;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.ArchiveFileType;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.FileTypeProvider;
-import com.pankratyev.jetbrains.filebrowser.vfs.type.provider.ExtensionBasedFileTypeProvider;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.ArchiveFileType;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.provider.FileTypeProvider;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.provider.ExtensionBasedFileTypeProvider;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
