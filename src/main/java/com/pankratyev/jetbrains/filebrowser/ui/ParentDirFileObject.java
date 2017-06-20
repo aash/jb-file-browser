@@ -78,6 +78,17 @@ final class ParentDirFileObject implements FileObject {
         return child.getParent().getInputStream();
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    @Override
+    public boolean equals(Object o) {
+        return child.getParent().equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return child.getParent().hashCode();
+    }
+
     @Override
     public String toString() {
         return "PDFO{child=" + child + '}';
