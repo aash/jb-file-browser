@@ -156,27 +156,17 @@ public final class LocalFileObjectTest {
     @Test
     public void testZipArchiveChildren() throws IOException {
         Path tempDirPath = null;
-        Path subDir1Path = null;
-        Path subDir2Path = null;
-
-        Path file1Path = null;
-        Path file2Path = null;
-        Path subFile1Path = null;
-        Path subFile2Path = null;
-        Path subFile3Path = null;
-
         Path archivePath = null;
-
         try {
             tempDirPath = Files.createTempDirectory("ZipUtilsTest.testGetAllZipChildren.topdir");
-            subDir1Path = Files.createTempDirectory(tempDirPath, "ZipUtilsTest.testGetAllZipChildren.subdir1");
-            subDir2Path = Files.createTempDirectory(tempDirPath, "ZipUtilsTest.testGetAllZipChildren.subdir2");
+            Path subDir1Path = Files.createTempDirectory(tempDirPath, "ZipUtilsTest.testGetAllZipChildren.subdir1");
+            Path subDir2Path = Files.createTempDirectory(tempDirPath, "ZipUtilsTest.testGetAllZipChildren.subdir2");
 
-            file1Path = Files.createTempFile(tempDirPath, "ZipUtilsTest.testGetAllZipChildren", null);
-            file2Path = Files.createTempFile(tempDirPath, "ZipUtilsTest.testGetAllZipChildren", null);
-            subFile1Path = Files.createTempFile(subDir1Path, "ZipUtilsTest.testGetAllZipChildren", null);
-            subFile2Path = Files.createTempFile(subDir1Path, "ZipUtilsTest.testGetAllZipChildren", null);
-            subFile3Path = Files.createTempFile(subDir2Path, "ZipUtilsTest.testGetAllZipChildren", null);
+            Files.createTempFile(tempDirPath, "ZipUtilsTest.testGetAllZipChildren", null);
+            Files.createTempFile(tempDirPath, "ZipUtilsTest.testGetAllZipChildren", null);
+            Files.createTempFile(subDir1Path, "ZipUtilsTest.testGetAllZipChildren", null);
+            Files.createTempFile(subDir1Path, "ZipUtilsTest.testGetAllZipChildren", null);
+            Files.createTempFile(subDir2Path, "ZipUtilsTest.testGetAllZipChildren", null);
 
             archivePath = Files.createTempFile("ZipUtilsTest.testGetAllZipChildren", ".zip");
 

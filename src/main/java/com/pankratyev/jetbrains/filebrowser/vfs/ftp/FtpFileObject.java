@@ -107,7 +107,6 @@ public final class FtpFileObject extends AbstractFileObject {
         if (localCopy == null) {
             try (OutputStream localCopyOs = localCopyManager.getLocalCopyOutputStream(this)) {
                 if (localCopyOs == null) {
-                    // TODO in such case it's possible to use direct FTP stream
                     throw new IOException("Unable to store a local copy of " + this);
                 }
 
