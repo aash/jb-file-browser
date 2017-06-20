@@ -61,10 +61,21 @@ public final class LocalFileObject extends AbstractFileObject {
         List<FileObject> children = new ArrayList<>();
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(path)) {
             for (Path child : dirStream) {
-                children.add(new LocalFileObject(this, child));
+                if (!isJunction(child)) {
+                    children.add(new LocalFileObject(this, child));
+                }
             }
         }
         return children;
+    }
+
+    private static boolean isJunction(Path path) {
+        // a dirty way to define whether the path is a Junction
+        try {
+            return !Files.isReadable(path) && path.compareTo(path.toRealPath()) != 0;
+        } catch (IOException ignore) {
+            return false;
+        }
     }
 
     public Path getPath() {
