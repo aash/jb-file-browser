@@ -16,6 +16,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * FTP client with {@link FileObject}-based API.
@@ -37,6 +41,10 @@ public final class FtpClient {
     private final String password;
 
     private final LocalCopyManager localCopyManager;
+
+    private final ExecutorService abortTransferService = Executors.newSingleThreadExecutor();
+    private final BlockingQueue<FTPClient> usedClients = new ArrayBlockingQueue<>(50);
+
 
     public FtpClient(@Nonnull String host, int port, @Nullable String username, @Nullable String password) {
         this.host = Objects.requireNonNull(host);
@@ -124,7 +132,9 @@ public final class FtpClient {
 
     void retrieveFile(@Nonnull FtpFileObject file, @Nonnull OutputStream to) throws IOException {
         String pathToRetrieve = file.getFullName();
+        abortPreviousTransfers();
         FTPClient client = createClient();
+        boolean added = usedClients.offer(client);
         try {
             // note: this method is used instead of retrieveFileStream because
             // it doesn't require keeping the control connection alive
@@ -133,7 +143,10 @@ public final class FtpClient {
                 throw new IOException("Cannot complete file transfer: " + pathToRetrieve);
             }
         } finally {
-            disconnect(client);
+            boolean shouldDisconnect = !added || usedClients.remove(client);
+            if (shouldDisconnect) {
+                disconnect(client);
+            }
         }
     }
 
@@ -178,6 +191,26 @@ public final class FtpClient {
             LOGGER.debug("Disconnected from {}", host);
         } catch (IOException e) {
             LOGGER.warn("An error occurred while trying to disconnect from " + host, e);
+        }
+    }
+
+    private void abortPreviousTransfers() {
+        if (usedClients.size() > 0) {
+            abortTransferService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    FTPClient clientToAbort;
+                    while ((clientToAbort = usedClients.poll()) != null) {
+                        try {
+                            LOGGER.debug("Aborting the transfer");
+                            clientToAbort.abort();
+                        } catch (IOException ignore) {
+                        } finally {
+                            disconnect(clientToAbort);
+                        }
+                    }
+                }
+            });
         }
     }
 
