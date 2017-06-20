@@ -3,11 +3,12 @@ package com.pankratyev.jetbrains.filebrowser.ui;
 import com.pankratyev.jetbrains.filebrowser.ui.files.FileListCellRenderer;
 import com.pankratyev.jetbrains.filebrowser.ui.files.FileListDoubleClickListener;
 import com.pankratyev.jetbrains.filebrowser.ui.files.FileListEnterAction;
+import com.pankratyev.jetbrains.filebrowser.ui.files.FileListKeySearchListener;
 import com.pankratyev.jetbrains.filebrowser.ui.files.FileListSelectionListener;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.provider.FileTypeProvider;
 import com.pankratyev.jetbrains.filebrowser.ui.userdir.UserDirectoryLink;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProvider;
-import com.pankratyev.jetbrains.filebrowser.ui.filetype.provider.FileTypeProvider;
 
 import javax.annotation.Nonnull;
 import javax.swing.BorderFactory;
@@ -81,6 +82,7 @@ public final class FileBrowser {
         fileList.getActionMap().put("changeDir", new FileListEnterAction(controller));
 
         fileList.addListSelectionListener(new FileListSelectionListener(controller));
+        fileList.addKeyListener(new FileListKeySearchListener());
     }
 
     private void addUserDirectories(Collection<String> userDirectories) {
