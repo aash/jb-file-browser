@@ -79,23 +79,7 @@ public final class FileBrowserController {
             @Override
             protected List<FileObject> doInBackground() throws IOException {
                 publish();
-
-                List<FileObject> fileObjectsToDisplay = new ArrayList<>();
-
-                // add '..' parent folder
-                if (fileObject.hasParent()) {
-                    fileObjectsToDisplay.add(ParentDirFileObject.createFor(fileObject));
-                }
-
-                List<FileObject> children = fileObject.getChildren();
-                if (children != null) {
-                    fileObjectsToDisplay.addAll(children);
-                } else {
-                    // archive in archive
-                    return null;
-                }
-
-                return fileObjectsToDisplay;
+                return getFileObjectsToDisplay(fileObject);
             }
 
             @Override
@@ -222,20 +206,8 @@ public final class FileBrowserController {
                     LOGGER.debug("Connected to FTP: {}", fileObject);
                     absolutePathToDisplay = fileObject.getFullName();
 
-                    List<FileObject> ftpContents = fileObject.getChildren();
-                    List<FileObject> fileObjectsToDisplay = new ArrayList<>();
-
-                    if (fileObject.hasParent()) {
-                        fileObjectsToDisplay.add(ParentDirFileObject.createFor(fileObject));
-                    }
-                    if (ftpContents != null) {
-                        fileObjectsToDisplay.addAll(ftpContents);
-                        currentFileObject = fileObject;
-                    } else {
-                        // shouldn't happen
-                        LOGGER.error("Unexpected null children for FTP initial file object: " + fileObject);
-                    }
-
+                    List<FileObject> fileObjectsToDisplay = getFileObjectsToDisplay(fileObject);
+                    currentFileObject = fileObject;
                     return fileObjectsToDisplay;
                 } catch (IOException e) {
                     LOGGER.warn("An error occurred while displaying FTP server contents", e);
@@ -284,6 +256,24 @@ public final class FileBrowserController {
         browser.setCurrentDirectoryContents(fileObjectsToDisplay);
         browser.clearPreview();
         browser.setCurrentPath(currentPath);
+    }
+
+    private List<FileObject> getFileObjectsToDisplay(FileObject fileObject) throws IOException {
+        List<FileObject> fileObjectsToDisplay = new ArrayList<>();
+
+        // add '..' parent folder
+        if (fileObject.hasParent()) {
+            fileObjectsToDisplay.add(ParentDirFileObject.createFor(fileObject));
+        }
+
+        List<FileObject> children = fileObject.getChildren();
+        if (children != null) {
+            fileObjectsToDisplay.addAll(children);
+        } else {
+            return null;
+        }
+
+        return fileObjectsToDisplay;
     }
 
     public void disconnectFromFtp() {
