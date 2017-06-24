@@ -68,29 +68,8 @@ public final class FtpFileObject extends AbstractFileObject {
         }
 
         if (ZipUtils.isZipArchive(this)) {
-            Path localCopy = localCopyManager.getLocalCopy(this);
-            if (localCopy == null) {
-                LOGGER.debug("Storing local copy to get children of {}", this);
-
-                try (OutputStream localCopyOs = localCopyManager.getLocalCopyOutputStream(this)) {
-                    if (localCopyOs == null) {
-                        throw new IOException("Unable to store a local copy of " + this);
-                    }
-
-                    LOGGER.debug("Local copy will be stored for {}", this);
-
-                    client.retrieveFile(this, localCopyOs);
-                    localCopy = localCopyManager.getLocalCopy(this);
-                } catch (IOException e) {
-                    localCopyManager.deleteLocalCopy(this);
-                    throw e;
-                }
-            }
-
-            if (localCopy != null) {
-                return ZipUtils.getZipArchiveTopLevelChildren(this);
-            }
-            throw new IOException("Local copy not found for " + this);
+            getOrCreateLocalCopy();
+            return ZipUtils.getZipArchiveTopLevelChildren(this);
         }
 
         return null;
@@ -103,26 +82,34 @@ public final class FtpFileObject extends AbstractFileObject {
             return null;
         }
 
+        Path localCopy = getOrCreateLocalCopy();
+        return new BufferedInputStream(Files.newInputStream(localCopy));
+    }
+
+    @Nonnull
+    private Path getOrCreateLocalCopy() throws IOException {
         Path localCopy = localCopyManager.getLocalCopy(this);
-        if (localCopy == null) {
-            try (OutputStream localCopyOs = localCopyManager.getLocalCopyOutputStream(this)) {
-                if (localCopyOs == null) {
-                    throw new IOException("Unable to store a local copy of " + this);
-                }
-
-                LOGGER.debug("Local copy will be stored for {}", this);
-                client.retrieveFile(this, localCopyOs);
-                localCopy = localCopyManager.getLocalCopy(this);
-            } catch (IOException e) {
-                localCopyManager.deleteLocalCopy(this);
-                throw e;
-            }
-        }
-
         if (localCopy != null) {
-            return new BufferedInputStream(Files.newInputStream(localCopy));
+            return localCopy;
         }
-        throw new IOException("Local copy not found for " + this);
+
+        try (OutputStream localCopyOs = localCopyManager.getLocalCopyOutputStream(this)) {
+            if (localCopyOs == null) {
+                throw new IOException("Unable to store a local copy of " + this);
+            }
+
+            LOGGER.debug("Local copy will be stored for {}", this);
+            client.retrieveFile(this, localCopyOs);
+
+            localCopy =  localCopyManager.getLocalCopy(this);
+            if (localCopy == null) {
+                throw new IOException("Local copy not found for " + this);
+            }
+            return localCopy;
+        } catch (IOException e) {
+            localCopyManager.deleteLocalCopy(this);
+            throw e;
+        }
     }
 
 
