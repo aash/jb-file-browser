@@ -147,8 +147,19 @@ public final class FileBrowser {
         pathField.setText(path);
     }
 
+    /**
+     * Selects passed {@link FileObject} if present in file list; otherwise selects the first element (".." folder).
+     */
     void setSelectedFileObject(@Nonnull FileObject toSelect) {
-        fileList.setSelectedValue(toSelect, true);
+        if (fileListModel.contains(toSelect)) {
+            fileList.setSelectedValue(toSelect, true);
+        } else {
+            setInitialSelection();
+        }
+    }
+
+    void setInitialSelection() {
+        fileList.setSelectedIndex(0);
     }
 
     /**

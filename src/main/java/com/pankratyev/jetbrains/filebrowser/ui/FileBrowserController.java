@@ -107,13 +107,13 @@ public final class FileBrowserController {
                 try {
                     List<FileObject> fileObjectsToDisplay = get();
                     if (fileObjectsToDisplay != null) {
-                        browser.setCurrentDirectoryContents(fileObjectsToDisplay);
-                        browser.clearPreview();
-                        browser.setCurrentPath(fileObject.getFullName());
+                        setupBrowser(fileObjectsToDisplay, fileObject.getFullName());
 
                         // select previously opened child if was navigated to parent
                         if (currentFileObject != null) { // null on initial folder display
                             browser.setSelectedFileObject(currentFileObject);
+                        } else {
+                            browser.setInitialSelection();
                         }
 
                         currentFileObject = fileObject;
@@ -250,15 +250,9 @@ public final class FileBrowserController {
                 try {
                     List<FileObject> fileObjectsToDisplay = get();
                     if (fileObjectsToDisplay != null) {
-                        browser.setCurrentDirectoryContents(fileObjectsToDisplay);
-                        browser.clearPreview();
+                        setupBrowser(fileObjectsToDisplay, absolutePathToDisplay);
                         browser.enableFtpMode(client.getFtpUrl());
-                        if (absolutePathToDisplay != null) {
-                            browser.setCurrentPath(absolutePathToDisplay);
-                        } else {
-                            // shouldn't happen
-                            LOGGER.error("Unexpected null path to display");
-                        }
+                        browser.setInitialSelection();
                     } else {
                         backToInitialDirectory();
                     }
@@ -279,6 +273,12 @@ public final class FileBrowserController {
                 browser.clearPreview();
             }
         });
+    }
+
+    private void setupBrowser(@Nonnull List<FileObject> fileObjectsToDisplay, @Nonnull String currentPath) {
+        browser.setCurrentDirectoryContents(fileObjectsToDisplay);
+        browser.clearPreview();
+        browser.setCurrentPath(currentPath);
     }
 
     public void disconnectFromFtp() {
