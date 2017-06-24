@@ -107,12 +107,17 @@ public final class FileBrowserController {
                 try {
                     List<FileObject> fileObjectsToDisplay = get();
                     if (fileObjectsToDisplay != null) {
+                        FileObject wasSelected = browser.getSelectedFileObject();
                         setupBrowser(fileObjectsToDisplay, fileObject.getFullName());
 
-                        // select previously opened child if was navigated to parent
-                        if (currentFileObject != null) { // null on initial folder display
+                        if (fileObject.equals(currentFileObject) && wasSelected != null) {
+                            // refresh
+                            browser.setSelectedFileObject(wasSelected);
+                        } else if (currentFileObject != null) {
+                            // select previously opened child if was navigated to parent
                             browser.setSelectedFileObject(currentFileObject);
                         } else {
+                            // initial folder display
                             browser.setInitialSelection();
                         }
 

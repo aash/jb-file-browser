@@ -11,6 +11,7 @@ import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.user.UserDirectoriesProvider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -219,6 +220,11 @@ public final class FileBrowser {
 
     boolean isFtpMode() {
         return ftpMode;
+    }
+
+    @Nullable
+    FileObject getSelectedFileObject() {
+        return fileList.getSelectedValue();
     }
 
     private void hideUserDirectories() {
