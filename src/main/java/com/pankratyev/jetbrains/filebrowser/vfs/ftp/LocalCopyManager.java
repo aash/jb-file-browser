@@ -26,6 +26,15 @@ public class LocalCopyManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalCopyManager.class);
 
     static final String TEMP_DIRECTORY_BASE_NAME = "jetbrains_filebrowser_pankratyev";
+    private static final Path BASE_DIRECTORY = Paths.get(getBaseDir());
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                VfsUtils.deleteQuietly(BASE_DIRECTORY);
+            }
+        }));
+    }
 
     /**
      * If a local copy was created more than this time interval ago it will be considered outdated.
@@ -131,12 +140,16 @@ public class LocalCopyManager {
     }
 
     private static Path getBasePath(String host) {
-        String dirPath = FileUtils.getTempDirectoryPath();
-        if (!dirPath.endsWith(File.separator)) {
-            dirPath += File.separator;
+        return BASE_DIRECTORY.resolve(host);
+    }
+
+    private static String getBaseDir() {
+        String dir = FileUtils.getTempDirectoryPath();
+        if (!dir.endsWith(File.separator)) {
+            dir += File.separator;
         }
-        dirPath += TEMP_DIRECTORY_BASE_NAME + File.separator + host;
-        return Paths.get(dirPath);
+        dir += (TEMP_DIRECTORY_BASE_NAME + File.separator);
+        return dir;
     }
 
     /**
