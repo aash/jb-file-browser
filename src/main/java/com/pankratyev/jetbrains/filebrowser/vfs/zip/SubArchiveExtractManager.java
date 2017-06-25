@@ -2,6 +2,7 @@ package com.pankratyev.jetbrains.filebrowser.vfs.zip;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.VfsUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,8 +34,8 @@ final class SubArchiveExtractManager {
     }
 
     private Path getTempFileFor(ZippedFileObject fileObject) {
-        return BASE_DIRECTORY.resolve(
-                fileObject.getFullName().substring(File.separator.length()) + ARCHIVE_TEMP_FILE_SUFFIX);
+        String path = StringUtils.substringAfter(fileObject.getFullName(), File.separator);
+        return BASE_DIRECTORY.resolve(path + ARCHIVE_TEMP_FILE_SUFFIX);
     }
 
     Path getExtractedSubArchive(ZippedFileObject archive) throws IOException {
