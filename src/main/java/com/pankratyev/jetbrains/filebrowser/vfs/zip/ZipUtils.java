@@ -10,6 +10,7 @@ import com.pankratyev.jetbrains.filebrowser.ui.filetype.provider.ExtensionBasedF
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -66,6 +67,19 @@ public final class ZipUtils {
             return doGetZipArchiveTopLevelChildren(archive, zipFile, archiveZipFileProvider);
         }
     }
+
+    /**
+     * @param archive zip archive placed in parent zip archive.
+     * @return zip archive top-level files/directories.
+     */
+    @Nonnull
+    static List<FileObject> getZipArchiveTopLevelChildren(@Nonnull ZippedFileObject archive) throws IOException {
+        ZippedArchiveZipFileProvider archiveZipFileProvider = new ZippedArchiveZipFileProvider(archive);
+        try (ZipFile zipFile = archiveZipFileProvider.getZipFile()) {
+            return doGetZipArchiveTopLevelChildren(archive, zipFile, archiveZipFileProvider);
+        }
+    }
+
 
     private static List<FileObject> doGetZipArchiveTopLevelChildren(FileObject archive, ZipFile zipFile,
             ZipFileProvider archiveZipFileProvider) {
@@ -193,6 +207,26 @@ public final class ZipUtils {
                 throw new IOException("No local copy available for archive");
             }
             return new ZipFile(localCopy.toFile());
+        }
+    }
+
+    public static final class ZippedArchiveZipFileProvider implements ZipFileProvider {
+        private final ZippedFileObject fileObject;
+
+        ZippedArchiveZipFileProvider(@Nonnull ZippedFileObject fileObject) {
+            this.fileObject = Objects.requireNonNull(fileObject);
+        }
+
+        @Nonnull
+        @Override
+        public ZipFile getZipFile() throws IOException {
+            if (!isZipArchive(fileObject)) {
+                throw new IllegalStateException("Not a zip archive: " + this);
+            }
+
+            File extractedSubArchive = fileObject.extractSubArchive().toFile();
+            extractedSubArchive.deleteOnExit();
+            return new ZipFile(extractedSubArchive);
         }
     }
 }
