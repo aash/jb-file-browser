@@ -9,7 +9,7 @@ import java.awt.event.KeyEvent;
 
 public final class FileListKeySearchListener extends KeyAdapter {
     @SuppressWarnings("FieldCanBeLocal")
-    private static int SAME_SEARCH_INTERVAL = 500; // millis
+    private static final int SAME_SEARCH_INTERVAL = 500; // millis
 
     private String currentSearch;
     private long lastSearchTime;
