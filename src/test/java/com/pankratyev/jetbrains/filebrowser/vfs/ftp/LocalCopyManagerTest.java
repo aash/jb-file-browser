@@ -1,12 +1,12 @@
 package com.pankratyev.jetbrains.filebrowser.vfs.ftp;
 
 import com.pankratyev.jetbrains.filebrowser.TestUtils;
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.pankratyev.jetbrains.filebrowser.vfs.ftp.LocalCopyManager.TEMP_DIRECTORY_BASE_NAME;
 import static java.io.File.separator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,8 +39,7 @@ public class LocalCopyManagerTest {
             }
         }
 
-        Path localCopyPath = Paths.get(FileUtils.getTempDirectoryPath() + separator
-                + TEMP_DIRECTORY_BASE_NAME + separator + "testhost1" + testPath);
+        Path localCopyPath = Paths.get(LocalCopyManager.BASE_DIRECTORY + File.separator + "testhost1" + testPath);
         try {
             assertTrue(localCopyPath.toString(), Files.exists(localCopyPath));
             String content = new String(Files.readAllBytes(localCopyPath), StandardCharsets.UTF_8);
@@ -55,8 +53,7 @@ public class LocalCopyManagerTest {
     public void testGetLocalCopy() throws IOException {
         LocalCopyManager subj = new LocalCopyManager("testhost2");
         String testPath = separator + "absolute" + separator + "path" + separator + "testGetLocalCopy";
-        Path localCopyPath = Paths.get(FileUtils.getTempDirectoryPath() + separator
-                + TEMP_DIRECTORY_BASE_NAME + separator + "testhost2" + testPath);
+        Path localCopyPath = Paths.get(LocalCopyManager.BASE_DIRECTORY + File.separator + "testhost2" + testPath);
 
         try {
             Files.createDirectories(localCopyPath.getParent());
@@ -76,10 +73,9 @@ public class LocalCopyManagerTest {
 
     @Test
     public void testExpire() throws Exception {
-        LocalCopyManager subj = new LocalCopyManager("testhost4");
+        LocalCopyManager subj = new LocalCopyManager("testhost3");
         String testPath = separator + "absolute" + separator + "path" + separator + "testExpire";
-        Path localCopyPath = Paths.get(FileUtils.getTempDirectoryPath() + separator
-                + TEMP_DIRECTORY_BASE_NAME + separator + "testhost4" + testPath);
+        Path localCopyPath = Paths.get(LocalCopyManager.BASE_DIRECTORY + File.separator + "testhost3" + testPath);
 
         try {
             Files.createDirectories(localCopyPath.getParent());

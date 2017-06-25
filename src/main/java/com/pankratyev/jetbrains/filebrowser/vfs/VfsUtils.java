@@ -1,5 +1,6 @@
 package com.pankratyev.jetbrains.filebrowser.vfs;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +13,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.UUID;
 
 public final class VfsUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(VfsUtils.class);
+
+    private static final String TEMP_DIRECTORY_BASE_NAME = "jetbrains_filebrowser_pankratyev";
 
     private VfsUtils() {
     }
@@ -74,5 +78,21 @@ public final class VfsUtils {
                 LOGGER.warn("Cannot delete a file {}", path);
             }
         }
+    }
+
+    /**
+     * @return unique base temp directory.
+     */
+    public static String getBaseTempDir() {
+        String dir = FileUtils.getTempDirectoryPath();
+        if (!dir.endsWith(File.separator)) {
+            dir += File.separator;
+        }
+        dir += (TEMP_DIRECTORY_BASE_NAME + File.separator);
+
+        // unique folder to avoid deleting temp files of another running program instance on exit
+        dir += (UUID.randomUUID().toString() + File.separator);
+
+        return dir;
     }
 }

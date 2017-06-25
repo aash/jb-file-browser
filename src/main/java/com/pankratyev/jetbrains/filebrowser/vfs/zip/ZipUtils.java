@@ -1,16 +1,15 @@
 package com.pankratyev.jetbrains.filebrowser.vfs.zip;
 
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.ArchiveFileType;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.provider.ExtensionBasedFileTypeProvider;
+import com.pankratyev.jetbrains.filebrowser.ui.filetype.provider.FileTypeProvider;
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.VfsUtils;
 import com.pankratyev.jetbrains.filebrowser.vfs.ftp.FtpFileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObject;
-import com.pankratyev.jetbrains.filebrowser.ui.filetype.ArchiveFileType;
-import com.pankratyev.jetbrains.filebrowser.ui.filetype.provider.FileTypeProvider;
-import com.pankratyev.jetbrains.filebrowser.ui.filetype.provider.ExtensionBasedFileTypeProvider;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -31,6 +30,7 @@ public final class ZipUtils {
     public static final String ZIP_PATH_SEPARATOR = "/";
 
     private static final FileTypeProvider FILE_TYPE_PROVIDER = new ExtensionBasedFileTypeProvider();
+    private static final SubArchiveExtractManager SUB_ARCHIVE_EXTRACT_MANAGER = new SubArchiveExtractManager();
 
     private ZipUtils() {
     }
@@ -68,7 +68,8 @@ public final class ZipUtils {
      */
     @Nonnull
     static List<FileObject> getZipArchiveTopLevelChildren(@Nonnull ZippedFileObject archive) throws IOException {
-        return doGetZipArchiveTopLevelChildren(archive, new ZippedArchiveZipFileProvider(archive));
+        return doGetZipArchiveTopLevelChildren(archive,
+                new ZippedArchiveZipFileProvider(archive, SUB_ARCHIVE_EXTRACT_MANAGER));
     }
 
 
@@ -205,9 +206,12 @@ public final class ZipUtils {
 
     public static final class ZippedArchiveZipFileProvider implements ZipFileProvider {
         private final ZippedFileObject fileObject;
+        private final SubArchiveExtractManager subArchiveExtractManager;
 
-        ZippedArchiveZipFileProvider(@Nonnull ZippedFileObject fileObject) {
+        ZippedArchiveZipFileProvider(@Nonnull ZippedFileObject fileObject,
+                @Nonnull SubArchiveExtractManager subArchiveExtractManager) {
             this.fileObject = Objects.requireNonNull(fileObject);
+            this.subArchiveExtractManager = Objects.requireNonNull(subArchiveExtractManager);
         }
 
         @Nonnull
@@ -217,9 +221,8 @@ public final class ZipUtils {
                 throw new IllegalStateException("Not a zip archive: " + this);
             }
 
-            File extractedSubArchive = fileObject.extractSubArchive().toFile();
-            extractedSubArchive.deleteOnExit();
-            return new ZipFile(extractedSubArchive);
+            Path extractedSubArchive = subArchiveExtractManager.getExtractedSubArchive(fileObject);
+            return new ZipFile(extractedSubArchive.toFile());
         }
     }
 }

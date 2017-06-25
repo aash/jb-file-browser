@@ -2,7 +2,6 @@ package com.pankratyev.jetbrains.filebrowser.vfs.ftp;
 
 import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.VfsUtils;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +24,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 public class LocalCopyManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalCopyManager.class);
 
-    static final String TEMP_DIRECTORY_BASE_NAME = "jetbrains_filebrowser_pankratyev";
-    private static final Path BASE_DIRECTORY = Paths.get(getBaseDir());
+    static final Path BASE_DIRECTORY = Paths.get(VfsUtils.getBaseTempDir());
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
@@ -141,15 +139,6 @@ public class LocalCopyManager {
 
     private static Path getBasePath(String host) {
         return BASE_DIRECTORY.resolve(host);
-    }
-
-    private static String getBaseDir() {
-        String dir = FileUtils.getTempDirectoryPath();
-        if (!dir.endsWith(File.separator)) {
-            dir += File.separator;
-        }
-        dir += (TEMP_DIRECTORY_BASE_NAME + File.separator);
-        return dir;
     }
 
     /**

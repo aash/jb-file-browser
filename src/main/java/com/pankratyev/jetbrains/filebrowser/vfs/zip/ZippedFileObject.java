@@ -7,15 +7,11 @@ import org.apache.commons.io.IOUtils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -118,7 +114,7 @@ public final class ZippedFileObject extends AbstractFileObject {
         }
     }
 
-    private ZipFile getParentArchiveZipFile() throws IOException {
+    ZipFile getParentArchiveZipFile() throws IOException {
         return parentArchiveZipFileProvider.getZipFile();
     }
 
@@ -133,24 +129,6 @@ public final class ZippedFileObject extends AbstractFileObject {
     @Nonnull
     String getPathInArchive() {
         return pathInArchive;
-    }
-
-    @Nonnull
-    Path extractSubArchive() throws IOException {
-        try (ZipFile zip = getParentArchiveZipFile()) {
-            ZipEntry entry = zip.getEntry(pathInArchive);
-            if (entry == null) {
-                throw new IOException(pathInArchive + " not found in " + zip.getName());
-            }
-
-            //TODO reuse temp file
-            Path extracted = Files.createTempFile(getName(), ".zip");
-            try (OutputStream nestedArchiveOs = new BufferedOutputStream(Files.newOutputStream(extracted))) {
-                IOUtils.copy(new BufferedInputStream(zip.getInputStream(entry)), nestedArchiveOs);
-            }
-
-            return extracted;
-        }
     }
 
     @Override
