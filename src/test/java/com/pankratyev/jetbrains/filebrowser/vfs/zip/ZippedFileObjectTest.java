@@ -69,12 +69,14 @@ public final class ZippedFileObjectTest {
         Path topDir = null;
         try {
             topDir = Files.createTempDirectory("ZippedFileObjectTest.testNestedArchive");
-            Path topArchivePath = Files.createTempFile(topDir, "archive1", ".zip");
-            Path subArchivePath = Files.createTempFile(topDir, "archive1", ".zip");
+            Path topArchivePath = Files.createTempFile(topDir, "topArchive", ".zip");
+            Path subArchivePath = Files.createTempFile(topDir, "subArchive", ".zip");
+            Path subSubArchivePath = Files.createTempFile(topDir, "subSubArchive", ".zip");
             Path file = Files.createTempFile(topDir, "file", ".txt");
             Files.write(file, "test".getBytes(StandardCharsets.UTF_8));
 
-            TestUtils.zipSingleFile(file, subArchivePath);
+            TestUtils.zipSingleFile(file, subSubArchivePath);
+            TestUtils.zipSingleFile(subSubArchivePath, subArchivePath);
             TestUtils.zipSingleFile(subArchivePath, topArchivePath);
 
             LocalFileObject archive = LocalFileObjectFactory.create(topArchivePath);
@@ -92,11 +94,19 @@ public final class ZippedFileObjectTest {
             assertNotNull(children2);
             assertEquals(children2.toString(), 1, children2.size());
             FileObject child2 = children2.iterator().next();
-            assertEquals(file.getFileName().toString(),
+            assertEquals(subSubArchivePath.getFileName().toString(),
                     VfsUtils.normalizePath(child2.getName(), ZipUtils.ZIP_PATH_SEPARATOR));
             assertEquals(child1, child2.getParent());
 
-            try (InputStream is = child2.getInputStream()) {
+            Collection<FileObject> children3 = child2.getChildren();
+            assertNotNull(children3);
+            assertEquals(children3.toString(), 1, children3.size());
+            FileObject child3 = children3.iterator().next();
+            assertEquals(file.getFileName().toString(),
+                    VfsUtils.normalizePath(child3.getName(), ZipUtils.ZIP_PATH_SEPARATOR));
+            assertEquals(child2, child3.getParent());
+
+            try (InputStream is = child3.getInputStream()) {
                 assertNotNull(is);
                 String content = IOUtils.toString(is, StandardCharsets.UTF_8);
                 assertEquals("test", content);

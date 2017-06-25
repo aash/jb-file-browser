@@ -13,11 +13,14 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 final class SubArchiveExtractManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(SubArchiveExtractManager.class);
+
+    private static final String ARCHIVE_TEMP_FILE_SUFFIX = UUID.randomUUID().toString();
 
     private static final Path BASE_DIRECTORY = Paths.get(VfsUtils.getBaseTempDir());
     static {
@@ -30,7 +33,8 @@ final class SubArchiveExtractManager {
     }
 
     private Path getTempFileFor(ZippedFileObject fileObject) {
-        return BASE_DIRECTORY.resolve(fileObject.getFullName().substring(File.separator.length()));
+        return BASE_DIRECTORY.resolve(
+                fileObject.getFullName().substring(File.separator.length()) + ARCHIVE_TEMP_FILE_SUFFIX);
     }
 
     Path getExtractedSubArchive(ZippedFileObject archive) throws IOException {
