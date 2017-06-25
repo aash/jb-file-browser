@@ -50,10 +50,7 @@ public final class ZipUtils {
      */
     @Nonnull
     public static List<FileObject> getZipArchiveTopLevelChildren(@Nonnull LocalFileObject archive) throws IOException {
-        LocalArchiveZipFileProvider archiveZipFileProvider = new LocalArchiveZipFileProvider(archive);
-        try (ZipFile zipFile = archiveZipFileProvider.getZipFile()) {
-            return doGetZipArchiveTopLevelChildren(archive, zipFile, archiveZipFileProvider);
-        }
+        return doGetZipArchiveTopLevelChildren(archive, new LocalArchiveZipFileProvider(archive));
     }
 
     /**
@@ -62,10 +59,7 @@ public final class ZipUtils {
      */
     @Nonnull
     public static List<FileObject> getZipArchiveTopLevelChildren(@Nonnull FtpFileObject archive) throws IOException {
-        FtpArchiveZipFileProvider archiveZipFileProvider = new FtpArchiveZipFileProvider(archive);
-        try (ZipFile zipFile = archiveZipFileProvider.getZipFile()) {
-            return doGetZipArchiveTopLevelChildren(archive, zipFile, archiveZipFileProvider);
-        }
+        return doGetZipArchiveTopLevelChildren(archive, new FtpArchiveZipFileProvider(archive));
     }
 
     /**
@@ -74,26 +68,25 @@ public final class ZipUtils {
      */
     @Nonnull
     static List<FileObject> getZipArchiveTopLevelChildren(@Nonnull ZippedFileObject archive) throws IOException {
-        ZippedArchiveZipFileProvider archiveZipFileProvider = new ZippedArchiveZipFileProvider(archive);
-        try (ZipFile zipFile = archiveZipFileProvider.getZipFile()) {
-            return doGetZipArchiveTopLevelChildren(archive, zipFile, archiveZipFileProvider);
-        }
+        return doGetZipArchiveTopLevelChildren(archive, new ZippedArchiveZipFileProvider(archive));
     }
 
 
-    private static List<FileObject> doGetZipArchiveTopLevelChildren(FileObject archive, ZipFile zipFile,
-            ZipFileProvider archiveZipFileProvider) {
-        List<FileObject> archiveContents = ZipUtils.getAllZipChildren(archive, zipFile, archiveZipFileProvider);
+    private static List<FileObject> doGetZipArchiveTopLevelChildren(FileObject archive,
+            ZipFileProvider archiveZipFileProvider) throws IOException {
+        try (ZipFile zipFile = archiveZipFileProvider.getZipFile()) {
+            List<FileObject> archiveContents = ZipUtils.getAllZipChildren(archive, zipFile, archiveZipFileProvider);
 
-        for (Iterator<FileObject> iter = archiveContents.iterator(); iter.hasNext(); ) {
-            ZippedFileObject zippedFileObject = (ZippedFileObject) iter.next();
-            if (ZipUtils.getNestingLevel(zippedFileObject.getPathInArchive()) > 0) {
-                // leave only top-level files in archive
-                iter.remove();
+            for (Iterator<FileObject> iter = archiveContents.iterator(); iter.hasNext(); ) {
+                ZippedFileObject zippedFileObject = (ZippedFileObject) iter.next();
+                if (ZipUtils.getNestingLevel(zippedFileObject.getPathInArchive()) > 0) {
+                    // leave only top-level files in archive
+                    iter.remove();
+                }
             }
-        }
 
-        return archiveContents;
+            return archiveContents;
+        }
     }
 
 
