@@ -56,4 +56,13 @@ public final class TestUtils {
             });
         }
     }
+
+    public static void zipSingleFile(Path fileToZip, Path resultArchivePath) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(resultArchivePath.toFile());
+                ZipOutputStream zos = new ZipOutputStream(fos)) {
+            zos.putNextEntry(new ZipEntry(fileToZip.getFileName().toString()));
+            Files.copy(fileToZip, zos);
+            zos.closeEntry();
+        }
+    }
 }

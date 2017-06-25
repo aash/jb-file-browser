@@ -5,9 +5,12 @@ import com.pankratyev.jetbrains.filebrowser.vfs.FileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.VfsUtils;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObject;
 import com.pankratyev.jetbrains.filebrowser.vfs.local.LocalFileObjectFactory;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -56,6 +59,48 @@ public final class ZippedFileObjectTest {
             assertEquals(subSubSubDir.getFileName().toString(),
                     VfsUtils.normalizePath(child3.getName(), ZipUtils.ZIP_PATH_SEPARATOR));
             assertEquals(child2, child3.getParent());
+        } finally {
+            TestUtils.deleteFiles(topDir);
+        }
+    }
+
+    @Test
+    public void testNestedArchive() throws Exception {
+        Path topDir = null;
+        try {
+            topDir = Files.createTempDirectory("ZippedFileObjectTest.testNestedArchive");
+            Path topArchivePath = Files.createTempFile(topDir, "archive1", ".zip");
+            Path subArchivePath = Files.createTempFile(topDir, "archive1", ".zip");
+            Path file = Files.createTempFile(topDir, "file", ".txt");
+            Files.write(file, "test".getBytes(StandardCharsets.UTF_8));
+
+            TestUtils.zipSingleFile(file, subArchivePath);
+            TestUtils.zipSingleFile(subArchivePath, topArchivePath);
+
+            LocalFileObject archive = LocalFileObjectFactory.create(topArchivePath);
+            assertTrue(ZipUtils.isZipArchive(archive));
+
+            Collection<FileObject> children1 = archive.getChildren();
+            assertNotNull(children1);
+            assertEquals(children1.toString(), 1, children1.size());
+            FileObject child1 = children1.iterator().next();
+            assertEquals(subArchivePath.getFileName().toString(),
+                    VfsUtils.normalizePath(child1.getName(), ZipUtils.ZIP_PATH_SEPARATOR));
+            assertEquals(archive, child1.getParent());
+
+            Collection<FileObject> children2 = child1.getChildren();
+            assertNotNull(children2);
+            assertEquals(children2.toString(), 1, children2.size());
+            FileObject child2 = children2.iterator().next();
+            assertEquals(file.getFileName().toString(),
+                    VfsUtils.normalizePath(child2.getName(), ZipUtils.ZIP_PATH_SEPARATOR));
+            assertEquals(child1, child2.getParent());
+
+            try (InputStream is = child2.getInputStream()) {
+                assertNotNull(is);
+                String content = IOUtils.toString(is, StandardCharsets.UTF_8);
+                assertEquals("test", content);
+            }
         } finally {
             TestUtils.deleteFiles(topDir);
         }
