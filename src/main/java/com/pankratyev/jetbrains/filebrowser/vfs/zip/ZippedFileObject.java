@@ -58,13 +58,9 @@ public final class ZippedFileObject extends AbstractFileObject {
         return true; // zipped file always has a parent
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public List<FileObject> getChildren() throws IOException {
-        if (!isDirectory()) {
-            return null;
-        }
-
+    protected List<FileObject> getDirectoryChildren() throws IOException {
         try (ZipFile parentAsZipFile = getParentArchiveZipFile()) {
             List<FileObject> archiveContents = ZipUtils.getAllZipChildren(
                     parentZipArchive, parentAsZipFile, parentArchiveZipFileProvider);
@@ -81,6 +77,12 @@ public final class ZippedFileObject extends AbstractFileObject {
 
             return resultChildren;
         }
+    }
+
+    @Nonnull
+    @Override
+    protected List<FileObject> getZipChildren() {
+        return null; //TODO implement
     }
 
     @Nullable

@@ -36,28 +36,9 @@ public final class LocalFileObject extends AbstractFileObject {
         return getParent() != null;
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public List<FileObject> getChildren() throws IOException {
-        if (isDirectory()) {
-            return getDirectoryChildren();
-        }
-        if (ZipUtils.isZipArchive(this)) {
-            return ZipUtils.getZipArchiveTopLevelChildren(this);
-        }
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public InputStream getInputStream() throws IOException {
-        if (isDirectory()) {
-            return null;
-        }
-        return new BufferedInputStream(Files.newInputStream(path));
-    }
-
-    private List<FileObject> getDirectoryChildren() throws IOException {
+    protected List<FileObject> getDirectoryChildren() throws IOException {
         List<FileObject> children = new ArrayList<>();
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(path)) {
             for (Path child : dirStream) {
@@ -67,6 +48,21 @@ public final class LocalFileObject extends AbstractFileObject {
             }
         }
         return children;
+    }
+
+    @Nonnull
+    @Override
+    protected List<FileObject> getZipChildren() throws IOException {
+        return ZipUtils.getZipArchiveTopLevelChildren(this);
+    }
+
+    @Nullable
+    @Override
+    public InputStream getInputStream() throws IOException {
+        if (isDirectory()) {
+            return null;
+        }
+        return new BufferedInputStream(Files.newInputStream(path));
     }
 
     private static boolean isJunction(Path path) {

@@ -60,19 +60,17 @@ public final class FtpFileObject extends AbstractFileObject {
         return super.getParent();
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public List<FileObject> getChildren() throws IOException {
-        if (isDirectory()) {
-            return client.list(this);
-        }
+    protected List<FileObject> getDirectoryChildren() throws IOException {
+        return client.list(this);
+    }
 
-        if (ZipUtils.isZipArchive(this)) {
-            getOrCreateLocalCopy();
-            return ZipUtils.getZipArchiveTopLevelChildren(this);
-        }
-
-        return null;
+    @Nonnull
+    @Override
+    protected List<FileObject> getZipChildren() throws IOException {
+        getOrCreateLocalCopy();
+        return ZipUtils.getZipArchiveTopLevelChildren(this);
     }
 
     @Nullable
